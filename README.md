@@ -1,5 +1,3 @@
-![image](https://github.com/user-attachments/assets/d3bb525d-0f43-4544-b405-d7e94b789bbe)
-
 Laitoxx Multi-Tool
 
 📌 English translation
@@ -35,6 +33,7 @@ Laitoxx Multi-Tool is a powerful OSINT (Open-Source Intelligence) and cybersecur
 
 📌 For cybersecurity researchers, ethical hackers, and OSINT specialists.
 
+![Снимок экрана 2025-03-09 160442(1)](https://github.com/user-attachments/assets/adff8e32-b44a-48da-8b2a-f3ddf3f70806)
 
 📌 Русский перевод
 
