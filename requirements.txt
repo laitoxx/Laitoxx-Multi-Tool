@@ -1,0 +1,13 @@
+colorama
+pystyle
+phonenumbers
+requests
+beautifulsoup4
+python-whois
+Flask
+pycryptodome
+dnspython
+scapy
+telegraph
+paketlib
+google
