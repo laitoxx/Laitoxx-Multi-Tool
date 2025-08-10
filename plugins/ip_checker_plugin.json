@@ -1,0 +1,14 @@
+{
+  "name": "IP Info Checker",
+  "description": "Takes an IP address and returns geolocation info.",
+  "author": "Community",
+  "version": "1.0",
+  "workflow": [
+    {
+      "id": "step1",
+      "tool": "Check IP",
+      "prompt": "Enter the IP address to check:",
+      "input_source": "user" 
+    }
+  ]
+}
