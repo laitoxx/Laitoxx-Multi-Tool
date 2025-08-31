@@ -183,3 +183,26 @@ class SpecialAttack(Layer4Attack):
                 t.start()
             for t in threads:
                 t.join()
+
+L4_CLASSES = {
+    'NTP': AMPAttack,
+    'DNS': AMPAttack,
+    'STUN': AMPAttack,
+    'WSD': AMPAttack,
+    'SADP': AMPAttack,
+    'TCP-ACK': TCPAttack,
+    'TCP-SYN': TCPAttack,
+    'TCP-BYPASS': TCPAttack,
+    'OVH-TCP': TCPAttack,
+    'UDP-FLOOD': UDPAttack,
+    'UDP-BYPASS': UDPAttack,
+    'GAME': GameAttack,
+    'GAME-MC': GameAttack,
+    'GAME-WARZONE': GameAttack,
+    'GAME-R6': GameAttack,
+    'FIVEM-KILL': GameAttack,
+    'SLOWLORIS': SlowLorisAttack,
+    'SSH': SpecialAttack,
+    'OVH-GAME': SpecialAttack,
+    'VSE': SpecialAttack
+}

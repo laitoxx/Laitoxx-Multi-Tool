@@ -4,24 +4,16 @@ from ..shared_utils import Color
 import concurrent.futures
 
 def check_path(url, path, session):
-    """
-    Checks a single admin path for a given URL.
-    Returns the full URL if found, otherwise None.
-    """
     full_url = urljoin(url, path)
     try:
         response = session.get(full_url, timeout=5, allow_redirects=True)
-        # Check for successful status and common admin/login keywords
         if response.status_code == 200 and ('login' in response.text.lower() or 'admin' in response.text.lower() or 'dashboard' in response.text.lower()):
             return full_url
     except requests.RequestException:
-        pass # Ignore connection errors, timeouts, etc.
+        pass
     return None
 
 def find_admin_panel():
-    """
-    Finds potential admin panels for a given website using a list of common paths.
-    """
     url = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Enter the URL to scan: {Color.RESET}").strip()
 
     if not url:
@@ -32,7 +24,6 @@ def find_admin_panel():
         url = "http://" + url
         print(f"{Color.DARK_GRAY}[{Color.LIGHT_BLUE}i{Color.DARK_GRAY}]{Color.LIGHT_BLUE} No scheme provided, defaulting to http. URL is now: {url}")
 
-    # List of common admin paths
     admin_paths = [
         "admin/", "admin.php", "administrator/", "admin/login.php", "login.php", "admin_panel/", "admin-area/",
         "admin_login.php", "admin/index.php", "admincp/", "user.php", "controlpanel/", "dashboard/", "panel/",
@@ -45,7 +36,6 @@ def find_admin_panel():
     found_panels = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         with requests.Session() as session:
-            # Create a future for each path check
             future_to_path = {executor.submit(check_path, url, path, session): path for path in admin_paths}
 
             for i, future in enumerate(concurrent.futures.as_completed(future_to_path)):
@@ -54,10 +44,9 @@ def find_admin_panel():
                     print(f"\n{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Admin panel found: {Color.WHITE}{result}")
                     found_panels.append(result)
 
-                # Progress indicator
                 print(f"\r{Color.DARK_GRAY}Progress: {i+1}/{len(admin_paths)} paths checked...", end="")
 
-    print("\n") # Newline after progress bar
+    print("\n")
     if not found_panels:
         print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No admin panels found from the common list.")
     else:
