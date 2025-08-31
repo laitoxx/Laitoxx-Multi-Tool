@@ -1,40 +1,43 @@
+import nmap
 import socket
-import threading
-from queue import Queue
 from ..shared_utils import Color
 
-# A lock for printing to avoid garbled output from threads
-print_lock = threading.Lock()
-
-def scan_port(target, port):
+def scan_target(target, ports):
     """
-    Scans a single port on the target IP.
+    Scans target using nmap with specified ports
     """
+    nm = nmap.PortScanner()
     try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(1) # 1 second timeout for connection attempt
-            result = s.connect_ex((target, port))
-            if result == 0:
-                with print_lock:
-                    print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Port {port} is open")
-    except socket.error as e:
-        with print_lock:
-            print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Error scanning port {port}: {e}")
-
-def worker(target, port_queue):
-    """
-    Worker thread that takes ports from the queue and scans them.
-    """
-    while not port_queue.empty():
-        port = port_queue.get()
-        scan_port(target, port)
-        port_queue.task_done()
+        # Use nmap to scan the target
+        nm.scan(target, ports, arguments='-sV -T4')
+        
+        for host in nm.all_hosts():
+            print(f"\n{Color.DARK_GRAY}[{Color.LIGHT_BLUE}i{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Scan results for {host}:")
+            
+            for proto in nm[host].all_protocols():
+                print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Protocol: {proto}")
+                
+                ports = sorted(nm[host][proto].keys())
+                for port in ports:
+                    state = nm[host][proto][port]['state']
+                    service = nm[host][proto][port].get('name', 'unknown')
+                    version = nm[host][proto][port].get('version', '')
+                    
+                    if state == 'open':
+                        print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Port {port}: {service} {version}")
+                    else:
+                        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Port {port}: {state}")
+                        
+    except nmap.PortScannerError as e:
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Nmap scan failed: {e}")
+    except Exception as e:
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Error during scan: {e}")
 
 def port_scanner_tool():
     """
-    Provides options to scan for open ports on a target host.
+    Provides advanced port scanning using nmap.
     """
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Port Scanner")
+    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Advanced Port Scanner")
 
     target_ip = input(f"{Color.DARK_GRAY}  - {Color.WHITE}Enter the target IP address or domain [localhost]: {Color.RESET}")
     if target_ip is None:
@@ -44,10 +47,28 @@ def port_scanner_tool():
     try:
         # Resolve domain to IP
         target_ip = socket.gethostbyname(target_ip)
-        print(f"{Color.DARK_GRAY}[{Color.LIGHT_BLUE}i{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Scanning target: {target_ip}")
+        print(f"{Color.DARK_GRAY}[{Color.LIGHT_BLUE}i{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Target resolved to: {target_ip}")
     except socket.gaierror:
         print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Could not resolve host: {target_ip}")
         return
+        
+    # Get port range from user
+    port_range = input(f"{Color.DARK_GRAY}  - {Color.WHITE}Enter port range (e.g. 20-100) or specific ports (e.g. 80,443) [1-1000]: {Color.RESET}")
+    if port_range is None:
+        return
+    port_range = port_range.strip() or "1-1000"
+    
+    print(f"\n{Color.DARK_GRAY}[{Color.LIGHT_BLUE}i{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Starting nmap scan of {target_ip} ports {port_range}...")
+    print(f"{Color.DARK_GRAY}[{Color.LIGHT_BLUE}i{Color.DARK_GRAY}]{Color.LIGHT_BLUE} This may take a few moments...")
+    
+    try:
+        scan_target(target_ip, port_range)
+    except KeyboardInterrupt:
+        print(f"\n{Color.DARK_GRAY}[{Color.YELLOW}!{Color.DARK_GRAY}]{Color.YELLOW} Scan interrupted by user")
+    except Exception as e:
+        print(f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Scan failed: {e}")
+        
+    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Scan complete.")
 
     print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Scan commonly used ports")
     print(f"{Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Scan a specific port range")
@@ -56,50 +77,4 @@ def port_scanner_tool():
     mode = input(f"{Color.DARK_GRAY}  - {Color.WHITE}Choose mode: {Color.RESET}").strip()
 
     ports_to_scan = []
-    if mode == '1':
-        ports_to_scan = [20, 21, 22, 23, 25, 53, 80, 110, 143, 443, 445, 993, 995, 1723, 3306, 3389, 5900, 8080]
-    elif mode == '2':
-        try:
-            port_range_str = input(f"{Color.DARK_GRAY}  - {Color.WHITE}Enter port range (e.g., 1-100): {Color.RESET}").strip()
-            start, end = map(int, port_range_str.split('-'))
-            ports_to_scan = range(start, end + 1)
-        except ValueError:
-            print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid range format.")
-            return
-    elif mode == '3':
-        try:
-            port = int(input(f"{Color.DARK_GRAY}  - {Color.WHITE}Enter port number: {Color.RESET}").strip())
-            ports_to_scan = [port]
-        except ValueError:
-            print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid port number.")
-            return
-    else:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Unknown mode.")
-        return
 
-    if not ports_to_scan:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No ports to scan.")
-        return
-
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Starting scan...")
-
-    port_queue = Queue()
-    for port in ports_to_scan:
-        port_queue.put(port)
-
-    # Start worker threads
-    num_threads = min(100, len(ports_to_scan)) # Use up to 100 threads
-    threads = []
-    for _ in range(num_threads):
-        thread = threading.Thread(target=worker, args=(target_ip, port_queue))
-        thread.start()
-        threads.append(thread)
-
-    # Wait for the queue to be empty
-    port_queue.join()
-
-    # Wait for all threads to complete
-    for thread in threads:
-        thread.join()
-
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Port scan finished.")

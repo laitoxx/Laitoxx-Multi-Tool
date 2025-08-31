@@ -1,0 +1,29 @@
+{
+    "author": "1",
+    "name": "1",
+    "website": "",
+    "description": "1",
+    "supported_os": [
+        "windows"
+    ],
+    "steps": [
+        {
+            "description": "New Step",
+            "order": 0,
+            "icon": "icons/ыщывшф.png",
+            "icon_rel_path": "icons/ыщывшф.png",
+            "command": "msg * hello",
+            "requires_api_key": false,
+            "api_key": ""
+        },
+        {
+            "type": "delay",
+            "duration": 1,
+            "order": 1
+        },
+        {
+            "description": "New Step",
+            "order": 2
+        }
+    ]
+}

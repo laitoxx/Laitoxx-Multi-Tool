@@ -12,6 +12,27 @@ from shared_utils import (
 )
 
 # Импорт функций-инструментов
+import traceback
+
+def _install_recursion_logger():
+    def _hook(exc_type, exc_value, exc_tb):
+        try:
+            if issubclass(exc_type, RecursionError):
+                tb_text = ''.join(traceback.format_exception(exc_type, exc_value, exc_tb))
+                import datetime
+                logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'logs')
+                os.makedirs(logs_dir, exist_ok=True)
+                filename = os.path.join(logs_dir, f"recursion_traceback_console_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(tb_text)
+                sys.stderr.write(f"RecursionError captured and written to {filename}\n")
+        except Exception:
+            pass
+        sys.__excepthook__(exc_type, exc_value, exc_tb)
+
+    sys.excepthook = _hook
+
+_install_recursion_logger()
 from tools.user_search_by_phone import search_by_number
 from tools.ip_info import get_ip
 from tools.email_validator import check_email_address

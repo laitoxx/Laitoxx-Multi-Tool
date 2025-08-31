@@ -17,3 +17,5 @@ torpy
 aiohttp-socks
 Faker
 fake-useragent
+pyqt6
+python-nmap

@@ -1,0 +1,63 @@
+2025-08-31 12:34:47,598 - INFO - Application starting...
+2025-08-31 12:34:48,205 - DEBUG - Starting new HTTPS connection (1): api.telegra.ph:443
+2025-08-31 12:34:48,511 - DEBUG - https://api.telegra.ph:443 "POST /createAccount/ HTTP/1.1" 200 213
+2025-08-31 12:34:52,702 - DEBUG - Not in REPL -> leaving logger event level as is.
+2025-08-31 12:34:52,720 - DEBUG - Looking for locale `en_US` in provider `faker.providers.address`.
+2025-08-31 12:34:52,731 - DEBUG - Provider `faker.providers.address` has been localized to `en_US`.
+2025-08-31 12:34:52,735 - DEBUG - Looking for locale `en_US` in provider `faker.providers.automotive`.
+2025-08-31 12:34:52,740 - DEBUG - Provider `faker.providers.automotive` has been localized to `en_US`.
+2025-08-31 12:34:52,743 - DEBUG - Looking for locale `en_US` in provider `faker.providers.bank`.
+2025-08-31 12:34:52,746 - DEBUG - Specified locale `en_US` is not available for provider `faker.providers.bank`. Locale reset to `en_GB` for this provider.
+2025-08-31 12:34:52,749 - DEBUG - Looking for locale `en_US` in provider `faker.providers.barcode`.
+2025-08-31 12:34:52,751 - DEBUG - Provider `faker.providers.barcode` has been localized to `en_US`.
+2025-08-31 12:34:52,755 - DEBUG - Looking for locale `en_US` in provider `faker.providers.color`.
+2025-08-31 12:34:52,759 - DEBUG - Provider `faker.providers.color` has been localized to `en_US`.
+2025-08-31 12:34:52,763 - DEBUG - Looking for locale `en_US` in provider `faker.providers.company`.
+2025-08-31 12:34:52,771 - DEBUG - Provider `faker.providers.company` has been localized to `en_US`.
+2025-08-31 12:34:52,774 - DEBUG - Looking for locale `en_US` in provider `faker.providers.credit_card`.
+2025-08-31 12:34:52,776 - DEBUG - Provider `faker.providers.credit_card` has been localized to `en_US`.
+2025-08-31 12:34:52,778 - DEBUG - Looking for locale `en_US` in provider `faker.providers.currency`.
+2025-08-31 12:34:52,783 - DEBUG - Provider `faker.providers.currency` has been localized to `en_US`.
+2025-08-31 12:34:52,785 - DEBUG - Looking for locale `en_US` in provider `faker.providers.date_time`.
+2025-08-31 12:34:52,790 - DEBUG - Provider `faker.providers.date_time` has been localized to `en_US`.
+2025-08-31 12:34:52,792 - DEBUG - Provider `faker.providers.doi` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-31 12:34:52,792 - DEBUG - Provider `faker.providers.emoji` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-31 12:34:52,792 - DEBUG - Provider `faker.providers.file` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-31 12:34:52,792 - DEBUG - Looking for locale `en_US` in provider `faker.providers.geo`.
+2025-08-31 12:34:52,794 - DEBUG - Provider `faker.providers.geo` has been localized to `en_US`.
+2025-08-31 12:34:52,795 - DEBUG - Looking for locale `en_US` in provider `faker.providers.internet`.
+2025-08-31 12:34:52,799 - DEBUG - Provider `faker.providers.internet` has been localized to `en_US`.
+2025-08-31 12:34:52,801 - DEBUG - Looking for locale `en_US` in provider `faker.providers.isbn`.
+2025-08-31 12:34:52,801 - DEBUG - Provider `faker.providers.isbn` has been localized to `en_US`.
+2025-08-31 12:34:52,803 - DEBUG - Looking for locale `en_US` in provider `faker.providers.job`.
+2025-08-31 12:34:52,807 - DEBUG - Provider `faker.providers.job` has been localized to `en_US`.
+2025-08-31 12:34:52,809 - DEBUG - Looking for locale `en_US` in provider `faker.providers.lorem`.
+2025-08-31 12:34:52,817 - DEBUG - Provider `faker.providers.lorem` has been localized to `en_US`.
+2025-08-31 12:34:52,818 - DEBUG - Looking for locale `en_US` in provider `faker.providers.misc`.
+2025-08-31 12:34:52,820 - DEBUG - Provider `faker.providers.misc` has been localized to `en_US`.
+2025-08-31 12:34:52,822 - DEBUG - Looking for locale `en_US` in provider `faker.providers.passport`.
+2025-08-31 12:34:52,824 - DEBUG - Provider `faker.providers.passport` has been localized to `en_US`.
+2025-08-31 12:34:52,828 - DEBUG - Looking for locale `en_US` in provider `faker.providers.person`.
+2025-08-31 12:34:52,839 - DEBUG - Provider `faker.providers.person` has been localized to `en_US`.
+2025-08-31 12:34:52,845 - DEBUG - Looking for locale `en_US` in provider `faker.providers.phone_number`.
+2025-08-31 12:34:52,858 - DEBUG - Provider `faker.providers.phone_number` has been localized to `en_US`.
+2025-08-31 12:34:52,862 - DEBUG - Provider `faker.providers.profile` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-31 12:34:52,862 - DEBUG - Provider `faker.providers.python` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-31 12:34:52,862 - DEBUG - Provider `faker.providers.sbn` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-31 12:34:52,863 - DEBUG - Looking for locale `en_US` in provider `faker.providers.ssn`.
+2025-08-31 12:34:52,871 - DEBUG - Provider `faker.providers.ssn` has been localized to `en_US`.
+2025-08-31 12:34:52,874 - DEBUG - Provider `faker.providers.user_agent` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-31 12:34:54,045 - INFO - MainWindow.__init__ started.
+2025-08-31 12:34:54,389 - INFO - MainWindow.__init__ finished.
+2025-08-31 12:37:42,890 - DEBUG - Starting new HTTPS connection (1): api.proxynova.com:443
+2025-08-31 12:37:44,794 - DEBUG - https://api.proxynova.com:443 "GET /comb?query=79200069145&start=0&limit=100 HTTP/1.1" 200 None
+2025-08-31 12:37:44,796 - DEBUG - Starting new HTTPS connection (1): api.usersbox.ru:443
+2025-08-31 12:37:44,994 - DEBUG - https://api.usersbox.ru:443 "GET /v1/explain?q=%2B79200069145 HTTP/1.1" 401 None
+2025-08-31 12:37:44,999 - DEBUG - Starting new HTTPS connection (1): find.vk.com:443
+2025-08-31 12:37:45,154 - DEBUG - https://find.vk.com:443 "GET /phone/+79200069145 HTTP/1.1" 301 0
+2025-08-31 12:37:45,155 - DEBUG - Starting new HTTPS connection (1): vk.com:443
+2025-08-31 12:37:45,319 - DEBUG - https://vk.com:443 "GET /phone/+79200069145 HTTP/1.1" 404 None
+2025-08-31 12:37:45,323 - DEBUG - Starting new HTTPS connection (1): www.avito.ru:443
+2025-08-31 12:37:45,708 - DEBUG - https://www.avito.ru:443 "HEAD /rossiya/telefony?q=+79200069145 HTTP/1.1" 301 0
+2025-08-31 12:37:45,713 - DEBUG - Starting new HTTPS connection (1): www.google.com:443
+2025-08-31 12:37:45,843 - DEBUG - https://www.google.com:443 "GET /search?q=%22+79200069145%22 HTTP/1.1" 200 None
