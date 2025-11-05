@@ -1,0 +1,59 @@
+2025-10-31 10:38:57,989 - INFO - Application starting...
+2025-10-31 10:38:59,100 - DEBUG - Starting new HTTPS connection (1): api.telegra.ph:443
+2025-10-31 10:39:01,775 - DEBUG - https://api.telegra.ph:443 "POST /createAccount/ HTTP/1.1" 200 216
+2025-10-31 10:39:06,433 - DEBUG - Not in REPL -> leaving logger event level as is.
+2025-10-31 10:39:06,469 - DEBUG - Looking for locale `en_US` in provider `faker.providers.address`.
+2025-10-31 10:39:06,474 - DEBUG - Provider `faker.providers.address` has been localized to `en_US`.
+2025-10-31 10:39:06,483 - DEBUG - Looking for locale `en_US` in provider `faker.providers.automotive`.
+2025-10-31 10:39:06,490 - DEBUG - Provider `faker.providers.automotive` has been localized to `en_US`.
+2025-10-31 10:39:06,495 - DEBUG - Looking for locale `en_US` in provider `faker.providers.bank`.
+2025-10-31 10:39:06,499 - DEBUG - Specified locale `en_US` is not available for provider `faker.providers.bank`. Locale reset to `en_GB` for this provider.
+2025-10-31 10:39:06,505 - DEBUG - Looking for locale `en_US` in provider `faker.providers.barcode`.
+2025-10-31 10:39:06,507 - DEBUG - Provider `faker.providers.barcode` has been localized to `en_US`.
+2025-10-31 10:39:06,513 - DEBUG - Looking for locale `en_US` in provider `faker.providers.color`.
+2025-10-31 10:39:06,518 - DEBUG - Provider `faker.providers.color` has been localized to `en_US`.
+2025-10-31 10:39:06,523 - DEBUG - Looking for locale `en_US` in provider `faker.providers.company`.
+2025-10-31 10:39:06,526 - DEBUG - Provider `faker.providers.company` has been localized to `en_US`.
+2025-10-31 10:39:06,531 - DEBUG - Looking for locale `en_US` in provider `faker.providers.credit_card`.
+2025-10-31 10:39:06,533 - DEBUG - Provider `faker.providers.credit_card` has been localized to `en_US`.
+2025-10-31 10:39:06,539 - DEBUG - Looking for locale `en_US` in provider `faker.providers.currency`.
+2025-10-31 10:39:06,542 - DEBUG - Provider `faker.providers.currency` has been localized to `en_US`.
+2025-10-31 10:39:06,547 - DEBUG - Looking for locale `en_US` in provider `faker.providers.date_time`.
+2025-10-31 10:39:06,558 - DEBUG - Provider `faker.providers.date_time` has been localized to `en_US`.
+2025-10-31 10:39:06,567 - DEBUG - Provider `faker.providers.doi` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:39:06,567 - DEBUG - Provider `faker.providers.emoji` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:39:06,568 - DEBUG - Provider `faker.providers.file` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:39:06,568 - DEBUG - Looking for locale `en_US` in provider `faker.providers.geo`.
+2025-10-31 10:39:06,571 - DEBUG - Provider `faker.providers.geo` has been localized to `en_US`.
+2025-10-31 10:39:06,582 - DEBUG - Looking for locale `en_US` in provider `faker.providers.internet`.
+2025-10-31 10:39:06,589 - DEBUG - Provider `faker.providers.internet` has been localized to `en_US`.
+2025-10-31 10:39:06,597 - DEBUG - Looking for locale `en_US` in provider `faker.providers.isbn`.
+2025-10-31 10:39:06,598 - DEBUG - Provider `faker.providers.isbn` has been localized to `en_US`.
+2025-10-31 10:39:06,604 - DEBUG - Looking for locale `en_US` in provider `faker.providers.job`.
+2025-10-31 10:39:06,610 - DEBUG - Provider `faker.providers.job` has been localized to `en_US`.
+2025-10-31 10:39:06,615 - DEBUG - Looking for locale `en_US` in provider `faker.providers.lorem`.
+2025-10-31 10:39:06,622 - DEBUG - Provider `faker.providers.lorem` has been localized to `en_US`.
+2025-10-31 10:39:06,622 - DEBUG - Looking for locale `en_US` in provider `faker.providers.misc`.
+2025-10-31 10:39:06,623 - DEBUG - Provider `faker.providers.misc` has been localized to `en_US`.
+2025-10-31 10:39:06,630 - DEBUG - Looking for locale `en_US` in provider `faker.providers.passport`.
+2025-10-31 10:39:06,632 - DEBUG - Provider `faker.providers.passport` has been localized to `en_US`.
+2025-10-31 10:39:06,637 - DEBUG - Looking for locale `en_US` in provider `faker.providers.person`.
+2025-10-31 10:39:06,651 - DEBUG - Provider `faker.providers.person` has been localized to `en_US`.
+2025-10-31 10:39:06,660 - DEBUG - Looking for locale `en_US` in provider `faker.providers.phone_number`.
+2025-10-31 10:39:06,673 - DEBUG - Provider `faker.providers.phone_number` has been localized to `en_US`.
+2025-10-31 10:39:06,679 - DEBUG - Provider `faker.providers.profile` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:39:06,679 - DEBUG - Provider `faker.providers.python` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:39:06,680 - DEBUG - Provider `faker.providers.sbn` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:39:06,680 - DEBUG - Looking for locale `en_US` in provider `faker.providers.ssn`.
+2025-10-31 10:39:06,689 - DEBUG - Provider `faker.providers.ssn` has been localized to `en_US`.
+2025-10-31 10:39:06,695 - DEBUG - Provider `faker.providers.user_agent` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:39:08,764 - INFO - MainWindow.__init__ started.
+2025-10-31 10:39:08,947 - INFO - MainWindow.__init__ finished.
+2025-10-31 10:39:25,210 - DEBUG - Starting new HTTPS connection (1): www.1secmail.com:443
+2025-10-31 10:39:31,985 - DEBUG - https://www.1secmail.com:443 "GET /api/v1/?action=getDomainList HTTP/1.1" 403 None
+2025-10-31 10:39:31,989 - DEBUG - Starting new HTTPS connection (1): www.1secmail.com:443
+2025-10-31 10:39:35,874 - DEBUG - https://www.1secmail.com:443 "GET /api/v1/?action=getMessages&login=idk1488&domain=1secmail.com HTTP/1.1" 403 None
+2025-10-31 10:39:40,875 - DEBUG - Starting new HTTPS connection (1): www.1secmail.com:443
+2025-10-31 10:39:42,837 - DEBUG - https://www.1secmail.com:443 "GET /api/v1/?action=getMessages&login=idk1488&domain=1secmail.com HTTP/1.1" 403 None
+2025-10-31 10:39:47,839 - DEBUG - Starting new HTTPS connection (1): www.1secmail.com:443
+2025-10-31 10:39:51,130 - DEBUG - https://www.1secmail.com:443 "GET /api/v1/?action=getMessages&login=idk1488&domain=1secmail.com HTTP/1.1" 403 None

@@ -1,0 +1,15 @@
+{
+    "button_bg_color": "rgba(134, 2, 52, 0.1)",
+    "button_hover_bg_color": "rgba(255, 85, 255, 0.2)",
+    "button_pressed_bg_color": "rgba(255, 0, 191, 0.3)",
+    "button_border_color": "rgba(238, 0, 255, 0.2)",
+    "button_text_color": "#bf1f7a",
+    "text_area_bg_color": "rgba(63, 31, 47, 0.5)",
+    "text_area_border_color": "rgba(255, 170, 255, 0.2)",
+    "text_area_text_color": "#ffaaff",
+    "sidebar_bg_color": "rgba(13, 6, 10, 0.2)",
+    "title_text_color": "#aa55ff",
+    "scrollbar_handle_color": "rgba(85, 0, 127, 0.4)",
+    "scrollbar_handle_hover_color": "rgba(170, 85, 255, 0.6)",
+    "glass_widget_bg_color": "rgba(170, 85, 255, 0.3)"
+}

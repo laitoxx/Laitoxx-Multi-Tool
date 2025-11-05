@@ -1,0 +1,57 @@
+2025-10-29 16:55:26,729 - INFO - Application starting...
+2025-10-29 16:55:27,101 - DEBUG - Starting new HTTPS connection (1): api.telegra.ph:443
+2025-10-29 16:55:29,729 - DEBUG - https://api.telegra.ph:443 "POST /createAccount/ HTTP/1.1" 200 214
+2025-10-29 16:55:30,744 - DEBUG - Not in REPL -> leaving logger event level as is.
+2025-10-29 16:55:30,748 - DEBUG - Looking for locale `en_US` in provider `faker.providers.address`.
+2025-10-29 16:55:30,752 - DEBUG - Provider `faker.providers.address` has been localized to `en_US`.
+2025-10-29 16:55:30,754 - DEBUG - Looking for locale `en_US` in provider `faker.providers.automotive`.
+2025-10-29 16:55:30,758 - DEBUG - Provider `faker.providers.automotive` has been localized to `en_US`.
+2025-10-29 16:55:30,759 - DEBUG - Looking for locale `en_US` in provider `faker.providers.bank`.
+2025-10-29 16:55:30,763 - DEBUG - Specified locale `en_US` is not available for provider `faker.providers.bank`. Locale reset to `en_GB` for this provider.
+2025-10-29 16:55:30,763 - DEBUG - Looking for locale `en_US` in provider `faker.providers.barcode`.
+2025-10-29 16:55:30,764 - DEBUG - Provider `faker.providers.barcode` has been localized to `en_US`.
+2025-10-29 16:55:30,766 - DEBUG - Looking for locale `en_US` in provider `faker.providers.color`.
+2025-10-29 16:55:30,768 - DEBUG - Provider `faker.providers.color` has been localized to `en_US`.
+2025-10-29 16:55:30,769 - DEBUG - Looking for locale `en_US` in provider `faker.providers.company`.
+2025-10-29 16:55:30,774 - DEBUG - Provider `faker.providers.company` has been localized to `en_US`.
+2025-10-29 16:55:30,775 - DEBUG - Looking for locale `en_US` in provider `faker.providers.credit_card`.
+2025-10-29 16:55:30,776 - DEBUG - Provider `faker.providers.credit_card` has been localized to `en_US`.
+2025-10-29 16:55:30,777 - DEBUG - Looking for locale `en_US` in provider `faker.providers.currency`.
+2025-10-29 16:55:30,780 - DEBUG - Provider `faker.providers.currency` has been localized to `en_US`.
+2025-10-29 16:55:30,781 - DEBUG - Looking for locale `en_US` in provider `faker.providers.date_time`.
+2025-10-29 16:55:30,785 - DEBUG - Provider `faker.providers.date_time` has been localized to `en_US`.
+2025-10-29 16:55:30,786 - DEBUG - Provider `faker.providers.doi` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-29 16:55:30,786 - DEBUG - Provider `faker.providers.emoji` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-29 16:55:30,787 - DEBUG - Provider `faker.providers.file` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-29 16:55:30,787 - DEBUG - Looking for locale `en_US` in provider `faker.providers.geo`.
+2025-10-29 16:55:30,788 - DEBUG - Provider `faker.providers.geo` has been localized to `en_US`.
+2025-10-29 16:55:30,789 - DEBUG - Looking for locale `en_US` in provider `faker.providers.internet`.
+2025-10-29 16:55:30,792 - DEBUG - Provider `faker.providers.internet` has been localized to `en_US`.
+2025-10-29 16:55:30,793 - DEBUG - Looking for locale `en_US` in provider `faker.providers.isbn`.
+2025-10-29 16:55:30,794 - DEBUG - Provider `faker.providers.isbn` has been localized to `en_US`.
+2025-10-29 16:55:30,794 - DEBUG - Looking for locale `en_US` in provider `faker.providers.job`.
+2025-10-29 16:55:30,797 - DEBUG - Provider `faker.providers.job` has been localized to `en_US`.
+2025-10-29 16:55:30,798 - DEBUG - Looking for locale `en_US` in provider `faker.providers.lorem`.
+2025-10-29 16:55:30,800 - DEBUG - Provider `faker.providers.lorem` has been localized to `en_US`.
+2025-10-29 16:55:30,801 - DEBUG - Looking for locale `en_US` in provider `faker.providers.misc`.
+2025-10-29 16:55:30,801 - DEBUG - Provider `faker.providers.misc` has been localized to `en_US`.
+2025-10-29 16:55:30,802 - DEBUG - Looking for locale `en_US` in provider `faker.providers.passport`.
+2025-10-29 16:55:30,803 - DEBUG - Provider `faker.providers.passport` has been localized to `en_US`.
+2025-10-29 16:55:30,804 - DEBUG - Looking for locale `en_US` in provider `faker.providers.person`.
+2025-10-29 16:55:30,809 - DEBUG - Provider `faker.providers.person` has been localized to `en_US`.
+2025-10-29 16:55:30,812 - DEBUG - Looking for locale `en_US` in provider `faker.providers.phone_number`.
+2025-10-29 16:55:30,817 - DEBUG - Provider `faker.providers.phone_number` has been localized to `en_US`.
+2025-10-29 16:55:30,818 - DEBUG - Provider `faker.providers.profile` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-29 16:55:30,819 - DEBUG - Provider `faker.providers.python` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-29 16:55:30,819 - DEBUG - Provider `faker.providers.sbn` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-29 16:55:30,819 - DEBUG - Looking for locale `en_US` in provider `faker.providers.ssn`.
+2025-10-29 16:55:30,822 - DEBUG - Provider `faker.providers.ssn` has been localized to `en_US`.
+2025-10-29 16:55:30,823 - DEBUG - Provider `faker.providers.user_agent` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-29 16:55:31,264 - INFO - MainWindow.__init__ started.
+2025-10-29 16:55:31,393 - INFO - MainWindow.__init__ finished.
+2025-10-29 16:56:16,496 - DEBUG - Starting new HTTP connection (1): google.com:80
+2025-10-29 16:56:19,485 - DEBUG - http://google.com:80 "GET / HTTP/1.1" 301 0
+2025-10-29 16:56:19,486 - DEBUG - Starting new HTTPS connection (1): google.com:443
+2025-10-29 16:56:20,525 - DEBUG - https://google.com:443 "GET / HTTP/1.1" 301 220
+2025-10-29 16:56:20,526 - DEBUG - Starting new HTTPS connection (1): www.google.com:443
+2025-10-29 16:56:22,113 - DEBUG - https://www.google.com:443 "GET / HTTP/1.1" 200 None

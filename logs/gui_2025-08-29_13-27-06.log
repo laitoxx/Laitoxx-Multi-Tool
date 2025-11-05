@@ -1,0 +1,102 @@
+2025-08-29 13:27:06,739 - INFO - Application starting...
+2025-08-29 13:27:07,142 - DEBUG - Starting new HTTPS connection (1): api.telegra.ph:443
+2025-08-29 13:27:07,382 - DEBUG - https://api.telegra.ph:443 "POST /createAccount/ HTTP/1.1" 200 214
+2025-08-29 13:27:08,375 - DEBUG - Not in REPL -> leaving logger event level as is.
+2025-08-29 13:27:08,382 - DEBUG - Looking for locale `en_US` in provider `faker.providers.address`.
+2025-08-29 13:27:08,388 - DEBUG - Provider `faker.providers.address` has been localized to `en_US`.
+2025-08-29 13:27:08,390 - DEBUG - Looking for locale `en_US` in provider `faker.providers.automotive`.
+2025-08-29 13:27:08,396 - DEBUG - Provider `faker.providers.automotive` has been localized to `en_US`.
+2025-08-29 13:27:08,397 - DEBUG - Looking for locale `en_US` in provider `faker.providers.bank`.
+2025-08-29 13:27:08,400 - DEBUG - Specified locale `en_US` is not available for provider `faker.providers.bank`. Locale reset to `en_GB` for this provider.
+2025-08-29 13:27:08,401 - DEBUG - Looking for locale `en_US` in provider `faker.providers.barcode`.
+2025-08-29 13:27:08,402 - DEBUG - Provider `faker.providers.barcode` has been localized to `en_US`.
+2025-08-29 13:27:08,404 - DEBUG - Looking for locale `en_US` in provider `faker.providers.color`.
+2025-08-29 13:27:08,406 - DEBUG - Provider `faker.providers.color` has been localized to `en_US`.
+2025-08-29 13:27:08,408 - DEBUG - Looking for locale `en_US` in provider `faker.providers.company`.
+2025-08-29 13:27:08,412 - DEBUG - Provider `faker.providers.company` has been localized to `en_US`.
+2025-08-29 13:27:08,414 - DEBUG - Looking for locale `en_US` in provider `faker.providers.credit_card`.
+2025-08-29 13:27:08,415 - DEBUG - Provider `faker.providers.credit_card` has been localized to `en_US`.
+2025-08-29 13:27:08,416 - DEBUG - Looking for locale `en_US` in provider `faker.providers.currency`.
+2025-08-29 13:27:08,419 - DEBUG - Provider `faker.providers.currency` has been localized to `en_US`.
+2025-08-29 13:27:08,419 - DEBUG - Looking for locale `en_US` in provider `faker.providers.date_time`.
+2025-08-29 13:27:08,424 - DEBUG - Provider `faker.providers.date_time` has been localized to `en_US`.
+2025-08-29 13:27:08,425 - DEBUG - Provider `faker.providers.doi` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-29 13:27:08,425 - DEBUG - Provider `faker.providers.emoji` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-29 13:27:08,426 - DEBUG - Provider `faker.providers.file` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-29 13:27:08,426 - DEBUG - Looking for locale `en_US` in provider `faker.providers.geo`.
+2025-08-29 13:27:08,427 - DEBUG - Provider `faker.providers.geo` has been localized to `en_US`.
+2025-08-29 13:27:08,428 - DEBUG - Looking for locale `en_US` in provider `faker.providers.internet`.
+2025-08-29 13:27:08,432 - DEBUG - Provider `faker.providers.internet` has been localized to `en_US`.
+2025-08-29 13:27:08,434 - DEBUG - Looking for locale `en_US` in provider `faker.providers.isbn`.
+2025-08-29 13:27:08,434 - DEBUG - Provider `faker.providers.isbn` has been localized to `en_US`.
+2025-08-29 13:27:08,436 - DEBUG - Looking for locale `en_US` in provider `faker.providers.job`.
+2025-08-29 13:27:08,439 - DEBUG - Provider `faker.providers.job` has been localized to `en_US`.
+2025-08-29 13:27:08,441 - DEBUG - Looking for locale `en_US` in provider `faker.providers.lorem`.
+2025-08-29 13:27:08,443 - DEBUG - Provider `faker.providers.lorem` has been localized to `en_US`.
+2025-08-29 13:27:08,444 - DEBUG - Looking for locale `en_US` in provider `faker.providers.misc`.
+2025-08-29 13:27:08,444 - DEBUG - Provider `faker.providers.misc` has been localized to `en_US`.
+2025-08-29 13:27:08,446 - DEBUG - Looking for locale `en_US` in provider `faker.providers.passport`.
+2025-08-29 13:27:08,447 - DEBUG - Provider `faker.providers.passport` has been localized to `en_US`.
+2025-08-29 13:27:08,448 - DEBUG - Looking for locale `en_US` in provider `faker.providers.person`.
+2025-08-29 13:27:08,453 - DEBUG - Provider `faker.providers.person` has been localized to `en_US`.
+2025-08-29 13:27:08,456 - DEBUG - Looking for locale `en_US` in provider `faker.providers.phone_number`.
+2025-08-29 13:27:08,463 - DEBUG - Provider `faker.providers.phone_number` has been localized to `en_US`.
+2025-08-29 13:27:08,464 - DEBUG - Provider `faker.providers.profile` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-29 13:27:08,465 - DEBUG - Provider `faker.providers.python` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-29 13:27:08,465 - DEBUG - Provider `faker.providers.sbn` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-29 13:27:08,465 - DEBUG - Looking for locale `en_US` in provider `faker.providers.ssn`.
+2025-08-29 13:27:08,469 - DEBUG - Provider `faker.providers.ssn` has been localized to `en_US`.
+2025-08-29 13:27:08,470 - DEBUG - Provider `faker.providers.user_agent` does not feature localization. Specified locale `en_US` is not utilized for this provider.
+2025-08-29 13:27:08,784 - INFO - MainWindow.__init__ started.
+2025-08-29 13:27:08,840 - INFO - MainWindow.__init__ finished.
+2025-08-29 13:27:16,322 - DEBUG - Starting new HTTPS connection (1): www.instagram.com:443
+2025-08-29 13:27:16,323 - DEBUG - Starting new HTTPS connection (1): twitter.com:443
+2025-08-29 13:27:16,323 - DEBUG - Starting new HTTPS connection (1): www.facebook.com:443
+2025-08-29 13:27:16,323 - DEBUG - Starting new HTTPS connection (1): t.me:443
+2025-08-29 13:27:16,324 - DEBUG - Starting new HTTPS connection (1): www.youtube.com:443
+2025-08-29 13:27:16,324 - DEBUG - Starting new HTTPS connection (1): www.reddit.com:443
+2025-08-29 13:27:16,325 - DEBUG - Starting new HTTPS connection (1): www.roblox.com:443
+2025-08-29 13:27:16,327 - DEBUG - Starting new HTTPS connection (1): vk.com:443
+2025-08-29 13:27:16,328 - DEBUG - Starting new HTTPS connection (1): www.pinterest.com:443
+2025-08-29 13:27:16,328 - DEBUG - Starting new HTTPS connection (1): www.tiktok.com:443
+2025-08-29 13:27:16,328 - DEBUG - Starting new HTTPS connection (1): github.com:443
+2025-08-29 13:27:16,328 - DEBUG - Starting new HTTPS connection (1): www.twitch.tv:443
+2025-08-29 13:27:16,329 - DEBUG - Starting new HTTPS connection (1): www.linkedin.com:443
+2025-08-29 13:27:16,329 - DEBUG - Starting new HTTPS connection (1): www.snapchat.com:443
+2025-08-29 13:27:16,330 - DEBUG - Starting new HTTPS connection (1): flickr.com:443
+2025-08-29 13:27:16,331 - DEBUG - Starting new HTTPS connection (1): vimeo.com:443
+2025-08-29 13:27:16,332 - DEBUG - Starting new HTTPS connection (1): soundcloud.com:443
+2025-08-29 13:27:16,332 - DEBUG - Starting new HTTPS connection (1): medium.com:443
+2025-08-29 13:27:16,332 - DEBUG - Starting new HTTPS connection (1): www.patreon.com:443
+2025-08-29 13:27:16,332 - DEBUG - Starting new HTTPS connection (1): open.spotify.com:443
+2025-08-29 13:27:16,568 - DEBUG - https://t.me:443 "GET /mikromark HTTP/1.1" 200 4087
+2025-08-29 13:27:16,572 - DEBUG - Starting new HTTPS connection (1): steamcommunity.com:443
+2025-08-29 13:27:16,592 - DEBUG - https://www.twitch.tv:443 "GET /mikromark HTTP/1.1" 200 None
+2025-08-29 13:27:16,661 - DEBUG - Starting new HTTPS connection (1): mikromark.tumblr.com:443
+2025-08-29 13:27:16,718 - DEBUG - Starting new HTTPS connection (1): mikromark.wordpress.com:443
+2025-08-29 13:27:16,748 - DEBUG - https://github.com:443 "GET /mikromark HTTP/1.1" 404 9
+2025-08-29 13:27:16,751 - DEBUG - Starting new HTTPS connection (1): mikromark.deviantart.com:443
+2025-08-29 13:27:16,767 - DEBUG - https://open.spotify.com:443 "GET /user/mikromark HTTP/1.1" 302 None
+2025-08-29 13:27:16,769 - DEBUG - https://vk.com:443 "GET /mikromark HTTP/1.1" 200 73280
+2025-08-29 13:27:16,771 - DEBUG - Starting new HTTPS connection (1): accounts.spotify.com:443
+2025-08-29 13:27:16,816 - DEBUG - Starting new HTTPS connection (1): pastebin.com:443
+2025-08-29 13:27:16,816 - DEBUG - Starting new HTTPS connection (1): keybase.io:443
+2025-08-29 13:27:16,911 - DEBUG - https://vimeo.com:443 "GET /mikromark HTTP/1.1" 404 None
+2025-08-29 13:27:16,926 - DEBUG - Starting new HTTPS connection (1): www.behance.net:443
+2025-08-29 13:27:16,926 - DEBUG - Starting new HTTPS connection (1): bandcamp.com:443
+2025-08-29 13:27:16,926 - DEBUG - Starting new HTTPS connection (1): dribbble.com:443
+2025-08-29 13:27:17,017 - DEBUG - https://accounts.spotify.com:443 "GET /login?continue=https%3A%2F%2Fopen.spotify.com%2Fuser%2Fmikromark HTTP/1.1" 301 None
+2025-08-29 13:27:17,020 - DEBUG - Starting new HTTPS connection (1): www.spotify.com:443
+2025-08-29 13:27:17,060 - DEBUG - https://steamcommunity.com:443 "GET /id/mikromark HTTP/1.1" 200 5926
+2025-08-29 13:27:17,099 - DEBUG - https://www.tiktok.com:443 "GET /@mikromark HTTP/1.1" 200 None
+2025-08-29 13:27:17,146 - DEBUG - https://pastebin.com:443 "GET /u/mikromark HTTP/1.1" 404 None
+2025-08-29 13:27:17,155 - DEBUG - https://mikromark.wordpress.com:443 "GET / HTTP/1.1" 302 None
+2025-08-29 13:27:17,157 - DEBUG - Starting new HTTPS connection (1): wordpress.com:443
+2025-08-29 13:27:17,262 - DEBUG - https://www.spotify.com:443 "GET /int/why-not-available/ HTTP/1.1" 200 None
+2025-08-29 13:27:17,270 - DEBUG - https://dribbble.com:443 "GET /mikromark HTTP/1.1" 404 None
+2025-08-29 13:27:17,272 - DEBUG - https://mikromark.tumblr.com:443 "GET / HTTP/1.1" 404 None
+2025-08-29 13:27:17,437 - DEBUG - https://www.behance.net:443 "GET /mikromark HTTP/1.1" 404 None
+2025-08-29 13:27:17,446 - DEBUG - https://keybase.io:443 "GET /mikromark HTTP/1.1" 404 None
+2025-08-29 13:27:17,620 - DEBUG - https://wordpress.com:443 "GET /typo/?subdomain=mikromark HTTP/1.1" 200 None
+2025-08-29 13:27:17,731 - DEBUG - https://bandcamp.com:443 "GET /mikromark HTTP/1.1" 404 None
+2025-08-29 13:27:19,419 - DEBUG - https://flickr.com:443 "GET /people/mikromark HTTP/1.1" 404 None

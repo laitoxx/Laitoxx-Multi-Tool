@@ -1,0 +1,12 @@
+{
+    "button_bg_color": "rgba(255, 0, 0, 0.1)",
+    "button_hover_bg_color": "rgba(255, 0, 0, 0.2)",
+    "button_pressed_bg_color": "rgba(255, 0, 0, 0.3)",
+    "button_border_color": "rgba(255, 255, 255, 0.2)",
+    "button_text_color": "white",
+    "text_area_bg_color": "rgba(0, 0, 0, 0.5)",
+    "text_area_border_color": "rgba(255, 255, 255, 0.2)",
+    "text_area_text_color": "white",
+    "glass_widget_bg_color": "rgba(0, 0, 0, 0.3)",
+    "sidebar_bg_color": "rgba(0, 0, 0, 0.2)"
+}

@@ -1,0 +1,59 @@
+2025-10-31 10:46:24,175 - INFO - Application starting...
+2025-10-31 10:46:24,568 - DEBUG - Starting new HTTPS connection (1): api.telegra.ph:443
+2025-10-31 10:46:27,426 - DEBUG - https://api.telegra.ph:443 "POST /createAccount/ HTTP/1.1" 200 215
+2025-10-31 10:46:28,499 - DEBUG - Not in REPL -> leaving logger event level as is.
+2025-10-31 10:46:28,503 - DEBUG - Looking for locale `en_US` in provider `faker.providers.address`.
+2025-10-31 10:46:28,507 - DEBUG - Provider `faker.providers.address` has been localized to `en_US`.
+2025-10-31 10:46:28,509 - DEBUG - Looking for locale `en_US` in provider `faker.providers.automotive`.
+2025-10-31 10:46:28,515 - DEBUG - Provider `faker.providers.automotive` has been localized to `en_US`.
+2025-10-31 10:46:28,516 - DEBUG - Looking for locale `en_US` in provider `faker.providers.bank`.
+2025-10-31 10:46:28,520 - DEBUG - Specified locale `en_US` is not available for provider `faker.providers.bank`. Locale reset to `en_GB` for this provider.
+2025-10-31 10:46:28,521 - DEBUG - Looking for locale `en_US` in provider `faker.providers.barcode`.
+2025-10-31 10:46:28,522 - DEBUG - Provider `faker.providers.barcode` has been localized to `en_US`.
+2025-10-31 10:46:28,523 - DEBUG - Looking for locale `en_US` in provider `faker.providers.color`.
+2025-10-31 10:46:28,527 - DEBUG - Provider `faker.providers.color` has been localized to `en_US`.
+2025-10-31 10:46:28,528 - DEBUG - Looking for locale `en_US` in provider `faker.providers.company`.
+2025-10-31 10:46:28,531 - DEBUG - Provider `faker.providers.company` has been localized to `en_US`.
+2025-10-31 10:46:28,532 - DEBUG - Looking for locale `en_US` in provider `faker.providers.credit_card`.
+2025-10-31 10:46:28,534 - DEBUG - Provider `faker.providers.credit_card` has been localized to `en_US`.
+2025-10-31 10:46:28,534 - DEBUG - Looking for locale `en_US` in provider `faker.providers.currency`.
+2025-10-31 10:46:28,537 - DEBUG - Provider `faker.providers.currency` has been localized to `en_US`.
+2025-10-31 10:46:28,539 - DEBUG - Looking for locale `en_US` in provider `faker.providers.date_time`.
+2025-10-31 10:46:28,543 - DEBUG - Provider `faker.providers.date_time` has been localized to `en_US`.
+2025-10-31 10:46:28,544 - DEBUG - Provider `faker.providers.doi` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:46:28,544 - DEBUG - Provider `faker.providers.emoji` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:46:28,545 - DEBUG - Provider `faker.providers.file` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:46:28,545 - DEBUG - Looking for locale `en_US` in provider `faker.providers.geo`.
+2025-10-31 10:46:28,547 - DEBUG - Provider `faker.providers.geo` has been localized to `en_US`.
+2025-10-31 10:46:28,549 - DEBUG - Looking for locale `en_US` in provider `faker.providers.internet`.
+2025-10-31 10:46:28,554 - DEBUG - Provider `faker.providers.internet` has been localized to `en_US`.
+2025-10-31 10:46:28,555 - DEBUG - Looking for locale `en_US` in provider `faker.providers.isbn`.
+2025-10-31 10:46:28,555 - DEBUG - Provider `faker.providers.isbn` has been localized to `en_US`.
+2025-10-31 10:46:28,556 - DEBUG - Looking for locale `en_US` in provider `faker.providers.job`.
+2025-10-31 10:46:28,559 - DEBUG - Provider `faker.providers.job` has been localized to `en_US`.
+2025-10-31 10:46:28,560 - DEBUG - Looking for locale `en_US` in provider `faker.providers.lorem`.
+2025-10-31 10:46:28,563 - DEBUG - Provider `faker.providers.lorem` has been localized to `en_US`.
+2025-10-31 10:46:28,563 - DEBUG - Looking for locale `en_US` in provider `faker.providers.misc`.
+2025-10-31 10:46:28,564 - DEBUG - Provider `faker.providers.misc` has been localized to `en_US`.
+2025-10-31 10:46:28,565 - DEBUG - Looking for locale `en_US` in provider `faker.providers.passport`.
+2025-10-31 10:46:28,566 - DEBUG - Provider `faker.providers.passport` has been localized to `en_US`.
+2025-10-31 10:46:28,568 - DEBUG - Looking for locale `en_US` in provider `faker.providers.person`.
+2025-10-31 10:46:28,573 - DEBUG - Provider `faker.providers.person` has been localized to `en_US`.
+2025-10-31 10:46:28,576 - DEBUG - Looking for locale `en_US` in provider `faker.providers.phone_number`.
+2025-10-31 10:46:28,581 - DEBUG - Provider `faker.providers.phone_number` has been localized to `en_US`.
+2025-10-31 10:46:28,583 - DEBUG - Provider `faker.providers.profile` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:46:28,583 - DEBUG - Provider `faker.providers.python` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:46:28,583 - DEBUG - Provider `faker.providers.sbn` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:46:28,583 - DEBUG - Looking for locale `en_US` in provider `faker.providers.ssn`.
+2025-10-31 10:46:28,587 - DEBUG - Provider `faker.providers.ssn` has been localized to `en_US`.
+2025-10-31 10:46:28,588 - DEBUG - Provider `faker.providers.user_agent` does not feature localization. Specified locale `en_US` is not used for this provider.
+2025-10-31 10:46:29,035 - INFO - MainWindow.__init__ started.
+2025-10-31 10:46:29,124 - INFO - MainWindow.__init__ finished.
+2025-10-31 10:46:33,667 - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2025-10-31 10:46:44,712 - DEBUG - https://api.telegram.org:443 "GET /bot7639964910:AAELas3bPugpvtxiUpVDIIZnGc_KQ31TVPE/deleteWebhook HTTP/1.1" 200 68
+2025-10-31 10:46:45,685 - DEBUG - https://api.telegram.org:443 "GET /bot7639964910:AAELas3bPugpvtxiUpVDIIZnGc_KQ31TVPE/getMe HTTP/1.1" 200 251
+2025-10-31 10:46:46,154 - DEBUG - https://api.telegram.org:443 "GET /bot7639964910:AAELas3bPugpvtxiUpVDIIZnGc_KQ31TVPE/getMe HTTP/1.1" 200 251
+2025-10-31 10:46:54,674 - DEBUG - https://api.telegram.org:443 "GET /bot7639964910:AAELas3bPugpvtxiUpVDIIZnGc_KQ31TVPE/getUpdates?offset=1&timeout=20 HTTP/1.1" 200 365
+2025-10-31 10:46:55,179 - DEBUG - https://api.telegram.org:443 "POST /bot7639964910:AAELas3bPugpvtxiUpVDIIZnGc_KQ31TVPE/sendMessage?chat_id=6906693316&text=%F0%9F%91%8B+Welcome%21+Please+verify+your+identity+to+begin.&reply_markup=%7B%22inline_keyboard%22%3A+%5B%5B%7B%22text%22%3A+%22%5Cu2705+Verify+Identity%22%2C+%22callback_data%22%3A+%22verify%22%7D%5D%5D%7D HTTP/1.1" 200 402
+2025-10-31 10:47:01,232 - DEBUG - https://api.telegram.org:443 "GET /bot7639964910:AAELas3bPugpvtxiUpVDIIZnGc_KQ31TVPE/getUpdates?offset=502488250&timeout=20 HTTP/1.1" 200 648
+2025-10-31 10:47:03,164 - DEBUG - https://api.telegram.org:443 "POST /bot7639964910:AAELas3bPugpvtxiUpVDIIZnGc_KQ31TVPE/sendMessage?chat_id=6906693316&text=To+verify%2C+please+share+your+contact+information+by+pressing+the+button+below.&reply_markup=%7B%22keyboard%22%3A+%5B%5B%7B%22text%22%3A+%22%5Cud83d%5Cudcf1+Share+Contact+to+Verify%22%2C+%22request_contact%22%3A+true%7D%5D%5D%2C+%22one_time_keyboard%22%3A+true%2C+%22resize_keyboard%22%3A+true%7D HTTP/1.1" 200 323
