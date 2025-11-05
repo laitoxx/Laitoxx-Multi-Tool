@@ -13,13 +13,15 @@ import platform
 import logging
 import datetime
 import subprocess
+import hashlib
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QPushButton, QStackedWidget, QLabel, QGraphicsBlurEffect,
                              QTextEdit, QGridLayout, QInputDialog, QSplitter,
                              QHBoxLayout, QSpacerItem, QSizePolicy, QColorDialog,
                              QFileDialog, QDialog, QFormLayout, QLineEdit,
-                             QDialogButtonBox, QScrollArea, QComboBox)
-from PyQt6.QtGui import QMovie, QResizeEvent, QColor, QFont, QPixmap
+                             QDialogButtonBox, QScrollArea, QComboBox, QCheckBox,
+                             QMessageBox)
+from PyQt6.QtGui import QMovie, QResizeEvent, QColor, QFont, QPixmap, QIcon
 from PyQt6.QtCore import Qt, QUrl, QObject, pyqtSignal, QThread
 from PyQt6.QtMultimedia import QMediaPlayer, QVideoSink, QVideoFrame
 
@@ -94,6 +96,12 @@ from script.tools.web_crawler import web_crawler
 from script.tools.phishing_bot import phishing
 from ddos_module.main import run_ddos_attack
 from ddos_module.attacks import layer4, layer7
+# Hashing and Nmap tools
+from script.tools.hash_tools.text_hasher import text_hasher_tool
+from script.tools.hash_tools.hash_identifier import hash_identifier_tool
+from script.tools.hash_tools.dictionary_cracker import dictionary_cracker_tool
+from script.tools.hash_tools.rainbow_table_generator import rainbow_table_tool
+from script.tools.nmap_scanner.nmap_scanner import nmap_scanner_tool
 
 class PluginExecutionWindow(QDialog):
     def __init__(self, plugin_data, parent=None):
@@ -151,6 +159,7 @@ CONFIG_FILE = "background_config.txt"
 DEFAULT_THEME_FILE = "theme.json"
 LAST_THEME_CONFIG_FILE = "last_theme.txt"
 PLUGIN_DIR = "plugins"
+AGREEMENT_CONFIG_FILE = "user_agreement_accepted.txt"
 
 def remove_ansi_codes(text):
     return re.sub(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]', '', text)
@@ -162,6 +171,15 @@ def load_config(filepath):
     if os.path.exists(filepath):
         with open(filepath, "r") as f: return f.read().strip()
     return None
+
+def check_user_agreement():
+    """Check if user has already agreed to the terms."""
+    agreement_file = load_config(AGREEMENT_CONFIG_FILE)
+    return agreement_file == "agreed"
+
+def save_user_agreement():
+    """Save that user has agreed to the terms."""
+    save_config(AGREEMENT_CONFIG_FILE, "agreed")
 
 def load_theme(filepath):
     try:
@@ -360,6 +378,201 @@ class TelegramSearchDialog(QDialog):
         if query: self.result = {"method": method_name, "query": query, "prompt": display_text}; self.accept()
     def get_values(self): return self.result
 
+class HashToolsDialog(QDialog):
+    def __init__(self, parent=None, tool_name=""):
+        super().__init__(parent)
+        self.setWindowTitle(f"{tool_name} Configuration")
+        self.setMinimumWidth(500)
+        self.layout = QVBoxLayout(self)
+        self.result = None
+        self.tool_name = tool_name
+
+        # Instructions
+        instructions = QLabel()
+        instructions.setWordWrap(True)
+        if tool_name == "Text Hasher":
+            instructions.setText("This tool hashes text using various cryptographic algorithms.\n\nAvailable algorithms: MD5, SHA1, SHA256, SHA512, etc.\nNote: MD5 and SHA1 are insecure for cryptography.\nUse SHA256 or stronger for security.")
+        elif tool_name == "Hash Identifier":
+            instructions.setText("This tool identifies possible types of a given hash string.\n\nEnter a hash (e.g., a long string of letters/numbers).\nIt provides possible matches, not definitive identification.")
+        elif tool_name == "Dictionary Cracker":
+            instructions.setText("This tool cracks a hash using a wordlist (dictionary attack).\n\nPure Python implementation - may be slow for large wordlists.\nFor better performance, use specialized tools like Hashcat.\n\nSupported algorithms: md5, sha1, sha256, etc.")
+        elif tool_name == "Rainbow Table Gen":
+            instructions.setText("This tool generates a rainbow table for password cracking.\n\nA rainbow table precomputes hash chains.\nWARNING: Very slow and resource-intensive!\n\nParameters:\n- Charset: Characters to use (e.g., 'abc123')\n- Chain length: Hash/reduce operations per chain (higher = better coverage but slower)\n- Chains: Number of starting points (higher = better coverage but larger file)\n- Length: Max password length")
+        self.layout.addWidget(instructions)
+
+        self.form_layout = QFormLayout()
+        self.layout.addLayout(self.form_layout)
+
+        if tool_name == "Text Hasher":
+            self.text_input = QTextEdit()
+            self.text_input.setPlaceholderText("Enter the text to hash (any string)")
+            self.form_layout.addRow("Text:", self.text_input)
+            self.algorithm_combo = QComboBox()
+            self.algorithm_combo.addItems(sorted(hashlib.algorithms_available))
+            self.algorithm_combo.setCurrentText("sha256")
+            self.form_layout.addRow("Algorithm:", self.algorithm_combo)
+        elif tool_name == "Hash Identifier":
+            self.hash_input = QLineEdit()
+            self.hash_input.setPlaceholderText("Enter hash string (e.g., e99a18c428cb38d5f260853678922e03)")
+            self.form_layout.addRow("Hash:", self.hash_input)
+        elif tool_name == "Dictionary Cracker":
+            self.hash_input = QLineEdit()
+            self.hash_input.setPlaceholderText("Enter hash to crack (lowercase hex)")
+            self.form_layout.addRow("Hash:", self.hash_input)
+            self.algorithm_combo = QComboBox()
+            self.algorithm_combo.addItems(sorted(hashlib.algorithms_available))
+            self.algorithm_combo.setCurrentText("md5")
+            self.form_layout.addRow("Algorithm:", self.algorithm_combo)
+            self.wordlist_input = QLineEdit()
+            self.wordlist_input.setPlaceholderText("Path to wordlist file (e.g., C:\\wordlists\\rockyou.txt)")
+            browse_button = QPushButton("Browse")
+            browse_button.clicked.connect(self.browse_wordlist)
+            wordlist_layout = QHBoxLayout()
+            wordlist_layout.addWidget(self.wordlist_input)
+            wordlist_layout.addWidget(browse_button)
+            self.form_layout.addRow("Wordlist:", wordlist_layout)
+        elif tool_name == "Rainbow Table Gen":
+            self.charset_input = QLineEdit()
+            self.charset_input.setText("abcdefghijklmnopqrstuvwxyz0123456789")
+            self.form_layout.addRow("Charset:", self.charset_input)
+            self.algorithm_combo = QComboBox()
+            self.algorithm_combo.addItems(sorted(hashlib.algorithms_available))
+            self.algorithm_combo.setCurrentText("md5")
+            self.form_layout.addRow("Algorithm:", self.algorithm_combo)
+            self.chain_length_input = QLineEdit("1000")
+            self.form_layout.addRow("Chain Length:", self.chain_length_input)
+            self.num_chains_input = QLineEdit("10000")
+            self.form_layout.addRow("Number of Chains:", self.num_chains_input)
+            self.password_len_input = QLineEdit("6")
+            self.form_layout.addRow("Password Length:", self.password_len_input)
+            self.output_file_input = QLineEdit("rainbow_table.csv")
+            browse_button = QPushButton("Browse")
+            browse_button.clicked.connect(self.browse_output)
+            output_layout = QHBoxLayout()
+            output_layout.addWidget(self.output_file_input)
+            output_layout.addWidget(browse_button)
+            self.form_layout.addRow("Output File:", output_layout)
+
+        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+        self.layout.addWidget(self.button_box)
+
+    def browse_wordlist(self):
+        filepath, _ = QFileDialog.getOpenFileName(self, "Select Wordlist", "", "Text Files (*.txt);;All Files (*)")
+        if filepath:
+            self.wordlist_input.setText(filepath)
+
+    def browse_output(self):
+        filepath, _ = QFileDialog.getSaveFileName(self, "Save Rainbow Table", "", "CSV Files (*.csv);;All Files (*)")
+        if filepath:
+            self.output_file_input.setText(filepath)
+
+    def get_values(self):
+        if self.tool_name == "Text Hasher":
+            text = self.text_input.toPlainText().strip()
+            algorithm = self.algorithm_combo.currentText()
+            if not text:
+                return None
+            return {"text": text, "algorithm": algorithm}
+        elif self.tool_name == "Hash Identifier":
+            hash_str = self.hash_input.text().strip()
+            if not hash_str:
+                return None
+            return {"hash": hash_str}
+        elif self.tool_name == "Dictionary Cracker":
+            hash_str = self.hash_input.text().strip()
+            algorithm = self.algorithm_combo.currentText()
+            wordlist = self.wordlist_input.text().strip()
+            if not all([hash_str, algorithm, wordlist]):
+                return None
+            return {"hash": hash_str, "algorithm": algorithm, "wordlist": wordlist}
+        elif self.tool_name == "Rainbow Table Gen":
+            charset = self.charset_input.text().strip()
+            algorithm = self.algorithm_combo.currentText()
+            try:
+                chain_length = int(self.chain_length_input.text())
+                num_chains = int(self.num_chains_input.text())
+                password_len = int(self.password_len_input.text())
+            except ValueError:
+                return None
+            output_file = self.output_file_input.text().strip()
+            if not all([charset, algorithm, output_file]):
+                return None
+            return {"charset": charset, "algorithm": algorithm, "chain_length": chain_length, "num_chains": num_chains, "password_len": password_len, "output_file": output_file}
+        return None
+
+class UserAgreementDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Laitoxx Project - User Agreement")
+        self.setMinimumSize(700, 600)
+        self.setModal(True)
+        self.agreed = False
+
+        self.layout = QVBoxLayout(self)
+
+        # Title
+        title_label = QLabel("User Agreement for Laitoxx Project")
+        title_label.setStyleSheet("font-size: 16px; font-weight: bold; margin-bottom: 10px;")
+        self.layout.addWidget(title_label)
+
+        # Agreement text area
+        self.agreement_text = QTextEdit()
+        self.agreement_text.setReadOnly(True)
+
+        # Load agreement text
+        try:
+            with open("User Agreement.txt", "r", encoding="utf-8") as f:
+                agreement_content = f.read()
+            self.agreement_text.setText(agreement_content)
+        except Exception as e:
+            self.agreement_text.setText(f"Error loading agreement: {e}")
+
+        self.layout.addWidget(self.agreement_text)
+
+        # Agreement checkbox
+        self.agreement_checkbox = QCheckBox("I have read and agree to comply with the User Agreement")
+        self.agreement_checkbox.setStyleSheet("font-weight: bold; margin-top: 10px;")
+        self.layout.addWidget(self.agreement_checkbox)
+
+        # Buttons
+        self.button_box = QDialogButtonBox()
+        self.agree_button = self.button_box.addButton("I Agree", QDialogButtonBox.ButtonRole.AcceptRole)
+        self.disagree_button = self.button_box.addButton("I Disagree", QDialogButtonBox.ButtonRole.RejectRole)
+
+        self.agree_button.clicked.connect(self.accept_agreement)
+        self.disagree_button.clicked.connect(self.reject_agreement)
+
+        # Initially disable agree button
+        self.agree_button.setEnabled(False)
+
+        # Connect checkbox to enable/disable agree button
+        self.agreement_checkbox.stateChanged.connect(self.toggle_agree_button)
+
+        self.layout.addWidget(self.button_box)
+
+    def toggle_agree_button(self):
+        self.agree_button.setEnabled(self.agreement_checkbox.isChecked())
+
+    def accept_agreement(self):
+        if self.agreement_checkbox.isChecked():
+            self.agreed = True
+            save_user_agreement()  # Save agreement status
+            self.accept()
+        else:
+            QMessageBox.warning(self, "Agreement Required",
+                              "Please check the agreement checkbox to continue.")
+
+    def reject_agreement(self):
+        reply = QMessageBox.question(self, "Confirm Exit",
+                                   "Are you sure you want to exit? You must agree to the User Agreement to use this application.",
+                                   QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                   QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            self.agreed = False
+            self.reject()
+
 class Worker(QObject):
     finished = pyqtSignal()
     update = pyqtSignal(str)
@@ -371,18 +584,28 @@ class Worker(QObject):
         if self.is_plugin: self.run_plugin()
         else: self.run_tool()
     def run_tool(self):
-        original_input = builtins.input
-        builtins.input = lambda prompt="": self.input_data or ""
         output_stream = io.StringIO()
-        try:
-            with contextlib.redirect_stdout(output_stream): self.func()
-            self.update.emit(remove_ansi_codes(output_stream.getvalue()))
-        except Exception as e:
-            logging.error(f"Error in worker thread for {self.func.__name__}: {e}", exc_info=True)
-            self.error.emit(f"An error occurred: {e}")
-        finally:
-            builtins.input = original_input
-            self.finished.emit()
+        if isinstance(self.input_data, dict):
+            try:
+                with contextlib.redirect_stdout(output_stream): self.func(self.input_data)
+                self.update.emit(remove_ansi_codes(output_stream.getvalue()))
+            except Exception as e:
+                logging.error(f"Error in worker thread for {self.func.__name__}: {e}", exc_info=True)
+                self.error.emit(f"An error occurred: {e}")
+            finally:
+                self.finished.emit()
+        else:
+            original_input = builtins.input
+            builtins.input = lambda prompt="": self.input_data or ""
+            try:
+                with contextlib.redirect_stdout(output_stream): self.func()
+                self.update.emit(remove_ansi_codes(output_stream.getvalue()))
+            except Exception as e:
+                logging.error(f"Error in worker thread for {self.func.__name__}: {e}", exc_info=True)
+                self.error.emit(f"An error occurred: {e}")
+            finally:
+                builtins.input = original_input
+                self.finished.emit()
     def run_plugin(self):
         plugin_data = self.func
         outputs = {}
@@ -394,107 +617,183 @@ class Worker(QObject):
                 self.error.emit(f"Plugin Error: OS Not Supported. Supports {supported_os_list}, but you are on {system}.")
                 return
 
-            # --- Step Execution ---
-            sorted_steps = sorted(plugin_data.get('steps', []), key=lambda x: x.get('order', 0))
+            # --- Step Preparation ---
+            steps = plugin_data.get('steps', [])
+            steps_by_id = {step.get('id'): step for step in steps if 'id' in step}
+            sorted_steps = sorted(steps, key=lambda x: x.get('order', 0))
 
-            for i, step in enumerate(sorted_steps):
-                step_id = step.get('id', f'step_{i+1}')
+            step_index = 0
+            while step_index < len(sorted_steps):
+                step = sorted_steps[step_index]
+                step_id = step.get('id', f'step_{step_index+1}')
                 description = step.get('description', 'Unnamed Step')
-                self.update.emit(f"--- Running Step {i + 1}: {description} ---")
+                self.update.emit(f"--- Running Step {step_index + 1}: {description} ---")
+
+                step_successful = False
+                step_output = ""
 
                 # --- Handle Delays ---
                 if step.get('type') == 'delay':
                     duration = step.get('duration', 1)
                     self.update.emit(f"Delaying for {duration} second(s)...")
                     time.sleep(duration)
-                    outputs[step_id] = f"Delayed for {duration}s"
-                    continue
+                    step_output = f"Delayed for {duration}s"
+                    step_successful = True
+                else:
+                    # --- Determine Input ---
+                    current_input = ""
+                    input_source = step.get('input_source', 'none')
 
-                # --- Determine Input ---
-                current_input = ""
-                input_source = step.get('input_source', 'none')
+                    if input_source == 'user':
+                        current_input = self.input_data or ""
+                    elif input_source.startswith('previous_step:'):
+                        source_step_id = input_source.split(':', 1)[1]
+                        previous_output = outputs.get(source_step_id, "")
 
-                if input_source == 'user':
-                    current_input = self.input_data or ""
-                elif input_source.startswith('previous_step:'):
-                    source_step_id = input_source.split(':', 1)[1]
-                    previous_output = outputs.get(source_step_id, "")
+                        all_matches = []
+                        regex_filters = step.get('input_filter_regexes', [])
+                        if not regex_filters and 'input_filter_regex' in step:
+                            regex_filters = [step['input_filter_regex']]
+
+                        if regex_filters:
+                            for regex_filter in regex_filters:
+                                if not regex_filter: continue
+                                try:
+                                    matches = re.findall(regex_filter, previous_output)
+                                    all_matches.extend(matches)
+                                    self.update.emit(f"Applied REGEX '{regex_filter}'. Found {len(matches)} match(es).")
+                                except re.error as e:
+                                    self.error.emit(f"Error in REGEX pattern '{regex_filter}': {e}")
+                                    break
+                            else: # only if loop completed without break
+                                current_input = "\n".join(all_matches)
+                        else:
+                            current_input = previous_output
                     
-                    all_matches = []
-                    # New: Handle list of regexes
-                    regex_filters = step.get('input_filter_regexes', [])
-                    # Old: Handle single regex for backward compatibility
-                    if not regex_filters and 'input_filter_regex' in step:
-                        regex_filters = [step['input_filter_regex']]
+                    # --- Execute Action ---
+                    action_type = step.get('action_type', 'command')
+                    action_value = step.get('action_value', '')
 
-                    if regex_filters:
-                        for regex_filter in regex_filters:
-                            if not regex_filter: continue
+                    if action_type in ['command', 'batch_script', 'shell_script']:
+                        script_path = os.path.join(plugin_data.get('plugin_path', '.'), action_value)
+                        if action_type == 'command':
+                            command = action_value.replace('{input}', current_input)
+                        else:
+                            # For scripts, action_value is the script filename
+                            if not os.path.isfile(script_path):
+                                self.error.emit(f"Error: {action_type.replace('_', ' ').title()} '{action_value}' not found in plugin directory.")
+                                break
+                            command = script_path.replace('{input}', current_input)
+
+                        sanitized_command = command
+                        if step.get('requires_api_key'):
+                            api_key = step.get('api_key', '')
+                            command = command.replace('{AKEY}', api_key)
+                            sanitized_command = sanitized_command.replace('{AKEY}', '********')
+
+                        self.update.emit(f"Executing {action_type.replace('_', ' ')}: {sanitized_command}")
+
+                        # Determine shell based on action_type
+                        use_shell = True
+                        if action_type == 'batch_script':
+                            # On Windows, use cmd /c for .bat/.cmd files
+                            if platform.system() == 'Windows':
+                                command = f'cmd /c "{command}"'
+                        elif action_type == 'shell_script':
+                            # On Unix-like systems, use sh/bash
+                            if platform.system() != 'Windows':
+                                command = f'sh "{command}"'
+
+                        result = subprocess.run(command, shell=use_shell, capture_output=True, text=True, encoding='utf-8', errors='ignore')
+
+                        stdout = result.stdout.strip()
+                        stderr = result.stderr.strip()
+                        step_output = stdout
+
+                        if stdout: self.update.emit(f"STDOUT:\n{stdout}")
+                        if result.returncode == 0:
+                            step_successful = True
+                        else:
+                            if stderr: self.update.emit(f"STDERR:\n{stderr}")
+                            self.error.emit(f"Error: Step failed with exit code {result.returncode}.")
+
+                    elif action_type == 'python_script':
+                        script_path = os.path.join(plugin_data.get('plugin_path', '.'), action_value)
+                        if not os.path.isfile(script_path):
+                            self.error.emit(f"Error: Python script '{action_value}' not found in plugin directory.")
+                        else:
+                            self.update.emit(f"Executing Python script: {action_value}")
+                            command = [sys.executable, script_path]
+
+                            # Pass input via stdin
+                            result = subprocess.run(command, input=current_input, capture_output=True, text=True, encoding='utf-8', errors='ignore')
+
+                            stdout = result.stdout.strip()
+                            stderr = result.stderr.strip()
+                            step_output = stdout
+
+                            if stdout: self.update.emit(f"STDOUT:\n{stdout}")
+                            if result.returncode == 0:
+                                step_successful = True
+                            else:
+                                if stderr: self.update.emit(f"STDERR:\n{stderr}")
+                                self.error.emit(f"Error: Script failed with exit code {result.returncode}.")
+
+                    elif action_type == 'function':
+                        if self.tool_info and action_value in self.tool_info:
+                            tool = self.tool_info[action_value]
+                            tool_func = tool.get('func')
+
+                            self.update.emit(f"Executing function: {action_value} with input: '{current_input[:50]}...'")
+
+                            original_input = builtins.input
+                            builtins.input = lambda prompt="": current_input or ""
+                            output_stream = io.StringIO()
                             try:
-                                matches = re.findall(regex_filter, previous_output)
-                                all_matches.extend(matches)
-                                self.update.emit(f"Applied REGEX '{regex_filter}'. Found {len(matches)} match(es).")
-                            except re.error as e:
-                                self.error.emit(f"Error in REGEX pattern '{regex_filter}': {e}")
-                                return
-                        current_input = "\n".join(all_matches)
-                    else:
-                        current_input = previous_output
+                                with contextlib.redirect_stdout(output_stream):
+                                    tool_func()
+                                step_output = remove_ansi_codes(output_stream.getvalue().strip())
+                                self.update.emit(f"Output:\n{step_output}")
+                                step_successful = True
+                            except Exception as e:
+                                self.error.emit(f"Error executing function '{action_value}': {e}")
+                                logging.error(f"Error in plugin function {action_value}: {e}", exc_info=True)
+                            finally:
+                                builtins.input = original_input
+                        else:
+                            self.error.emit(f"Error: Built-in function '{action_value}' not found.")
                 
-                # --- Execute Action ---
-                action_type = step.get('action_type', 'command')
-                action_value = step.get('action_value', '')
-                step_output = ""
-                
-                if action_type == 'command':
-                    command = action_value.replace('{input}', current_input)
-                    sanitized_command = command
-                    if step.get('requires_api_key'):
-                        api_key = step.get('api_key', '')
-                        command = command.replace('{AKEY}', api_key)
-                        sanitized_command = sanitized_command.replace('{AKEY}', '********')
-                    
-                    self.update.emit(f"Executing command: {sanitized_command}")
-                    result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='utf-8', errors='ignore')
-                    
-                    stdout = result.stdout.strip()
-                    stderr = result.stderr.strip()
-                    step_output = stdout
-                    
-                    if stdout: self.update.emit(f"STDOUT:\n{stdout}")
-                    if result.returncode != 0:
-                        if stderr: self.update.emit(f"STDERR:\n{stderr}")
-                        self.error.emit(f"Error: Step failed with exit code {result.returncode}.")
-                        return
-
-                elif action_type == 'function':
-                    if self.tool_info and action_value in self.tool_info:
-                        tool = self.tool_info[action_value]
-                        tool_func = tool.get('func')
-                        
-                        self.update.emit(f"Executing function: {action_value} with input: '{current_input[:50]}...'")
-                        
-                        original_input = builtins.input
-                        builtins.input = lambda prompt="": current_input or ""
-                        output_stream = io.StringIO()
-                        try:
-                            with contextlib.redirect_stdout(output_stream):
-                                # This assumes the function takes no direct arguments
-                                # and gets its data from the mocked `input()`
-                                tool_func() 
-                            step_output = remove_ansi_codes(output_stream.getvalue().strip())
-                            self.update.emit(f"Output:\n{step_output}")
-                        except Exception as e:
-                            self.error.emit(f"Error executing function '{action_value}': {e}")
-                            logging.error(f"Error in plugin function {action_value}: {e}", exc_info=True)
-                            return
-                        finally:
-                            builtins.input = original_input
-                    else:
-                        self.error.emit(f"Error: Built-in function '{action_value}' not found.")
-                        return
-
                 outputs[step_id] = step_output
+                
+                # --- Handle Conditional Jumps ---
+                next_step_id = None
+                if step_successful:
+                    if 'on_success' in step:
+                        next_step_id = step['on_success']
+                        self.update.emit(f"Step successful. Jumping to step '{next_step_id}'.")
+                else: # Step failed
+                    if 'on_failure' in step:
+                        next_step_id = step['on_failure']
+                        self.update.emit(f"Step failed. Jumping to step '{next_step_id}'.")
+                    else:
+                        # If a step fails and has no on_failure, stop execution.
+                        self.error.emit(f"Execution halted due to failed step: {description}")
+                        return
+
+                if next_step_id:
+                    if next_step_id in steps_by_id:
+                        target_step = steps_by_id[next_step_id]
+                        try:
+                            # Find the index of the next step to jump to
+                            step_index = sorted_steps.index(target_step)
+                        except ValueError:
+                            self.error.emit(f"FATAL: Could not find jump target step '{next_step_id}' in the ordered list. This should not happen.")
+                            return
+                    else:
+                        self.error.emit(f"Error: Jump target step ID '{next_step_id}' not found.")
+                        return
+                else:
+                    step_index += 1
 
         except Exception as e:
             logging.error(f"Error executing plugin {plugin_data.get('name')}: {e}", exc_info=True)
@@ -565,10 +864,17 @@ class MainWindow(QMainWindow):
         main_content_layout.addWidget(self.output_area)
         main_content_layout.setStretch(1, 2) # Give more space to the tool area
         main_content_layout.setStretch(2, 1)
+        self.active_tools_widget = QWidget()
+        self.active_tools_widget.setMaximumWidth(200)
+        active_layout = QVBoxLayout(self.active_tools_widget)
+        active_layout.addWidget(QLabel("Active Tools"))
+        active_layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
+        self.running_tools = {}  # tool_name: {'thread': thread, 'label': label, 'stop_button': button}
         self.splitter = QSplitter(Qt.Orientation.Horizontal)
         self.splitter.addWidget(self.sidebar_widget)
         self.splitter.addWidget(main_content_widget)
-        self.splitter.setSizes([150, 1050])
+        self.splitter.addWidget(self.active_tools_widget)
+        self.splitter.setSizes([150, 1050, 150])
         self.splitter.setStyleSheet("QSplitter::handle { background-color: transparent; }")
         ui_layout = QHBoxLayout(self.ui_container)
         ui_layout.addWidget(self.splitter)
@@ -638,7 +944,7 @@ class MainWindow(QMainWindow):
             "Database search": {"func": search_database, "input_type": "text", "prompt": "Enter search query (e.g., email, name):", "desc": "Search for leaks in local databases.", "threaded": True},
             "Check MAC-address": {"func": search_mac_address, "input_type": "text", "prompt": "Enter MAC address:", "desc": "Lookup the vendor of a MAC address.", "threaded": True},
             "Subdomain finder": {"func": find_subdomains, "input_type": "text", "prompt": "Enter domain (e.g., example.com):", "desc": "Find subdomains for a given domain.", "threaded": True},
-            "Google Osint": {"func": google_osint, "input_type": "text", "prompt": "Enter Google search query:", "desc": "Perform a Google search to find information.", "threaded": True},
+            "Google Osint": {"func": google_osint, "input_type": "google_osint", "desc": "Build advanced Google dorks with multiple operators and search engines.", "threaded": False},
             "Search Nick": {"func": check_username, "input_type": "text", "prompt": "Enter username:", "desc": "Check for a username's presence on various platforms.", "threaded": True},
             "Web-crawler": {"func": web_crawler, "input_type": "text", "prompt": "Enter starting URL:", "desc": "Crawl a website to discover links and pages.", "threaded": True},
             "Port Scanner": {"func": port_scanner_tool, "input_type": "text", "prompt": "Enter target IP or domain:", "desc": "Scan a target for open ports.", "threaded": True},
@@ -648,14 +954,23 @@ class MainWindow(QMainWindow):
             "Find admin panel": {"func": find_admin_panel, "input_type": "text", "prompt": "Enter website URL:", "desc": "Try to find the admin login page of a website.", "threaded": True},
             "Sql scan": {"func": sql_injection_scanner_tool, "input_type": "text", "prompt": "Enter URL with parameters to scan:", "desc": "Scan a URL for SQL Injection vulnerabilities.", "threaded": True},
             "Ip logger": {"func": logger_ip, "input_type": None, "desc": "Create a link to log IP addresses of visitors.", "threaded": True},
-            "Temp Mail": {"func": temp_mail, "input_type": None, "desc": "Get a temporary email address.", "threaded": True},
-            "Get proxy": {"func": get_proxy_list, "input_type": None, "desc": "Fetch a list of free proxy servers.", "threaded": False},
+            "Temp Mail": {"func": temp_mail, "input_type": "text", "prompt": "Enter username for email [random]:", "desc": "Temporarily Unavailable", "threaded": True, "disabled": True},
+            "Get proxy": {"func": get_proxy_list, "input_type": None, "desc": "Fetch a list of free proxy servers.", "threaded": True},
             "Obfuscate python": {"func": obfuscate_tool, "input_type": "text", "prompt": "Enter path to Python file to obfuscate:", "desc": "Obfuscate a Python script to make it harder to read.", "threaded": True},
-            "Phish Bot(lamer)": {"func": phishing, "input_type": None, "desc": "Start a simple phishing bot (for educational purposes).", "threaded": True},
+            "Phish Bot(lamer)": {"func": phishing, "input_type": "text", "prompt": "Enter Bot token:", "desc": "Start a simple phishing bot (for educational purposes).", "threaded": True},
             "Strange Text": {"func": transform_text, "input_type": "text", "prompt": "Enter text to transform:", "desc": "Apply various transformations to text (e.g., Zalgo).", "threaded": False},
-            "Password Generator": {"func": password_generator_tool, "input_type": None, "desc": "Generate a strong, random password.", "threaded": False},
-            "DDoS Attack": {"func": run_ddos_attack, "input_type": "ddos", "desc": "Launch a DDoS attack (for educational purposes only)."},
-            "Telegram (paketlib)": {"func": telegram_search, "input_type": "telegram", "desc": "Search for users, channels, and chats on Telegram."},
+            "Password Generator": {"func": password_generator_tool, "input_type": "text", "prompt": "Enter password length and complexity (e.g., 12 medium):", "desc": "Generate a strong, random password.", "threaded": False},
+            "DDoS Attack": {"func": run_ddos_attack, "input_type": "ddos", "desc": "Launch a DDoS attack (for educational purposes only).", "threaded": True},
+            "Telegram (paketlib)": {"func": telegram_search, "input_type": "telegram", "desc": "Search for users, channels, and chats on Telegram.", "threaded": True},
+
+            # Hashing Tools
+            "Text Hasher": {"func": text_hasher_tool, "input_type": "hash", "prompt": "This tool will guide you through hashing text.", "desc": "Hash text using various algorithms (MD5, SHA256, etc.).", "threaded": True},
+            "Hash Identifier": {"func": hash_identifier_tool, "input_type": "hash", "prompt": "Enter hash to identify:", "desc": "Identify the type of a given hash.", "threaded": True},
+            "Dictionary Cracker": {"func": dictionary_cracker_tool, "input_type": "hash", "prompt": "This tool will guide you through using the dictionary cracker.", "desc": "Crack a hash against a wordlist (pure Python).", "threaded": True},
+            "Rainbow Table Gen": {"func": rainbow_table_tool, "input_type": "hash", "prompt": "This tool will guide you through generating a rainbow table.", "desc": "Generate a rainbow table for a given charset and hash.", "threaded": True},
+
+            # Nmap Scanner
+            "Nmap": {"func": nmap_scanner_tool, "input_type": None, "desc": "Perform an Nmap scan with progress updates.", "threaded": True},
         }
 
     def load_plugins(self):
@@ -695,6 +1010,7 @@ class MainWindow(QMainWindow):
         button_style = f"""QPushButton {{ background-color: {td['button_bg_color']}; border: 1px solid {td['button_border_color']}; border-radius: 10px; color: {td['button_text_color']}; padding: 10px; font-size: 14px; }} QPushButton:hover {{ background-color: {td['button_hover_bg_color']}; }} QPushButton:pressed {{ background-color: {td['button_pressed_bg_color']}; }}"""
         self.setStyleSheet(button_style)
         self.sidebar_widget.setStyleSheet(f"background-color: {td['sidebar_bg_color']}; border-radius: 10px;")
+        self.active_tools_widget.setStyleSheet(f"background-color: {td['sidebar_bg_color']}; border-radius: 10px;")
         scrollbar_style = f"""QScrollBar:vertical {{ border: none; background: transparent; width: 12px; margin: 15px 0 15px 0; border-radius: 6px; }} QScrollBar::handle:vertical {{ background-color: {td['scrollbar_handle_color']}; min-height: 30px; border-radius: 6px; }} QScrollBar::handle:vertical:hover {{ background-color: {td['scrollbar_handle_hover_color']}; }} QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{ height: 0px; }} QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {{ background: none; }}"""
         text_area_style = f"""QTextEdit {{ background-color: {td['text_area_bg_color']}; border: 1px solid {td['text_area_border_color']}; border-radius: 10px; color: {td['text_area_text_color']}; font-size: 14px; }}"""
         self.output_area.setStyleSheet(text_area_style + scrollbar_style)
@@ -802,7 +1118,8 @@ class MainWindow(QMainWindow):
 
         categories = {
             "information_gathering": ["Check Phone Number", "Check IP", "Validate Email", "Info Website", "Gmail Osint", "Database search", "Check MAC-address", "Subdomain finder", "Google Osint", "Telegram (paketlib)", "Search Nick", "Web-crawler"],
-            "web_security": ["Port Scanner", "Check site", "Check url", "Xss scan", "Find admin panel", "Sql scan", "DDoS Attack"],
+            "web_security": ["Port Scanner", "Nmap", "Check site", "Check url", "Xss scan", "Find admin panel", "Sql scan", "DDoS Attack"],
+            "hashing": ["Text Hasher", "Hash Identifier", "Dictionary Cracker", "Rainbow Table Gen"],
             "tools_utilities": ["Strange Text", "Password Generator", "Temp Mail", "Get proxy", "Ip logger", "Obfuscate python", "Phish Bot(lamer)"]
         }
         if self.plugins:
@@ -834,8 +1151,13 @@ class MainWindow(QMainWindow):
                         button.clicked.connect(lambda checked, p=plugin_data: self.run_plugin_dispatcher(p))
                 elif tool_key in self.tool_info:
                     info = self.tool_info[tool_key]
-                    button = GlassButton(translator.get(tool_key))
+                    button_text = translator.get(tool_key)
+                    if info.get("disabled"):
+                        button_text = "Temporarily Unavailable"
+                    button = GlassButton(button_text)
                     button.setToolTip(info.get("desc", ""))
+                    if info.get("disabled"):
+                        button.setEnabled(False)
                     button.clicked.connect(lambda checked, t=tool_key: self.run_tool_dispatcher(t))
 
                 if button:
@@ -894,6 +1216,7 @@ class MainWindow(QMainWindow):
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.thread.start()
+        self.add_running_tool(plugin_data['name'], self.thread)
         self.exec_window.exec()
 
     def run_tool_dispatcher(self, tool_name):
@@ -919,6 +1242,17 @@ class MainWindow(QMainWindow):
             if dialog.exec():
                 input_data = dialog.get_values()
                 if input_data: ok = True
+        elif input_type == "hash":
+            dialog = HashToolsDialog(self, tool_name)
+            if dialog.exec():
+                input_data = dialog.get_values()
+                if input_data: ok = True
+        elif input_type == "google_osint":
+            # Import here to avoid circular import
+            from script.tools.google_osint import GoogleOsintDialog
+            dialog = GoogleOsintDialog(self)
+            if dialog.exec():
+                ok = True  # Dialog handles the search directly
         if not ok: return self.output_area.setText(translator.get("operation_cancelled"))
         if info.get("threaded", False):
             self.thread = QThread()
@@ -931,6 +1265,7 @@ class MainWindow(QMainWindow):
             self.worker.update.connect(self.set_output_text) # Changed from result to update
             self.worker.error.connect(self.set_output_text)
             self.thread.start()
+            self.add_running_tool(tool_name, self.thread)
             self.output_area.setText(f"Running {tool_name} in the background...")
         elif isinstance(input_data, dict): self.execute_special_tool(tool_func, input_data)
         else: self.execute_tool(tool_func, input_data)
@@ -968,12 +1303,57 @@ class MainWindow(QMainWindow):
         except Exception as e:
             self.output_area.setText(f"An error occurred during Telegram search: {e}")
 
+    def add_running_tool(self, tool_name, thread):
+        if tool_name not in self.running_tools:
+            label = QLabel(tool_name)
+            stop_button = QPushButton("Stop")
+            stop_button.clicked.connect(lambda: self.stop_tool(tool_name))
+            active_layout = self.active_tools_widget.layout()
+            active_layout.insertWidget(active_layout.count() - 1, label)
+            active_layout.insertWidget(active_layout.count() - 1, stop_button)
+            self.running_tools[tool_name] = {'thread': thread, 'label': label, 'stop_button': stop_button}
+            thread.finished.connect(lambda: self.remove_running_tool(tool_name))
+
+    def remove_running_tool(self, tool_name):
+        if tool_name in self.running_tools:
+            active_layout = self.active_tools_widget.layout()
+            active_layout.removeWidget(self.running_tools[tool_name]['label'])
+            active_layout.removeWidget(self.running_tools[tool_name]['stop_button'])
+            self.running_tools[tool_name]['label'].deleteLater()
+            self.running_tools[tool_name]['stop_button'].deleteLater()
+            del self.running_tools[tool_name]
+
+    def stop_tool(self, tool_name):
+        if tool_name in self.running_tools:
+            self.running_tools[tool_name]['thread'].quit()
+            self.remove_running_tool(tool_name)
+
 if __name__ == '__main__':
     try:
         app = QApplication(sys.argv)
-        main_win = MainWindow()
-        main_win.show()
-        sys.exit(app.exec())
+
+        # Set application icon
+        icon_path = os.path.join(os.path.dirname(__file__), "icons", "ico.ico")
+        if os.path.exists(icon_path):
+            app.setWindowIcon(QIcon(icon_path))
+
+        # Check if user has already agreed to terms
+        if check_user_agreement():
+            # User has already agreed, show main window directly
+            main_win = MainWindow()
+            main_win.show()
+            sys.exit(app.exec())
+        else:
+            # Show user agreement dialog first
+            agreement_dialog = UserAgreementDialog()
+            if agreement_dialog.exec() and agreement_dialog.agreed:
+                # User agreed, show main window
+                main_win = MainWindow()
+                main_win.show()
+                sys.exit(app.exec())
+            else:
+                # User disagreed or closed dialog, exit application
+                sys.exit(0)
     except Exception as e:
         logging.critical(f"Unhandled exception at top level: {e}", exc_info=True)
         sys.exit(1)

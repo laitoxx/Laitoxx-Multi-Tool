@@ -36,7 +36,7 @@ i18n = I18n(get_current_language())
 
 TRANSLATIONS = {
     "ru": {
-        "app_title": "Инструменты Поиск",
+        "app_title": "Laitoxx",
         "search": "Поиск",
         "add_step": "Добавить шаг",
         "remove_step": "Удалить шаг",
@@ -162,7 +162,7 @@ TRANSLATIONS = {
         "search": "Поиск..."
     },
     "en": {
-        "app_title": "Search Tools",
+        "app_title": "Laitoxx",
         "search": "Search...",
         "add_step": "Add Step",
         "remove_step": "Remove Step",

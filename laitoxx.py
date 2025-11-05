@@ -1,5 +1,6 @@
 import sys
 import traceback
+import os
 
 # Early monkeypatch guard: disable gevent.monkey.patch_all before any imports that
 # might trigger monkey-patching run. This must run as early as possible.
@@ -11,7 +12,7 @@ try:
         gevent_monkey.patch_all = lambda *a, **k: None
     # Log a short diagnostic file
     try:
-        import os, datetime
+        import datetime
         logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
         os.makedirs(logs_dir, exist_ok=True)
         with open(os.path.join(logs_dir, f'gevent_guard_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.log'), 'w', encoding='utf-8') as fh:
@@ -23,7 +24,8 @@ except Exception:
     pass
 
 from PyQt6.QtWidgets import QApplication
-from gui import MainWindow
+from PyQt6.QtGui import QIcon
+from gui import MainWindow, check_user_agreement, UserAgreementDialog
 
 
 def _global_excepthook(exc_type, exc_value, exc_tb):
@@ -32,7 +34,7 @@ def _global_excepthook(exc_type, exc_value, exc_tb):
         if issubclass(exc_type, RecursionError):
             tb_text = ''.join(traceback.format_exception(exc_type, exc_value, exc_tb))
             # Write a timestamped dump to logs for later inspection
-            import datetime, os
+            import datetime
             logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
             os.makedirs(logs_dir, exist_ok=True)
             filename = os.path.join(logs_dir, f"recursion_traceback_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
@@ -73,7 +75,7 @@ def main():
 
             # Log diagnostic information
             try:
-                import os, datetime
+                import datetime
                 logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
                 os.makedirs(logs_dir, exist_ok=True)
                 with open(os.path.join(logs_dir, f'ssl_patch_diag_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.log'), 'w', encoding='utf-8') as fh:
@@ -86,9 +88,29 @@ def main():
         pass
 
     app = QApplication(sys.argv)
-    main_win = MainWindow()
-    main_win.show()
-    sys.exit(app.exec())
+
+    # Set application icon
+    icon_path = os.path.join(os.path.dirname(__file__), "icons", "ico.ico")
+    if os.path.exists(icon_path):
+        app.setWindowIcon(QIcon(icon_path))
+
+    # Check if user has already agreed to terms
+    if check_user_agreement():
+        # User has already agreed, show main window directly
+        main_win = MainWindow()
+        main_win.show()
+        sys.exit(app.exec())
+    else:
+        # Show user agreement dialog first
+        agreement_dialog = UserAgreementDialog()
+        if agreement_dialog.exec() and agreement_dialog.agreed:
+            # User agreed, show main window
+            main_win = MainWindow()
+            main_win.show()
+            sys.exit(app.exec())
+        else:
+            # User disagreed or closed dialog, exit application
+            sys.exit(0)
 
 
 if __name__ == '__main__':

@@ -19,3 +19,5 @@ Faker
 fake-useragent
 pyqt6
 python-nmap
+hashid
+hashcat

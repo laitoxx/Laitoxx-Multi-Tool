@@ -351,6 +351,8 @@ class StepSettingsDialog(QDialog):
         # --- Action Type ---
         self.action_type_combo = QComboBox()
         self.action_type_combo.addItem(self.translator.get("action_type_command"), "command")
+        self.action_type_combo.addItem(self.translator.get("action_type_batch_script"), "batch_script")
+        self.action_type_combo.addItem(self.translator.get("action_type_shell_script"), "shell_script")
         self.action_type_combo.addItem(self.translator.get("action_type_function"), "function")
         self.action_type_combo.currentIndexChanged.connect(self._update_ui_visibility)
 
@@ -419,13 +421,18 @@ class StepSettingsDialog(QDialog):
         # Load Action Type
         action_type = self.step_data.get("action_type", "command")
         if action_type == "function":
-            self.action_type_combo.setCurrentIndex(1)
+            self.action_type_combo.setCurrentIndex(3)  # function is now at index 3
             func_name = self.step_data.get("action_value")
             if func_name:
                 idx = self.function_combo.findText(func_name)
                 if idx != -1: self.function_combo.setCurrentIndex(idx)
         else:
-            self.action_type_combo.setCurrentIndex(0)
+            # For command, batch_script, shell_script, they all use command_entry
+            idx = self.action_type_combo.findData(action_type)
+            if idx != -1:
+                self.action_type_combo.setCurrentIndex(idx)
+            else:
+                self.action_type_combo.setCurrentIndex(0)  # default to command
             self.command_entry.setText(self.step_data.get("action_value", ""))
 
         # Load API Key
@@ -440,19 +447,18 @@ class StepSettingsDialog(QDialog):
         self.remove_regex_btn.setEnabled(self.regex_fields_layout.count() > 1)
 
         # Action stack visibility
-        is_command = self.action_type_combo.currentData() == "command"
-        self.action_stack.setCurrentIndex(0 if is_command else 1)
+        action_type = self.action_type_combo.currentData()
+        is_function = action_type == "function"
+        self.action_stack.setCurrentIndex(1 if is_function else 0)  # 0 for command/script types, 1 for function
 
         # API Key visibility
-        is_function = self.action_type_combo.currentData() == "function"
-        
         self.api_key_check.setVisible(not is_function)
         self.api_key_entry.setVisible(not is_function and self.api_key_check.isChecked())
-        
+
         # Hide the QFormLayout rows by hiding the labels associated with the widgets
         api_check_label = self.form_layout.labelForField(self.api_key_check)
         if api_check_label: api_check_label.setVisible(not is_function)
-        
+
         api_entry_label = self.form_layout.labelForField(self.api_key_entry)
         if api_entry_label: api_entry_label.setVisible(not is_function)
 
@@ -486,10 +492,11 @@ class StepSettingsDialog(QDialog):
 
         action_type = self.action_type_combo.currentData()
         self.step_data["action_type"] = action_type
-        if action_type == "command":
-            self.step_data["action_value"] = self.command_entry.text()
-        else:
+        if action_type == "function":
             self.step_data["action_value"] = self.function_combo.currentText()
+        else:
+            # For command, batch_script, shell_script
+            self.step_data["action_value"] = self.command_entry.text()
         
         if "command" in self.step_data and action_type != "command":
              del self.step_data["command"]
