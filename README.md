@@ -1,6 +1,7 @@
 # Laitoxx Multi-Tool V2.2.1
 
-<img width="1914" height="997" alt="Снимок экрана 2025-08-31 123509" src="https://github.com/user-attachments/assets/8063d5ee-b8a3-417b-a1aa-d81471ed79b6" />
+<img width="1919" height="1028" alt="изображение" src="https://github.com/user-attachments/assets/2d4bd250-f366-491d-8aa5-dd1524d463ab" />
+
 
 
 ---
@@ -11,13 +12,13 @@ Laitoxx is a powerful OSINT (Open-Source Intelligence) and cybersecurity toolkit
 
 ⚠ **Disclaimer**: This tool is created for educational purposes only. The developers are not responsible for any misuse of this software.
 
-### ✨ What's New
+### ✨ What's New (v2.2.2)
 
-*   **Complete GUI Overhaul**: The old console-based menu has been replaced with an intuitive and modern graphical interface.
-*   **Plugin System**: Laitoxx is now extensible! You can add new functionality by creating or installing plugins without altering the core code.
-*   **Theming Engine**: Customize the application's appearance with easy-to-edit `.json` theme files.
-*   **Multi-Language Support**: The new architecture includes support for internationalization (i18n) to make the tool accessible to a global audience.
-*   **Modular Architecture**: The entire codebase has been refactored into a clean, modular structure, making it easier to maintain and scale.
+*   **Google OSINT → Google Dork Engine**: The old Google OSINT module has been fully replaced with an advanced Google Dork engine, providing deeper, more accurate and more flexible search capabilities.
+*   **New Data Search Module with Integrated Database**: A redesigned data lookup system that combines enhanced **email lookup** and **phone number lookup** into one unified tool powered by a new internal database.
+*   **Zenmap Integration**: Native support for launching and managing Zenmap (the graphical interface for Nmap) directly inside Laitoxx, without the need to use external applications.
+*   **Reworked Port Scanner (Nmap-based)**: The port scanner has been completely rebuilt to operate on top of Nmap, offering higher accuracy, improved performance, and expanded scanning profiles.
+*   **Bug Fixes & Stability Improvements**: Numerous internal optimizations and fixes to ensure smoother, faster, and more reliable operation of the application.
 
 ### 🔹 Features
 
@@ -71,13 +72,12 @@ Laitoxx — это мощный инструмент для OSINT (развед�
 
 ⚠ **Дисклеймер**: Этот инструмент создан исключительно в образовательных целях. Разработчики не несут ответственности за его неправильное использование.
 
-### ✨ Что нового
-
-*   **Полностью новый GUI**: Старое консольное меню было заменено интуитивно понятным и современным графическим интерфейсом.
-*   **Система плагинов**: Теперь Laitoxx можно расширять! Вы можете добавлять новую функциональность, создавая или устанавливая плагины, не изменяя основной код.
-*   **Система тем**: Настраивайте внешний вид приложения с помощью легко редактируемых файлов тем в формате `.json`.
-*   **Поддержка нескольких языков**: Новая архитектура включает поддержку интернационализации (i18n), чтобы сделать инструмент доступным для глобальной аудитории.
-*   **Модульная архитектура**: Вся кодовая база была реорганизована в чистую, модульную структуру, что упрощает ее поддержку и масштабирование.
+### ✨ Что нового (v2.2.2)
+*   **Обновление Google OSINT → Google Dork**: Старый модуль Google OSINT был полностью переработан и заменён продвинутым Google Dork-движком с поддержкой расширенных поисковых операторов и более глубокого анализа.
+*   **Новый модуль Data Search с внутренней базой данных**: Создана новая, улучшенная система поиска, объединяющая в одном инструменте расширенный поиск по **email** и **номеру телефона**, используя обновлённую локальную базу данных.
+*   **Интеграция Zenmap**: Теперь можно запускать и управлять сетевыми сканами Zenmap (GUI-версия Nmap) прямо из приложения Laitoxx, без сторонних программ.
+*   **Переработанный PortScanner на основе Nmap**: Сканер портов полностью переписан и теперь работает на ядре Nmap, обеспечивая более точные результаты, повышенную скорость и улучшенные профили сканирования.
+*   **Исправление ошибок и повышение стабильности**: Проведены многочисленные внутренние оптимизации и фиксы для стабильной и плавной работы приложения.
 
 ### 🔹 Функционал
 
