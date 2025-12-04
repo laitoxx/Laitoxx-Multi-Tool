@@ -1,4 +1,4 @@
-# Laitoxx Multi-Tool V2.2.1
+# Laitoxx Multi-Tool V2.2.2
 
 <img width="1919" height="1028" alt="изображение" src="https://github.com/user-attachments/assets/2d4bd250-f366-491d-8aa5-dd1524d463ab" />
 
