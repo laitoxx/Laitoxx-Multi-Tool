@@ -66,9 +66,6 @@ def _install_recursion_logger():
 
 _install_recursion_logger()
 
-# ВАЖНО: DDoS функция не импортируется по вашему запросу
-# from ddos_module.attacks import ...
-
 
 def display_main_menu():
     print(f"""{gradient_text(banner_text, Color.current_color_scheme)}                      
