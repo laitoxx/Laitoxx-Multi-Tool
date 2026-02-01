@@ -4,9 +4,9 @@ from ..shared_utils import Color
 
 def search_database():
     """
-    Searches for data in files located in the 'bd' directory.
+    # Searches for data in files located in the 'db' directory.
     """
-    db_dir = 'bd'
+    db_dir = 'db/'
     if not os.path.exists(db_dir) or not os.path.isdir(db_dir):
         print(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Directory '{db_dir}' does not exist. Please create it and add files for searching.")
