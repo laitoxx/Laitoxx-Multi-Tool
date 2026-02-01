@@ -1,7 +1,8 @@
-# shared_utils.py
 from colorama import Fore, init
 from pystyle import Anime, Colors, Colorate, Center
 from telegraph import Telegraph
+
+USERSBOX_API_KEY = ""
 
 # Инициализация colorama
 init(autoreset=True)
