@@ -1,4 +1,4 @@
-from script.tools.temp_mail import (temp_mail)
+from script.tools.temp_mail import temp_mail
 from script.tools.data_search import data_search_tool
 from script.tools.nmap_scanner.nmap_scanner import nmap_scanner_tool
 from script.tools.hash_tools.rainbow_table_generator import rainbow_table_tool
@@ -61,6 +61,7 @@ from PyQt6.QtMultimedia import QMediaPlayer, QVideoSink, QVideoFrame
 from plugin_builder import PluginBuilderWindow
 from i18n import TRANSLATIONS
 
+# rebyat, ny eta pizdets...
 # --- Translator Setup ---
 
 
