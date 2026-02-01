@@ -1,5 +1,6 @@
 from ..shared_utils import Color
 
+
 def transform_text():
     """
     Transforms input text using a predefined character replacement dictionary.
@@ -17,6 +18,8 @@ def transform_text():
     if input_text is None:
         return
 
-    transformed_text = "".join(translit_dict.get(char, char) for char in input_text)
+    transformed_text = "".join(translit_dict.get(char, char)
+                               for char in input_text)
 
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Result: {transformed_text}{Color.RESET}")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Result: {transformed_text}{Color.RESET}")

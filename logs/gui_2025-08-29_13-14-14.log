@@ -1,3 +1,0 @@
-2025-08-29 13:14:14,615 - INFO - Application starting...
-2025-08-29 13:14:15,058 - DEBUG - Starting new HTTPS connection (1): api.telegra.ph:443
-2025-08-29 13:14:15,326 - DEBUG - https://api.telegra.ph:443 "POST /createAccount/ HTTP/1.1" 200 215

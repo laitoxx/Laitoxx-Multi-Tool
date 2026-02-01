@@ -1,6 +1,7 @@
 import json
 import os
 
+
 class I18n:
     def __init__(self, language='ru'):
         self.language = language
@@ -9,19 +10,21 @@ class I18n:
     def load_translations(self):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         # Simplified path construction
-        filepath = os.path.join(base_dir, '..', 'translations', f'{self.language}.json')
+        filepath = os.path.join(
+            base_dir, '..', 'translations', f'{self.language}.json')
 
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
             if self.language != 'ru':
-                self.language = 'ru' # Fallback to Russian
+                self.language = 'ru'  # Fallback to Russian
                 return self.load_translations()
             return {}
 
     def translate(self, key, **kwargs):
         return self.translations.get(key, key).format(**kwargs)
+
 
 def get_current_language():
     # In a real app, this might read from a config file
@@ -31,6 +34,7 @@ def get_current_language():
             return f.read().strip()
     except FileNotFoundError:
         return 'ru'
+
 
 i18n = I18n(get_current_language())
 
@@ -85,6 +89,7 @@ TRANSLATIONS = {
         "Check Phone Number": "Проверить номер телефона",
         "Check IP": "Проверить IP",
         "Validate Email": "Проверить Email",
+        "Data Search": "Поиск данных",
         "Info Website": "Информация о сайте",
         "Gmail Osint": "Gmail Osint",
         "Database search": "Поиск по базам данных",
@@ -108,6 +113,15 @@ TRANSLATIONS = {
         "Ip logger": "IP логгер",
         "Obfuscate python": "Обфускация Python",
         "Phish Bot(lamer)": "Фишинг-бот (lamer)",
+        "data_search_title": "Поиск данных",
+        "data_search_mode_label": "Тип поиска",
+        "data_search_value_label": "Введите значение",
+        "data_search_phone_option": "Телефон",
+        "data_search_email_option": "Email",
+        "data_search_telegram_option": "Telegram",
+        "data_search_phone_placeholder": "Введите номер без +",
+        "data_search_email_placeholder": "Введите email",
+        "data_search_telegram_placeholder": "Введите username без @",
         "plugin_builder_title": "Конструктор плагинов",
         "plugin_name": "Имя плагина",
         "author_name": "Имя автора",
@@ -211,6 +225,7 @@ TRANSLATIONS = {
         "Check Phone Number": "Check Phone Number",
         "Check IP": "Check IP",
         "Validate Email": "Validate Email",
+        "Data Search": "Data Search",
         "Info Website": "Info Website",
         "Gmail Osint": "Gmail Osint",
         "Database search": "Database search",
@@ -234,6 +249,15 @@ TRANSLATIONS = {
         "Ip logger": "Ip logger",
         "Obfuscate python": "Obfuscate python",
         "Phish Bot(lamer)": "Phish Bot(lamer)",
+        "data_search_title": "Data Search",
+        "data_search_mode_label": "Search type",
+        "data_search_value_label": "Enter value",
+        "data_search_phone_option": "Phone",
+        "data_search_email_option": "Email",
+        "data_search_telegram_option": "Telegram",
+        "data_search_phone_placeholder": "Phone without +",
+        "data_search_email_placeholder": "Enter email",
+        "data_search_telegram_placeholder": "Username without @",
         "plugin_builder_title": "Plugin Builder",
         "plugin_name": "Plugin Name",
         "author_name": "Author Name",

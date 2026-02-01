@@ -1,0 +1,71 @@
+Ru:
+
+Пользовательское соглашение для Laitoxx Multi-Tool
+
+Последнее обновление: [09.03.2025]
+
+Настоящее соглашение регулирует использование программного обеспечения Laitoxx Multi-Tool (далее – «Программа»). Устанавливая, используя или получая доступ к Программе, вы соглашаетесь с условиями данного соглашения.
+1. Общие положения
+
+1.1. Программа предоставляется исключительно в образовательных и исследовательских целях.
+1.2. Разработчики не несут ответственности за любое использование данного программного обеспечения.
+1.3. Использование Программы осуществляется на ваш страх и риск.
+2. Лицензия и использование
+
+2.1. Вы имеете право использовать Программу только в рамках закона и этических норм.
+2.2. Любое использование Программы в незаконных или вредоносных целях запрещено.
+2.3. Запрещено модифицировать, распространять или продавать Программу без разрешения разработчиков.
+3. Отказ от ответственности
+
+3.1. Программа предоставляется «как есть» (as is) без каких-либо гарантий.
+3.2. Разработчики не гарантируют работоспособность, точность и безопасность Программы.
+3.3. Разработчики не несут ответственности за любые убытки, вред или ущерб, возникшие в результате использования Программы.
+3.4. Использование Программы влечет за собой полную ответственность пользователя.
+4. Изменения и обновления
+
+4.1. Разработчики оставляют за собой право вносить изменения в Программу и условия соглашения без уведомления.
+4.2. Программа может изменяться без вашего участия. Обновления могут включать добавление, изменение или удаление функций.
+4.3. Данное соглашение распространяется на все версии Программы, независимо от того, когда она была скачана или запущена – до или после появления соглашения.
+5. Заключительные положения
+
+5.1. Устанавливая и используя Программу, вы подтверждаете, что ознакомились с данным соглашением и согласны с его условиями.
+5.2. Если вы не согласны с условиями, немедленно прекратите использование Программы и удалите её с вашего устройства.
+5.3. Любые претензии или споры, связанные с использованием Программы, не подлежат рассмотрению разработчиками.
+
+⚠ Важно: Использование Laitoxx Multi-Tool – это ваш личный выбор и ответственность. Разработчики не поощряют и не поддерживают незаконные действия.
+
+En:
+
+Laitoxx Multi-Tool – User Agreement
+
+Last Updated: [09.03.2025]
+
+This agreement governs the use of Laitoxx Multi-Tool (hereinafter referred to as the "Software"). By installing, using, or accessing the Software, you agree to the terms of this agreement.
+1. General Provisions
+
+1.1. The Software is provided for educational and research purposes only.
+1.2. The developers are not responsible for any use of this Software.
+1.3. Use of the Software is at your own risk.
+2. License and Usage
+
+2.1. You may use the Software only within the bounds of the law and ethical norms.
+2.2. Any use of the Software for illegal or malicious purposes is strictly prohibited.
+2.3. It is forbidden to modify, distribute, or sell the Software without the developers' permission.
+3. Disclaimer of Liability
+
+3.1. The Software is provided "as is" without any warranties.
+3.2. The developers do not guarantee functionality, accuracy, or security of the Software.
+3.3. The developers are not liable for any losses, damages, or harm resulting from the use of the Software.
+3.4. The user bears full responsibility for the use of the Software.
+4. Changes and Updates
+
+4.1. The developers reserve the right to modify the Software and this agreement without notice.
+4.2. The Software may change without your involvement, and updates may include adding, modifying, or removing features.
+4.3. This agreement applies to all versions of the Software, regardless of whether it was downloaded or used before or after this agreement was introduced.
+5. Final Provisions
+
+5.1. By installing and using the Software, you confirm that you have read and agree to these terms.
+5.2. If you do not agree with these terms, immediately stop using the Software and remove it from your device.
+5.3. Any claims or disputes related to the Software will not be considered by the developers.
+
+⚠ Important: The use of Laitoxx Multi-Tool is your personal choice and responsibility. The developers do not encourage or support illegal activities.

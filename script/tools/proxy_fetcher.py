@@ -29,7 +29,8 @@ def choose_proxy_type_gui_fallback():
 
         app = QApplication.instance()
         if app is not None and threading.current_thread() is threading.main_thread():
-            dialog = CustomInputDialog(None, "Proxy Type Selection", "Select proxy type:")
+            dialog = CustomInputDialog(
+                None, "Proxy Type Selection", "Select proxy type:")
             dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
             dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
 
@@ -40,8 +41,9 @@ def choose_proxy_type_gui_fallback():
 
             # Set default size and make sure dialog appears in front
             dialog.resize(300, 150)
-            dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
-            
+            dialog.setWindowFlags(dialog.windowFlags() |
+                                  Qt.WindowType.WindowStaysOnTopHint)
+
             result = dialog.exec()
             if result == 1:  # QDialog.Accepted
                 return combo.currentText()
@@ -52,7 +54,8 @@ def choose_proxy_type_gui_fallback():
         pass
 
     # Console fallback
-    choice = input(f"{Color.DARK_GRAY}  - {Color.WHITE}Select (1-3) [1]: {Color.RESET}")
+    choice = input(
+        f"{Color.DARK_GRAY}  - {Color.WHITE}Select (1-3) [1]: {Color.RESET}")
     if choice is None:
         return None
     choice = choice.strip() or '1'
@@ -75,10 +78,12 @@ def get_proxy_list():
 
     url = PROXY_SCRAPER_RAW.get(proxy_type)
     if not url:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Unsupported proxy type.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Unsupported proxy type.")
         return
 
-    print(f"\n{Color.DARK_GRAY}[{Color.LIGHT_BLUE}i{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Downloading {proxy_type} proxies from ProxyScraper...")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.LIGHT_BLUE}i{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Downloading {proxy_type} proxies from ProxyScraper...")
 
     session = requests.Session()
     session.headers.update({'User-Agent': 'Mozilla/5.0'})
@@ -88,17 +93,20 @@ def get_proxy_list():
         resp.raise_for_status()
         text = resp.text
     except requests.exceptions.RequestException as e:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Failed to fetch proxies: {e}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Failed to fetch proxies: {e}")
         return
 
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     proxies = [p for p in lines if ':' in p]
 
     if not proxies:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No proxies found in the file.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No proxies found in the file.")
         return
 
-    print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Fetched {len(proxies)} proxies ({proxy_type}).")
+    print(
+        f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Fetched {len(proxies)} proxies ({proxy_type}).")
 
     # Display list: use GUI message box with option to open a viewer dialog when available
     try:
@@ -106,7 +114,8 @@ def get_proxy_list():
         import threading
         app = QApplication.instance()
         if app is not None and threading.current_thread() is threading.main_thread():
-            resp = QMessageBox.question(None, 'Proxy fetcher', 'Display the list of fetched proxies?', QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            resp = QMessageBox.question(None, 'Proxy fetcher', 'Display the list of fetched proxies?',
+                                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if resp == QMessageBox.StandardButton.Yes:
                 dlg = QDialog()
                 dlg.setWindowTitle('Proxies')
@@ -118,34 +127,42 @@ def get_proxy_list():
                 dlg.resize(800, 600)
                 dlg.exec()
             # Save prompt
-            save_resp = QMessageBox.question(None, 'Proxy fetcher', 'Save proxies to file?', QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            save_resp = QMessageBox.question(
+                None, 'Proxy fetcher', 'Save proxies to file?', QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if save_resp == QMessageBox.StandardButton.Yes:
                 suggested = f"proxies_{proxy_type}.txt"
-                filename, _ = QFileDialog.getSaveFileName(None, 'Save proxies', suggested, 'Text Files (*.txt);;All Files (*)')
+                filename, _ = QFileDialog.getSaveFileName(
+                    None, 'Save proxies', suggested, 'Text Files (*.txt);;All Files (*)')
                 if filename:
                     try:
                         with open(filename, 'w', encoding='utf-8') as f:
                             f.write('\n'.join(proxies))
-                        print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Saved {len(proxies)} proxies to {filename}")
+                        print(
+                            f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Saved {len(proxies)} proxies to {filename}")
                     except Exception as e:
-                        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Failed to save file: {e}")
+                        print(
+                            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Failed to save file: {e}")
             return
     except Exception:
         # GUI not available or dialog failed; fall back to console
         pass
 
     # Console fallback for display/save
-    show = input(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Display the list? (y/n) [n]: {Color.RESET}")
+    show = input(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Display the list? (y/n) [n]: {Color.RESET}")
     if show and show.strip().lower() == 'y':
         for i, p in enumerate(proxies, 1):
             print(f"  {Color.DARK_GRAY}[{i:03d}]{Color.WHITE} {p}")
 
-    save = input(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Save to file? (y/n) [y]: {Color.RESET}")
+    save = input(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Save to file? (y/n) [y]: {Color.RESET}")
     if save is None or save.strip().lower() != 'n':
         filename = f"proxies_{proxy_type}.txt"
         try:
             with open(filename, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(proxies))
-            print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Saved {len(proxies)} proxies to {filename}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Saved {len(proxies)} proxies to {filename}")
         except Exception as e:
-            print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Failed to save file: {e}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Failed to save file: {e}")

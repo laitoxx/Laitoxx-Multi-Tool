@@ -1,7 +1,7 @@
 import hashlib
 import csv
-import os
 import secrets
+
 
 def hash_function(text, algorithm, salt=None):
     """Hashes the text using the specified algorithm, optionally with salt."""
@@ -11,6 +11,7 @@ def hash_function(text, algorithm, salt=None):
     else:
         h.update(text.encode('utf-8'))
     return h.hexdigest()
+
 
 def reduce_function(hashed_text, charset, max_len, step=0):
     """Reduces a hash to a new plaintext using a family of reduction functions."""
@@ -30,6 +31,7 @@ def reduce_function(hashed_text, charset, max_len, step=0):
 
     return new_plaintext
 
+
 def generate_rainbow_table(charset, algorithm, chain_length, num_chains, password_len, output_file, use_salt=False, salt_length=8):
     """Generates and stores a rainbow table with optional salt support."""
     table = []
@@ -37,7 +39,8 @@ def generate_rainbow_table(charset, algorithm, chain_length, num_chains, passwor
 
     if use_salt:
         # Generate a random salt for all hashes in this table
-        salt_used = secrets.token_hex(salt_length // 2)[:salt_length]  # Ensure exact length
+        salt_used = secrets.token_hex(
+            salt_length // 2)[:salt_length]  # Ensure exact length
         print(f"Using salt: {salt_used}")
 
     print(f"Generating {num_chains} chains of length {chain_length}...")
@@ -59,7 +62,8 @@ def generate_rainbow_table(charset, algorithm, chain_length, num_chains, passwor
 
         for j in range(chain_length):
             hashed = hash_function(current_plaintext, algorithm, salt_used)
-            current_plaintext = reduce_function(hashed, charset, password_len, j)
+            current_plaintext = reduce_function(
+                hashed, charset, password_len, j)
 
         end_plaintext = current_plaintext
         table.append((start_plaintext, end_plaintext))
@@ -84,6 +88,7 @@ def generate_rainbow_table(charset, algorithm, chain_length, num_chains, passwor
         print(f"Error saving table to file: {e}")
         return False
 
+
 def rainbow_table_tool(data=None):
     """Tool function to be called from the GUI for generating a rainbow table."""
     if data:
@@ -98,7 +103,8 @@ def rainbow_table_tool(data=None):
     else:
         print("=== Rainbow Table Generator Tool ===")
         print("This tool generates a rainbow table for password cracking.")
-        print("A rainbow table is a precomputed table of hash chains used to crack passwords.")
+        print(
+            "A rainbow table is a precomputed table of hash chains used to crack passwords.")
         print("WARNING: This can be a very slow and resource-intensive process!")
         print("Generation time depends on chain length, number of chains, and password length.")
         print()
@@ -115,13 +121,18 @@ def rainbow_table_tool(data=None):
         print("This would generate a table for 4-character passwords using a,b,c,1,2,3")
         print()
 
-        charset = input("Enter the character set (e.g., 'abcdefghijklmnopqrstuvwxyz0123456789'): ").strip()
-        algorithm = input("Enter the hash algorithm (e.g., 'md5', 'sha256'): ").lower().strip()
+        charset = input(
+            "Enter the character set (e.g., 'abcdefghijklmnopqrstuvwxyz0123456789'): ").strip()
+        algorithm = input(
+            "Enter the hash algorithm (e.g., 'md5', 'sha256'): ").lower().strip()
 
         try:
-            chain_length = int(input("Enter the chain length (recommended: 1000-10000): ").strip())
-            num_chains = int(input("Enter the number of chains (recommended: 10000-100000): ").strip())
-            password_len = int(input("Enter the password length (e.g., 6-8): ").strip())
+            chain_length = int(
+                input("Enter the chain length (recommended: 1000-10000): ").strip())
+            num_chains = int(
+                input("Enter the number of chains (recommended: 10000-100000): ").strip())
+            password_len = int(
+                input("Enter the password length (e.g., 6-8): ").strip())
         except ValueError:
             print("Invalid number entered. Please enter valid integers.")
             return
@@ -132,12 +143,14 @@ def rainbow_table_tool(data=None):
         salt_length = 8  # Default
         if use_salt:
             try:
-                salt_length = int(input("Enter salt length (default 8): ").strip() or "8")
+                salt_length = int(
+                    input("Enter salt length (default 8): ").strip() or "8")
             except ValueError:
                 print("Invalid salt length, using default of 8.")
                 salt_length = 8
 
-        output_file = input("Enter the output CSV file name (e.g., 'rainbow_table.csv'): ").strip()
+        output_file = input(
+            "Enter the output CSV file name (e.g., 'rainbow_table.csv'): ").strip()
 
     if not all([charset, algorithm, output_file]):
         print("All fields are required.")
@@ -147,7 +160,9 @@ def rainbow_table_tool(data=None):
         print(f"Error: Unsupported hash algorithm '{algorithm}'.")
         return
 
-    generate_rainbow_table(charset, algorithm, chain_length, num_chains, password_len, output_file, use_salt, salt_length)
+    generate_rainbow_table(charset, algorithm, chain_length,
+                           num_chains, password_len, output_file, use_salt, salt_length)
+
 
 if __name__ == '__main__':
     rainbow_table_tool()

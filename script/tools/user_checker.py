@@ -2,13 +2,15 @@ import requests
 import concurrent.futures
 from ..shared_utils import Color
 
+
 def check_platform(session, platform, url_template, username):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     }
     url = url_template.format(username=username)
     try:
-        response = session.get(url, headers=headers, timeout=10, allow_redirects=True)
+        response = session.get(url, headers=headers,
+                               timeout=10, allow_redirects=True)
         if response.status_code == 200 and username.lower() in response.url.lower():
             return platform, url
         if response.status_code == 200 and not response.history:
@@ -52,12 +54,15 @@ def check_username():
         "Bandcamp": "https://bandcamp.com/{username}",
     }
 
-    username = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter a username to check: {Color.RESET}").strip()
+    username = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter a username to check: {Color.RESET}").strip()
     if not username:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Username cannot be empty.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Username cannot be empty.")
         return
 
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Checking for username '{username}' on {len(urls)} platforms...")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Checking for username '{username}' on {len(urls)} platforms...")
 
     found_accounts = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
@@ -72,12 +77,16 @@ def check_username():
                 if platform and url:
                     found_accounts[platform] = url
 
-                print(f"\r{Color.DARK_GRAY}Progress: {i+1}/{len(urls)} platforms checked... Found: {len(found_accounts)}", end="")
+                print(
+                    f"\r{Color.DARK_GRAY}Progress: {i+1}/{len(urls)} platforms checked... Found: {len(found_accounts)}", end="")
 
     print("\n")
     if not found_accounts:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No accounts found for username '{username}' on these platforms.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No accounts found for username '{username}' on these platforms.")
     else:
-        print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Found {len(found_accounts)} account(s):")
+        print(
+            f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Found {len(found_accounts)} account(s):")
         for platform, url in sorted(found_accounts.items()):
-            print(f"  {Color.DARK_GRAY}-{Color.WHITE} {platform:<15}: {Color.LIGHT_BLUE}{url}")
+            print(
+                f"  {Color.DARK_GRAY}-{Color.WHITE} {platform:<15}: {Color.LIGHT_BLUE}{url}")

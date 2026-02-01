@@ -6,6 +6,7 @@ import string
 fake = Faker()
 ua = UserAgent()
 
+
 def generate_spoofed_headers():
     headers = {
         "User-Agent": ua.random,
@@ -19,12 +20,14 @@ def generate_spoofed_headers():
     }
     return headers
 
+
 def generate_cookies():
     """Генерация случайных cookies"""
     return {
         "session_id": "".join(random.choices(string.ascii_letters + string.digits, k=32)),
         "user_id": fake.uuid4()
     }
+
 
 def spoof_fingerprint():
     """Подделка фингерпринта"""

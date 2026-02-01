@@ -1,2 +1,0 @@
-ssl.SSLContext module before restore: gevent.ssl
-restored_from_gevent: True

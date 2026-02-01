@@ -1,6 +1,7 @@
 import hashlib
 import os
 
+
 def dictionary_crack(target_hash, algorithm, wordlist_path):
     """
     Performs a dictionary attack on a hash using a pure Python implementation.
@@ -14,7 +15,8 @@ def dictionary_crack(target_hash, algorithm, wordlist_path):
     except ValueError:
         return f"Error: Unsupported hash algorithm '{algorithm}' for hashlib. Please use a standard algorithm like 'md5', 'sha1', 'sha256', etc."
 
-    print(f"Starting dictionary attack on '{target_hash[:15]}...' with algorithm '{algorithm}'...")
+    print(
+        f"Starting dictionary attack on '{target_hash[:15]}...' with algorithm '{algorithm}'...")
 
     try:
         with open(wordlist_path, 'r', encoding='utf-8', errors='ignore') as f:
@@ -36,6 +38,7 @@ def dictionary_crack(target_hash, algorithm, wordlist_path):
 
     return "Attack finished. Password not found in the provided wordlist."
 
+
 def dictionary_cracker_tool(data=None):
     """
     Tool function to be called from the GUI for the dictionary cracker.
@@ -54,9 +57,12 @@ def dictionary_cracker_tool(data=None):
         print("Supported algorithms: md5, sha1, sha224, sha256, sha384, sha512, etc.")
         print("Make sure the wordlist file exists and contains one word per line.")
         print()
-        target_hash = input("Enter the hash to crack (lowercase hex string): ").lower().strip()
-        algorithm = input("Enter the hash algorithm (e.g., md5, sha256): ").lower().strip()
-        wordlist_path = input("Enter the full path to the wordlist file (e.g., C:\\wordlists\\rockyou.txt): ").strip()
+        target_hash = input(
+            "Enter the hash to crack (lowercase hex string): ").lower().strip()
+        algorithm = input(
+            "Enter the hash algorithm (e.g., md5, sha256): ").lower().strip()
+        wordlist_path = input(
+            "Enter the full path to the wordlist file (e.g., C:\\wordlists\\rockyou.txt): ").strip()
 
     if not all([target_hash, algorithm, wordlist_path]):
         print("All fields are required.")
@@ -64,6 +70,7 @@ def dictionary_cracker_tool(data=None):
 
     result = dictionary_crack(target_hash, algorithm, wordlist_path)
     print(result)
+
 
 if __name__ == '__main__':
     dictionary_cracker_tool()

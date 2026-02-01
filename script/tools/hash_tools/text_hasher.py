@@ -1,5 +1,6 @@
 import hashlib
 
+
 def hash_text(text, algorithm):
     """
     Hashes the given text using the specified algorithm.
@@ -11,6 +12,7 @@ def hash_text(text, algorithm):
     except ValueError:
         return f"Unsupported hash algorithm: {algorithm}"
 
+
 def text_hasher_tool(data=None):
     """
     Tool function to be called from the GUI.
@@ -21,15 +23,18 @@ def text_hasher_tool(data=None):
         algorithm = data.get("algorithm", "sha256").lower().strip()
     else:
         print("=== Text Hasher Tool ===")
-        print("This tool allows you to hash any text using various cryptographic algorithms.")
+        print(
+            "This tool allows you to hash any text using various cryptographic algorithms.")
         print("Available algorithms include MD5, SHA1, SHA256, SHA512, and many others.")
         print("Note: MD5 and SHA1 are considered insecure for cryptographic purposes.")
         print("Use stronger algorithms like SHA256 or SHA512 for security.")
         print()
-        print("Available algorithms: " + ", ".join(sorted(hashlib.algorithms_available)))
+        print("Available algorithms: " +
+              ", ".join(sorted(hashlib.algorithms_available)))
         print()
         text = input("Enter the text you want to hash (can be any string): ")
-        algorithm = input("Enter the hash algorithm (e.g., md5, sha256, sha512): ").lower().strip()
+        algorithm = input(
+            "Enter the hash algorithm (e.g., md5, sha256, sha512): ").lower().strip()
 
     if not text:
         print("Text cannot be empty.")
@@ -44,6 +49,7 @@ def text_hasher_tool(data=None):
     print(f"Algorithm: {algorithm}")
     print(f"Original Text: {text}")
     print(f"Hashed Text: {hashed_text}")
+
 
 if __name__ == '__main__':
     text_hasher_tool()

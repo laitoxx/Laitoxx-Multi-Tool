@@ -1,26 +1,31 @@
 import whois
 from ..shared_utils import Color
 
+
 def get_website_info():
     """
     Retrieves and displays WHOIS information for a given domain.
     """
-    domain = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the website domain: {Color.RESET}")
+    domain = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the website domain: {Color.RESET}")
     if domain is None:
         return
     domain = domain.strip()
 
     if not domain:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} No domain entered.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} No domain entered.")
         return
 
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Retrieving WHOIS information for {domain}...")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Retrieving WHOIS information for {domain}...")
 
     try:
         domain_info = whois.whois(domain)
 
         if not domain_info.domain_name:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Could not retrieve WHOIS information. The domain may be incorrect or not registered.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Could not retrieve WHOIS information. The domain may be incorrect or not registered.")
             return
 
         # A dictionary to hold the information for cleaner printing
@@ -41,7 +46,8 @@ def get_website_info():
             "Country": domain_info.country
         }
 
-        print(f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}WHOIS Information for {domain} {Color.DARK_RED}]─" + '─' * 10)
+        print(
+            f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}WHOIS Information for {domain} {Color.DARK_RED}]─" + '─' * 10)
         for label, value in info_map.items():
             if value:
                 # Handle list values (like name_servers)
@@ -49,10 +55,13 @@ def get_website_info():
                     value_str = ", ".join(map(str, value))
                 else:
                     value_str = str(value).replace('\n', ', ')
-                print(f"{Color.DARK_RED}│ {Color.LIGHT_RED}{label:<20}: {Color.WHITE}{value_str}")
+                print(
+                    f"{Color.DARK_RED}│ {Color.LIGHT_RED}{label:<20}: {Color.WHITE}{value_str}")
         print(f"{Color.DARK_RED}└" + '─' * (45 + len(domain)))
 
     except whois.parser.PywhoisError as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Error: {e}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Error: {e}")
     except Exception as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} An unexpected error occurred: {e}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} An unexpected error occurred: {e}")

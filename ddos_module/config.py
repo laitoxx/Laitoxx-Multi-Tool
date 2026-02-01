@@ -37,6 +37,7 @@ Config = {
     }
 }
 
+
 def update_Config(**kwargs):
     """Обновление конфигурации"""
     Config.update(kwargs)

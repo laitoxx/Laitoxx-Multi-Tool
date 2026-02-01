@@ -1,116 +1,110 @@
+from __future__ import annotations
+
 import sys
 import traceback
-import os
-
-# Early monkeypatch guard: disable gevent.monkey.patch_all before any imports that
-# might trigger monkey-patching run. This must run as early as possible.
-try:
-    import importlib
-    gevent_monkey = importlib.import_module('gevent.monkey')
-    # Replace patch_all with a no-op to prevent unpredictable global monkeypatching
-    if hasattr(gevent_monkey, 'patch_all'):
-        gevent_monkey.patch_all = lambda *a, **k: None
-    # Log a short diagnostic file
-    try:
-        import datetime
-        logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
-        os.makedirs(logs_dir, exist_ok=True)
-        with open(os.path.join(logs_dir, f'gevent_guard_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.log'), 'w', encoding='utf-8') as fh:
-            fh.write('gevent.monkey.patch_all disabled by startup guard\n')
-    except Exception:
-        pass
-except Exception:
-    # gevent not installed or import failed — ignore
-    pass
+from pathlib import Path
+from typing import Type, NoReturn, Optional
+import datetime
 
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QIcon
-from gui import MainWindow, check_user_agreement, UserAgreementDialog
 
 
-def _global_excepthook(exc_type, exc_value, exc_tb):
-    """Global excepthook that captures RecursionError tracebacks to a file for diagnosis."""
-    try:
-        if issubclass(exc_type, RecursionError):
-            tb_text = ''.join(traceback.format_exception(exc_type, exc_value, exc_tb))
-            # Write a timestamped dump to logs for later inspection
-            import datetime
-            logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
-            os.makedirs(logs_dir, exist_ok=True)
-            filename = os.path.join(logs_dir, f"recursion_traceback_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
+class Env:
+    def __init__(self):
+        self.logs_dir = Path(__file__).parent / "logs"
+        self.logs_dir.mkdir(exist_ok=True)
+
+    def setup(self) -> None:
+        self._disable_gevent()
+        self._restore_ssl()
+        self._exc_handler()
+
+    def _disable_gevent(self) -> None:
+        try:
+            import importlib
+            gevent_monkey = importlib.import_module('gevent.monkey')
+            if hasattr(gevent_monkey, 'patch_all'):
+                gevent_monkey.patch_all = lambda *_, **__: None
+        except ImportError:
+            pass
+
+    def _restore_ssl(self) -> None:
+        try:
+            import ssl
+            if getattr(ssl.SSLContext, '__module__', '') != 'ssl':
+                self.ssl_context(ssl)
+        except Exception:
+            pass
+
+    def ssl_context(self, mod) -> None:
+        try:
+            import gevent.ssl
+            if hasattr(gevent.ssl, 'orig_SSLContext'):
+                mod.SSLContext = gevent.ssl.orig_SSLContext
+        except ImportError:
+            pass
+
+    def _exc_handler(self) -> None:
+        def handler(exc_type: Type, exc_value: Exception, exc_tb) -> None:
+            if issubclass(exc_type, RecursionError):
+                self._log_err(exc_type, exc_value, exc_tb)
+            sys.__excepthook__(exc_type, exc_value, exc_tb)
+
+        sys.excepthook = handler
+
+    def _log_err(self, exc_type: Type, exc_value: Exception, exc_tb) -> None:
+        try:
+            timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = self.logs_dir / f"recursion_error_{timestamp}.log"
+
             with open(filename, 'w', encoding='utf-8') as f:
-                f.write(tb_text)
-            # Print short message to stderr so user sees it
-            sys.stderr.write(f"RecursionError captured and written to {filename}\n")
-        # Delegate to default handler afterwards
-    except Exception:
-        pass
-    # Call the default handler to preserve normal behavior
-    sys.__excepthook__(exc_type, exc_value, exc_tb)
+                f.write(''.join(traceback.format_exception(
+                    exc_type, exc_value, exc_tb)))
+
+            print(f"RecursionError saved to: {filename}", file=sys.stderr)
+        except Exception:
+            pass
 
 
-def main():
-    """
-    This is the main entry point for the Laitoxx application.
-    It initializes and shows the main GUI window.
-    """
-    # Install global excepthook early
-    sys.excepthook = _global_excepthook
+class App:
+    def __init__(self):
+        self.app: Optional[QApplication] = None
 
-    # --- SSL monkeypatch protection (restore stdlib SSLContext if overridden) ---
-    try:
-        import ssl as _ssl
-        # If SSLContext implementation is not from stdlib, try to restore
-        ssl_module = getattr(_ssl.SSLContext, '__module__', '')
-        if ssl_module != 'ssl':
-            # Attempt to locate original in common monkeypatchers
-            restored = False
-            try:
-                import gevent.ssl as _gevent_ssl  # type: ignore
-                if getattr(_gevent_ssl, 'orig_SSLContext', None):
-                    _ssl.SSLContext = _gevent_ssl.orig_SSLContext
-                    restored = True
-            except Exception:
-                pass
+    def run(self) -> NoReturn:
+        guard = Env()
+        guard.setup()
 
-            # Log diagnostic information
-            try:
-                import datetime
-                logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
-                os.makedirs(logs_dir, exist_ok=True)
-                with open(os.path.join(logs_dir, f'ssl_patch_diag_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.log'), 'w', encoding='utf-8') as fh:
-                    fh.write(f'ssl.SSLContext module before restore: {ssl_module}\n')
-                    fh.write(f'restored_from_gevent: {restored}\n')
-            except Exception:
-                pass
-    except Exception:
-        # If anything goes wrong while checking/restoring SSL, ignore and continue
-        pass
+        from gui import MainWindow
 
-    app = QApplication(sys.argv)
+        self.app = QApplication(sys.argv)
+        self._set_icon()
 
-    # Set application icon
-    icon_path = os.path.join(os.path.dirname(__file__), "icons", "ico.ico")
-    if os.path.exists(icon_path):
-        app.setWindowIcon(QIcon(icon_path))
-
-    # Check if user has already agreed to terms
-    if check_user_agreement():
-        # User has already agreed, show main window directly
-        main_win = MainWindow()
-        main_win.show()
-        sys.exit(app.exec())
-    else:
-        # Show user agreement dialog first
-        agreement_dialog = UserAgreementDialog()
-        if agreement_dialog.exec() and agreement_dialog.agreed:
-            # User agreed, show main window
-            main_win = MainWindow()
-            main_win.show()
-            sys.exit(app.exec())
-        else:
-            # User disagreed or closed dialog, exit application
+        if not self._check_agreement():
             sys.exit(0)
+
+        window = MainWindow()
+        window.show()
+        sys.exit(self.app.exec())
+
+    def _set_icon(self) -> None:
+        icon_path = Path(__file__).parent / "icons" / "ico.ico"
+        if icon_path.exists():
+            self.app.setWindowIcon(QIcon(str(icon_path)))
+
+    def _check_agreement(self) -> bool:
+        from gui import check_user_agreement, UserAgreementDialog
+
+        if check_user_agreement():
+            return True
+
+        dialog = UserAgreementDialog()
+        return dialog.exec() and getattr(dialog, 'agreed', False)
+
+
+def main() -> None:
+    launcher = App()
+    launcher.run()
 
 
 if __name__ == '__main__':

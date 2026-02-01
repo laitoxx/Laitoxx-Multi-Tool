@@ -1,5 +1,4 @@
 # shared_utils.py
-import os
 from colorama import Fore, init
 from pystyle import Anime, Colors, Colorate, Center
 from telegraph import Telegraph
@@ -8,6 +7,8 @@ from telegraph import Telegraph
 init(autoreset=True)
 
 # --- Класс для цветов консоли ---
+
+
 class Color:
     DARK_RED = Fore.RED
     DARK_GRAY = Fore.LIGHTBLACK_EX
@@ -28,8 +29,8 @@ class Color:
     YELLOW = Fore.YELLOW
     CYAN = Fore.CYAN
 
+
 # --- Глобальные константы и переменные ---
-from .config import USERSBOX_API_KEY
 
 MAX_TITLE_LENGTH = 30
 current_color_scheme = 'red'
@@ -88,10 +89,14 @@ intro = """
                                Press to Enter
 """
 
+
 def show_intro():
-    Anime.Fade(Center.Center(intro), Colors.black_to_red, Colorate.Vertical, interval=0.045, enter=True)
+    Anime.Fade(Center.Center(intro), Colors.black_to_red,
+               Colorate.Vertical, interval=0.045, enter=True)
 
 # --- Функции для управления цветом ---
+
+
 def change_color_scheme(scheme):
     global current_color_scheme, Color
     current_color_scheme = scheme
@@ -107,8 +112,9 @@ def change_color_scheme(scheme):
         Color.LIGHT_RED, Color.RED, Color.DARK_RED = Color.CYAN, Color.CYAN, Fore.CYAN
     elif scheme == 'grayscale':
         Color.LIGHT_RED, Color.RED, Color.DARK_RED = Color.WHITE, Color.GRAY, Color.DARK_GRAY
-    else: # red (default)
+    else:  # red (default)
         Color.LIGHT_RED, Color.RED, Color.DARK_RED = Fore.LIGHTRED_EX, Fore.RED, Fore.RED
+
 
 def gradient_text(text, color_scheme):
     color_schemes = {

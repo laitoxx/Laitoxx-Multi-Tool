@@ -1,5 +1,6 @@
 from hashid import HashID
 
+
 def identify_hash(hash_string):
     """
     Identifies the possible types of a given hash string.
@@ -7,6 +8,7 @@ def identify_hash(hash_string):
     hashid = HashID()
     results = hashid.identifyHash(hash_string)
     return results
+
 
 def hash_identifier_tool(data=None):
     """
@@ -22,7 +24,8 @@ def hash_identifier_tool(data=None):
         print("Common hash types include MD5, SHA1, SHA256, bcrypt, etc.")
         print("Note: This tool provides possible matches, not definitive identification.")
         print()
-        hash_input = input("Enter the hash string you want to identify (e.g., a long string of letters/numbers): ").strip()
+        hash_input = input(
+            "Enter the hash string you want to identify (e.g., a long string of letters/numbers): ").strip()
 
     if not hash_input:
         print("Hash input cannot be empty.")
@@ -36,6 +39,7 @@ def hash_identifier_tool(data=None):
         print(f"Possible hash types for '{hash_input}':")
         for p_hash in possible_hashes:
             print(f"- {p_hash.name}")
+
 
 if __name__ == '__main__':
     hash_identifier_tool()
