@@ -1,12 +1,24 @@
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
+
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
 import requests
 from bs4 import BeautifulSoup
 from ..shared_utils import Color
 
 
 def gmail_osint():
-    """
-    Performs an OSINT search on a Gmail address using the activetk.jp service.
-    """
     email_prefix = input(
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the email prefix (e.g., for 'example@gmail.com', enter 'example'): {Color.RESET}"
     )
@@ -28,8 +40,6 @@ def gmail_osint():
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        # Find the main result container
         result_div = soup.find(
             'div', style=lambda value: 'border:1px solid #000' in value if value else False)
 
@@ -41,12 +51,10 @@ def gmail_osint():
         print(
             f"\n{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Google Account Data Found:")
 
-        # Extract and print data in a structured way
         data = {}
         all_text = result_div.get_text(separator='\n', strip=True)
         lines = all_text.split('\n')
 
-        # Simple key-value extraction
         data_map = {
             "Gaia ID": "Gaia ID",
             "Email": "Email",
@@ -59,15 +67,14 @@ def gmail_osint():
             for key, keyword in data_map.items():
                 if keyword in line and i + 1 < len(lines):
                     value = lines[i + 1]
-                    if "http" in value:  # It's a link
+                    if "http" in value:
                         data[key] = value
-                    else:  # It's regular text
+                    else: 
                         data[key] = line.split(
                             ':')[-1].strip() if ':' in line else value
 
-        # Handling for profile page and calendar is a bit different
         profile_page = result_div.find(
-            'a', href=lambda href: href and "maps.google.com" in href)
+            'a', href=lambda href: href and "maps.google.com" in href) # type: ignore
         if profile_page:
             data["Google Maps Profile"] = profile_page['href']
 
@@ -75,11 +82,10 @@ def gmail_osint():
             data["Google Calendar"] = "No public calendar found"
         else:
             calendar_link = result_div.find(
-                'a', href=lambda href: href and "calendar.google.com" in href)
+                'a', href=lambda href: href and "calendar.google.com" in href) # type: ignore
             if calendar_link:
                 data["Google Calendar"] = calendar_link['href']
 
-        # Print the extracted data
         for label, value in data.items():
             print(
                 f"  {Color.DARK_GRAY}-{Color.WHITE} {label:<22}: {Color.LIGHT_BLUE}{value}")

@@ -3,9 +3,7 @@ from ..shared_utils import Color
 
 
 def port_scanner_tool():
-    """
-    Launch zenmap GUI for port scanning instead of programmatic nmap.
-    """
+    
     try:
         subprocess.Popen([r"C:\Program Files (x86)\Nmap\zenmap\bin\pythonw.exe",
                          "-c", "from zenmapGUI.App import run;run()"])

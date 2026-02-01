@@ -81,7 +81,6 @@ def search_database():
                         formatted_result += f"{Color.DARK_RED}└" + \
                             '─' * (40 + len(filename)) + "\n"
                         print(formatted_result)
-                        # Stop after first match in file, can be removed if all matches are needed
                         break
 
         except FileNotFoundError:

@@ -1,8 +1,22 @@
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
+
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
 import webbrowser
 from urllib.parse import quote_plus
 from ..shared_utils import Color
 
-# Check if running in GUI mode
 IS_GUI = False
 try:
     from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QCheckBox,
@@ -18,9 +32,8 @@ if IS_GUI:
             super().__init__(parent)
             self.setWindowTitle("Google OSINT Dork Builder")
             self.setMinimumSize(800, 600)
-            self.selected_engines = ["google"]  # Default to Google
+            self.selected_engines = ["google"]
 
-            # Available dork operators with detailed explanations
             self.operators = {
                 # Basic operators
                 "site": "Search within a specific site/domain (e.g., site:example.com). Syntax: site:domain.com",
@@ -96,7 +109,7 @@ if IS_GUI:
             engines = ["Google", "Bing", "DuckDuckGo", "Yandex"]
             for engine in engines:
                 cb = QCheckBox(engine)
-                cb.setChecked(engine == "Google")  # Default Google selected
+                cb.setChecked(engine == "Google")
                 cb.stateChanged.connect(self.update_selected_engines)
                 engines_layout.addWidget(cb)
                 self.engine_checkboxes[engine.lower()] = cb
