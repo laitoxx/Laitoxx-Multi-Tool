@@ -6,7 +6,7 @@ from ..shared_utils import Color
 IS_GUI = False
 try:
     from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QCheckBox,
-                                 QLineEdit, QScrollArea, QWidget, QGridLayout, 
+                                 QLineEdit, QScrollArea, QWidget, QGridLayout,
                                  QTextEdit, QGroupBox, QDialogButtonBox)
     IS_GUI = True
 except ImportError:
