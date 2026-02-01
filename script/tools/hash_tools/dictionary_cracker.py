@@ -19,7 +19,7 @@ def dictionary_crack(target_hash, algorithm, wordlist_path):
         f"Starting dictionary attack on '{target_hash[:15]}...' with algorithm '{algorithm}'...")
 
     try:
-        with open(wordlist_path, 'r', encoding='utf-8', errors='ignore') as f:
+        with open(wordlist_path, encoding='utf-8', errors='ignore') as f:
             for i, line in enumerate(f):
                 word = line.strip()
 

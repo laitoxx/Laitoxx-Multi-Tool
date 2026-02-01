@@ -187,7 +187,7 @@ def save_config(filepath, value):
 
 def load_config(filepath):
     if os.path.exists(filepath):
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             return f.read().strip()
     return None
 
@@ -206,9 +206,9 @@ def save_user_agreement():
 def load_theme(filepath):
     try:
         if os.path.exists(filepath):
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 return json.load(f)
-    except (json.JSONDecodeError, IOError):
+    except (json.JSONDecodeError, OSError):
         return None
     return None
 
@@ -638,7 +638,7 @@ class UserAgreementDialog(QDialog):
 
         # Load agreement text
         try:
-            with open("User Agreement.txt", "r", encoding="utf-8") as f:
+            with open("User Agreement.txt", encoding="utf-8") as f:
                 agreement_content = f.read()
             self.agreement_text.setText(agreement_content)
         except Exception as e:
@@ -1160,7 +1160,7 @@ class MainWindow(QMainWindow):
                 filepath = os.path.join(plugin_dir, "plugin.json")
                 if os.path.exists(filepath):
                     try:
-                        with open(filepath, 'r', encoding='utf-8') as f:
+                        with open(filepath, encoding='utf-8') as f:
                             plugin_data = json.load(f)
                         if 'name' in plugin_data and 'steps' in plugin_data:
                             plugin_data['plugin_path'] = plugin_dir

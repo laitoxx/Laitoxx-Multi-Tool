@@ -84,7 +84,7 @@ def generate_rainbow_table(charset, algorithm, chain_length, num_chains, passwor
                 writer.writerows(table)
         print(f"Rainbow table successfully saved to '{output_file}'")
         return True
-    except IOError as e:
+    except OSError as e:
         print(f"Error saving table to file: {e}")
         return False
 

@@ -40,7 +40,7 @@ def search_database():
     for filename in files_in_db:
         filepath = os.path.join(db_dir, filename)
         try:
-            with open(filepath, 'r', encoding='UTF-8', errors='ignore') as f:
+            with open(filepath, encoding='UTF-8', errors='ignore') as f:
                 header_line = f.readline().strip()
                 delimiters = [',', ';', '\t', '|']
                 delimiter = next(

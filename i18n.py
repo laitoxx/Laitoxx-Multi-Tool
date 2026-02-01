@@ -14,7 +14,7 @@ class I18n:
             base_dir, '..', 'translations', f'{self.language}.json')
 
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
             if self.language != 'ru':
@@ -30,7 +30,7 @@ def get_current_language():
     # In a real app, this might read from a config file
     # For now, we can assume a default or a simple file-based setting
     try:
-        with open("language.settings", "r") as f:
+        with open("language.settings") as f:
             return f.read().strip()
     except FileNotFoundError:
         return 'ru'

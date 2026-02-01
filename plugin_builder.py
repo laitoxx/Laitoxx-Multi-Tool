@@ -223,7 +223,7 @@ class PluginBuilderWindow(QDialog):
         plugin_json_path = os.path.join(self.plugin_path, 'plugin.json')
         if os.path.exists(plugin_json_path):
             try:
-                with open(plugin_json_path, 'r', encoding='utf-8') as f:
+                with open(plugin_json_path, encoding='utf-8') as f:
                     self.plugin_data = json.load(f)
                 self.name_entry.setText(self.plugin_data.get("name", ""))
                 self.author_entry.setText(self.plugin_data.get("author", ""))

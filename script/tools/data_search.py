@@ -3,7 +3,8 @@ import hashlib
 import json
 import re
 from io import StringIO
-from typing import Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Tuple
+from collections.abc import Callable, Sequence
 
 import requests
 from bs4 import BeautifulSoup
@@ -50,7 +51,7 @@ def _log_separator(log: Callable[[str], None]) -> None:
     log("-" * 60)
 
 
-def _extract_links_from_response(url: str, log: Callable[[str], None]) -> List[str]:
+def _extract_links_from_response(url: str, log: Callable[[str], None]) -> list[str]:
     try:
         response = requests.get(
             url, headers=DEFAULT_HEADERS, timeout=REQUEST_TIMEOUT)
@@ -60,7 +61,7 @@ def _extract_links_from_response(url: str, log: Callable[[str], None]) -> List[s
         return []
 
     soup = BeautifulSoup(response.text, "html.parser")
-    links: List[str] = []
+    links: list[str] = []
     for result in soup.find_all("a"):
         href = result.get("href") or ""
         if href.startswith("/url?q="):
@@ -70,7 +71,7 @@ def _extract_links_from_response(url: str, log: Callable[[str], None]) -> List[s
     return links
 
 
-def fetch_data(query: str) -> List[str]:
+def fetch_data(query: str) -> list[str]:
     try:
         response = requests.get(
             f"{API_URL}?query={query}&start=0&limit={LIMIT}",
@@ -87,7 +88,7 @@ def fetch_data(query: str) -> List[str]:
 
 
 def format_results(results: Sequence[str]) -> str:
-    formatted_results: List[str] = []
+    formatted_results: list[str] = []
     for item in results:
         if ":" in item:
             email, password = item.split(":", 1)
@@ -108,7 +109,7 @@ def google_search(
     if not info_name and not info_email and not phone:
         return
 
-    url_list: List[str] = []
+    url_list: list[str] = []
     if info_name and not info_email and not phone:
         url_list = [
             f"https://www.google.com/search?q=intext:{info_name}",
@@ -155,7 +156,7 @@ def google_search(
 
 def check_login(
     login_data: str, log: Callable[[str], None] = print
-) -> Optional[Dict[str, Optional[str]]]:
+) -> dict[str, str | None] | None:
     session = requests.Session()
     try:
         session.get(
@@ -228,7 +229,7 @@ def check_login(
 
 
 def console_output(
-    parsed_response: Optional[Dict[str, Optional[str]]],
+    parsed_response: dict[str, str | None] | None,
     log: Callable[[str], None] = print,
 ) -> None:
     if not parsed_response:
@@ -260,7 +261,7 @@ def phone_number_lookup(number: str, log: Callable[[str], None] = print) -> None
         log("[!] Недействительный номер телефона")
         return
 
-    fields: Tuple[Tuple[str, str], ...] = (
+    fields: tuple[tuple[str, str], ...] = (
         ("Phone Number", phone_rsp.get("query")),
         ("Exists", phone_rsp.get("numberValid")),
         ("Phone Number Type", phone_rsp.get("numberType")),
@@ -567,7 +568,7 @@ def _telegram_search_flow(username: str, log: Callable[[str], None]) -> None:
     search_username(username, log=log)
 
 
-def _interactive_prompt(log: Callable[[str], None]) -> Tuple[Optional[str], Optional[str]]:
+def _interactive_prompt(log: Callable[[str], None]) -> tuple[str | None, str | None]:
     _render_banner(log)
     log("")
     log(f"1) {Color.GREEN}Поиск по номеру{Color.RESET}")
@@ -591,7 +592,7 @@ def _interactive_prompt(log: Callable[[str], None]) -> Tuple[Optional[str], Opti
     return mode, value
 
 
-def data_search_tool(input_data: Optional[Dict[str, str]] = None) -> None:
+def data_search_tool(input_data: dict[str, str] | None = None) -> None:
     log = print
     if isinstance(input_data, dict):
         mode = input_data.get("mode")

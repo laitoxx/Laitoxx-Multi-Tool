@@ -46,14 +46,14 @@ class Env:
             pass
 
     def _exc_handler(self) -> None:
-        def handler(exc_type: Type, exc_value: Exception, exc_tb) -> None:
+        def handler(exc_type: type, exc_value: Exception, exc_tb) -> None:
             if issubclass(exc_type, RecursionError):
                 self._log_err(exc_type, exc_value, exc_tb)
             sys.__excepthook__(exc_type, exc_value, exc_tb)
 
         sys.excepthook = handler
 
-    def _log_err(self, exc_type: Type, exc_value: Exception, exc_tb) -> None:
+    def _log_err(self, exc_type: type, exc_value: Exception, exc_tb) -> None:
         try:
             timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = self.logs_dir / f"recursion_error_{timestamp}.log"
@@ -69,7 +69,7 @@ class Env:
 
 class App:
     def __init__(self):
-        self.app: Optional[QApplication] = None
+        self.app: QApplication | None = None
 
     def run(self) -> NoReturn:
         guard = Env()
