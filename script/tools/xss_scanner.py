@@ -20,7 +20,7 @@ def xss_scan():
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} File with payloads not found")
         return
     try:
-        with open(xss_payloads_path, 'r', encoding='utf-8') as file:
+        with open(xss_payloads_path, encoding='utf-8') as file:
             payloads = [line.strip() for line in file if line.strip()]
     except Exception as e:
         print(
