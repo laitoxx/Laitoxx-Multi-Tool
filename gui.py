@@ -5,7 +5,7 @@ from script.tools.hash_tools.rainbow_table_generator import rainbow_table_tool
 from script.tools.hash_tools.dictionary_cracker import dictionary_cracker_tool
 from script.tools.hash_tools.hash_identifier import hash_identifier_tool
 from script.tools.hash_tools.text_hasher import text_hasher_tool
-from ddosmport layer4, layer7
+from ddos import layer4, layer7
 from ddos.main import run_ddos_attack
 from script.tools.phishing_bot import phishing
 from script.tools.web_crawler import web_crawler
