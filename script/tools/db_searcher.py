@@ -1,11 +1,24 @@
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
+
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
 import os
 from ..shared_utils import Color
 
 
 def search_database():
-    """
-    # Searches for data in files located in the 'db' directory.
-    """
+    """Searches for data in files located in the 'db' directory."""
     db_dir = 'db/'
     if not os.path.exists(db_dir) or not os.path.isdir(db_dir):
         print(

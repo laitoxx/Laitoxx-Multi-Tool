@@ -1,16 +1,27 @@
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
+
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
 import hashlib
 import os
 
 
 def dictionary_crack(target_hash, algorithm, wordlist_path):
-    """
-    Performs a dictionary attack on a hash using a pure Python implementation.
-    """
     if not os.path.exists(wordlist_path):
         return f"Error: Wordlist file not found at '{wordlist_path}'"
 
     try:
-        # Check if the algorithm is supported by hashlib
         hashlib.new(algorithm)
     except ValueError:
         return f"Error: Unsupported hash algorithm '{algorithm}' for hashlib. Please use a standard algorithm like 'md5', 'sha1', 'sha256', etc."
@@ -22,8 +33,6 @@ def dictionary_crack(target_hash, algorithm, wordlist_path):
         with open(wordlist_path, encoding='utf-8', errors='ignore') as f:
             for i, line in enumerate(f):
                 word = line.strip()
-
-                # Hash the word from the wordlist
                 hashed_word = hashlib.new(algorithm)
                 hashed_word.update(word.encode('utf-8'))
 
@@ -40,9 +49,6 @@ def dictionary_crack(target_hash, algorithm, wordlist_path):
 
 
 def dictionary_cracker_tool(data=None):
-    """
-    Tool function to be called from the GUI for the dictionary cracker.
-    """
     if data:
         target_hash = data.get("hash", "").lower().strip()
         algorithm = data.get("algorithm", "md5").lower().strip()

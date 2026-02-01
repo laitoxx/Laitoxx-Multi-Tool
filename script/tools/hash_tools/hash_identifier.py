@@ -1,20 +1,28 @@
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
+
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
 from hashid import HashID
 
 
 def identify_hash(hash_string):
-    """
-    Identifies the possible types of a given hash string.
-    """
     hashid = HashID()
     results = hashid.identifyHash(hash_string)
     return results
 
 
 def hash_identifier_tool(data=None):
-    """
-    Tool function to be called from the GUI.
-    It will take a hash string as input and print possible types.
-    """
     if data:
         hash_input = data.get("hash", "").strip()
     else:

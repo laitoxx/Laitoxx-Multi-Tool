@@ -1,14 +1,23 @@
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
+
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
 from colorama import Fore, init
 from pystyle import Anime, Colors, Colorate, Center
 from telegraph import Telegraph
 
-USERSBOX_API_KEY = ""
-
-# Инициализация colorama
 init(autoreset=True)
-
-# --- Класс для цветов консоли ---
-
 
 class Color:
     DARK_RED = Fore.RED
@@ -31,12 +40,9 @@ class Color:
     CYAN = Fore.CYAN
 
 
-# --- Глобальные константы и переменные ---
-
 MAX_TITLE_LENGTH = 30
 current_color_scheme = 'red'
 
-# Инициализация Telegraph
 try:
     telegraph = Telegraph()
     telegraph.create_account(short_name='console_app')
@@ -44,7 +50,6 @@ except Exception as e:
     print(f"Could not initialize Telegraph: {e}")
     telegraph = None
 
-# --- Тексты баннеров ---
 banner_text = """
         S.       .S_SSSs     .S  sdSS_SSSSSSbs    sSSs_sSSs     .S S.    .S S.   
         SS.     .SS~SSSSS   .SS  YSSS~S%SSSSSP   d%%SP~YS%%b   .SS SS.  .SS SS.  
@@ -95,7 +100,6 @@ def show_intro():
     Anime.Fade(Center.Center(intro), Colors.black_to_red,
                Colorate.Vertical, interval=0.045, enter=True)
 
-# --- Функции для управления цветом ---
 
 
 def change_color_scheme(scheme):
@@ -113,7 +117,7 @@ def change_color_scheme(scheme):
         Color.LIGHT_RED, Color.RED, Color.DARK_RED = Color.CYAN, Color.CYAN, Fore.CYAN
     elif scheme == 'grayscale':
         Color.LIGHT_RED, Color.RED, Color.DARK_RED = Color.WHITE, Color.GRAY, Color.DARK_GRAY
-    else:  # red (default)
+    else:
         Color.LIGHT_RED, Color.RED, Color.DARK_RED = Fore.LIGHTRED_EX, Fore.RED, Fore.RED
 
 

@@ -1,4 +1,18 @@
-# main.py
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
+
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
 from tools.data_search import data_search_tool
 from tools.phishing_bot import phishing
 from tools.web_crawler import web_crawler
@@ -33,13 +47,7 @@ import os
 import sys
 import time
 
-# Добавляем корневую папку в путь, чтобы можно было импортировать из shared_utils и tools
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-# Импорт общих утилит
-
-# Импорт функций-инструментов
-
 
 def _install_recursion_logger():
     def _hook(exc_type, exc_value, exc_tb):
@@ -110,7 +118,6 @@ def display_second_menu():
 def main():
     show_intro()
 
-    # Словарь сопоставления выбора и функции
     actions = {
         '1': search_by_number, '2': get_ip, '3': check_email_address,
         '6': get_website_info, '7': data_search_tool, '8': transform_text, '9': password_generator_tool,
@@ -151,10 +158,8 @@ def main():
         elif select == '16':
             print(
                 f"{Color.LIGHT_RED}DDoS functionality is in a separate module and is not run from here.{Color.RESET}")
-            # Здесь можно было бы импортировать и запустить run_ddos_attack, если бы она была нужна
             input("\nPress Enter...")
         elif select == 'COLOR':
-            # ... (код для изменения цвета) ...
             pass
         elif select in actions:
             try:

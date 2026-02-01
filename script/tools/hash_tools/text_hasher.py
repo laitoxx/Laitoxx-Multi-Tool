@@ -1,10 +1,22 @@
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
+
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
 import hashlib
 
 
 def hash_text(text, algorithm):
-    """
-    Hashes the given text using the specified algorithm.
-    """
     try:
         hasher = hashlib.new(algorithm)
         hasher.update(text.encode('utf-8'))
@@ -14,10 +26,6 @@ def hash_text(text, algorithm):
 
 
 def text_hasher_tool(data=None):
-    """
-    Tool function to be called from the GUI.
-    It will take input for the text and algorithm.
-    """
     if data:
         text = data.get("text", "")
         algorithm = data.get("algorithm", "sha256").lower().strip()

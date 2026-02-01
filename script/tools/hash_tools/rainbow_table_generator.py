@@ -1,10 +1,24 @@
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
+
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
 import hashlib
 import csv
 import secrets
 
 
 def hash_function(text, algorithm, salt=None):
-    """Hashes the text using the specified algorithm, optionally with salt."""
     h = hashlib.new(algorithm)
     if salt:
         h.update((text + salt).encode('utf-8'))
@@ -14,18 +28,13 @@ def hash_function(text, algorithm, salt=None):
 
 
 def reduce_function(hashed_text, charset, max_len, step=0):
-    """Reduces a hash to a new plaintext using a family of reduction functions."""
-    # Use the hash and step to create different reduction functions
-    # This creates a family of reduction functions to avoid collisions
     hash_bytes = bytes.fromhex(hashed_text)
     combined = hash_bytes + step.to_bytes(4, 'big')
 
-    # Use SHA256 to mix the hash and step for better distribution
     mixer = hashlib.sha256(combined).digest()
 
     new_plaintext = ""
     for i in range(max_len):
-        # Use different parts of the mixer for each position
         index = mixer[i % len(mixer)] % len(charset)
         new_plaintext += charset[index]
 
@@ -33,22 +42,18 @@ def reduce_function(hashed_text, charset, max_len, step=0):
 
 
 def generate_rainbow_table(charset, algorithm, chain_length, num_chains, password_len, output_file, use_salt=False, salt_length=8):
-    """Generates and stores a rainbow table with optional salt support."""
     table = []
     salt_used = None
 
     if use_salt:
-        # Generate a random salt for all hashes in this table
         salt_used = secrets.token_hex(
-            salt_length // 2)[:salt_length]  # Ensure exact length
+            salt_length // 2)[:salt_length]
         print(f"Using salt: {salt_used}")
 
     print(f"Generating {num_chains} chains of length {chain_length}...")
 
-    # Generate initial plaintexts more randomly
     initial_plaintexts = []
     for i in range(num_chains):
-        # Use a more sophisticated approach to generate diverse starting points
         seed = hashlib.sha256(f"seed_{i}_{charset}".encode()).digest()
         plaintext = ""
         for j in range(password_len):
@@ -71,13 +76,12 @@ def generate_rainbow_table(charset, algorithm, chain_length, num_chains, passwor
         if (i + 1) % 100 == 0:
             print(f"  ...generated {i + 1}/{num_chains} chains.")
 
-    # Save the table to a CSV file
     try:
         with open(output_file, 'w', newline='') as f:
             writer = csv.writer(f)
             if use_salt:
                 writer.writerow(['salt', 'start_plaintext', 'end_plaintext'])
-                writer.writerow([salt_used, '', ''])  # Store salt in first row
+                writer.writerow([salt_used, '', ''])
                 writer.writerows(table)
             else:
                 writer.writerow(['start_plaintext', 'end_plaintext'])
@@ -90,7 +94,6 @@ def generate_rainbow_table(charset, algorithm, chain_length, num_chains, passwor
 
 
 def rainbow_table_tool(data=None):
-    """Tool function to be called from the GUI for generating a rainbow table."""
     if data:
         charset = data.get("charset", "").strip()
         algorithm = data.get("algorithm", "md5").lower().strip()
@@ -140,7 +143,7 @@ def rainbow_table_tool(data=None):
         use_salt_input = input("Use salt for hashes? (y/n): ").lower().strip()
         use_salt = use_salt_input in ['y', 'yes', 'true', '1']
 
-        salt_length = 8  # Default
+        salt_length = 8
         if use_salt:
             try:
                 salt_length = int(

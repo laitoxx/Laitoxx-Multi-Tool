@@ -1,13 +1,26 @@
-import subprocess
+"""
+ @@@  @@@  @@@@@@  @@@@@@@ @@@@@@@  @@@@@@@  @@@ @@@@@@@@ @@@ @@@
+ @@!  @@@ @@!  @@@   @@!   @@!  @@@ @@!  @@@ @@! @@!      @@! !@@
+ @!@!@!@! @!@  !@!   @!!   @!@  !@! @!@!!@!  !!@ @!!!:!    !@!@! 
+ !!:  !!! !!:  !!!   !!:   !!:  !!! !!: :!!  !!: !!:        !!:  
+  :   : :  : :. :     :    :: :  :   :   : : :    :         .:   
+                                                                 
+    HOTDRIFY cooked with the refactor for the LAITOXX squad.
+                    github.com/hotdrify
+                      t.me/hotdrify
 
+                    github.com/laitoxx
+                      t.me/laitoxx
+"""
+
+import subprocess
+from pathlib import Path
 
 def nmap_scanner_tool():
-    """
-    Launch zenmap GUI for scanning instead of programmatic nmap.
-    """
+    NMAP_PATH: Path = Path(r"C:\Program Files (x86)\Nmap\zenmap\bin\pythonw.exe") #edit your nmap path, pls
+
     try:
-        subprocess.Popen([r"C:\Program Files (x86)\Nmap\zenmap\bin\pythonw.exe",
-                         "-c", "from zenmapGUI.App import run;run()"])
+        subprocess.Popen([NMAP_PATH, "-c", "from zenmapGUI.App import run;run()"])
         print("Zenmap launched successfully.")
     except FileNotFoundError:
         print("Zenmap Error: Zenmap not found at the specified path.")
