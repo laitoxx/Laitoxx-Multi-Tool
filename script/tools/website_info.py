@@ -1,4 +1,5 @@
 import whois
+
 from ..shared_utils import Color
 
 

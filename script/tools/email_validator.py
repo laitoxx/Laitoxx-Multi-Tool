@@ -14,6 +14,7 @@
 """
 
 import re
+
 from ..shared_utils import Color
 
 

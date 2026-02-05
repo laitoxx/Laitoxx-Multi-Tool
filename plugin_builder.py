@@ -13,19 +13,20 @@
                       t.me/laitoxx
 """
 
-import sys
-import os
 import json
+import os
 import re
-from datetime import datetime
 import shutil
-from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
-                             QPushButton, QDialog, QFormLayout, QLineEdit,
-                             QDialogButtonBox, QCheckBox, QTextEdit, QFileDialog,
-                             QLabel, QHBoxLayout, QScrollArea, QStackedWidget,
-                             QInputDialog, QComboBox)
-from PyQt6.QtGui import QFont, QPixmap, QPainter, QPen, QColor, QPainterPath
-from PyQt6.QtCore import Qt, QPoint
+import sys
+from datetime import datetime
+
+from PyQt6.QtCore import QPoint, Qt
+from PyQt6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QPixmap
+from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDialog,
+                             QDialogButtonBox, QFileDialog, QFormLayout,
+                             QHBoxLayout, QInputDialog, QLabel, QLineEdit,
+                             QMainWindow, QPushButton, QScrollArea,
+                             QStackedWidget, QTextEdit, QVBoxLayout, QWidget)
 
 # --- Draggable Step Widget ---
 

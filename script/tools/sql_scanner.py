@@ -1,6 +1,8 @@
-import requests
 import random
 import string
+
+import requests
+
 from ..shared_utils import Color
 
 

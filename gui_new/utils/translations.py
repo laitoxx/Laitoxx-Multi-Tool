@@ -15,6 +15,7 @@
 
 from i18n import TRANSLATIONS
 
+
 class Translator:
     def __init__(self):
         self.lang = 'en'

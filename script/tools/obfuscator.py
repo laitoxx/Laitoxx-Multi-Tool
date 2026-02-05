@@ -13,10 +13,11 @@
                       t.me/laitoxx
 """
 
-import os
-import zlib
 import base64
 import marshal
+import os
+import zlib
+
 from ..shared_utils import Color
 
 

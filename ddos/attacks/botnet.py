@@ -1,6 +1,8 @@
 import threading
 import time
-from scapy.all import IP, UDP, TCP, send
+
+from scapy.all import IP, TCP, UDP, send
+
 from ..config import Config, logger
 
 

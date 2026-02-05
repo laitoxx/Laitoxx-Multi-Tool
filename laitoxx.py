@@ -15,14 +15,14 @@
 
 from __future__ import annotations
 
+import datetime
 import sys
 import traceback
 from pathlib import Path
-from typing import Type, NoReturn, Optional
-import datetime
+from typing import NoReturn
 
-from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication
 
 
 class Env:
@@ -108,7 +108,7 @@ class App:
             self.app.setWindowIcon(QIcon(str(icon_path)))
 
     def _check_agreement(self) -> bool:
-        from gui import check_user_agreement, UserAgreementDialog
+        from gui import UserAgreementDialog, check_user_agreement
 
         if check_user_agreement():
             return True

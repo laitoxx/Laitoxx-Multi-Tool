@@ -15,13 +15,15 @@
 
 import webbrowser
 from urllib.parse import quote_plus
+
 from ..shared_utils import Color
 
 IS_GUI = False
 try:
-    from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QCheckBox,
-                                 QLineEdit, QScrollArea, QWidget, QGridLayout,
-                                 QTextEdit, QGroupBox, QDialogButtonBox)
+    from PyQt6.QtWidgets import (QCheckBox, QDialog, QDialogButtonBox,
+                                 QGridLayout, QGroupBox, QHBoxLayout,
+                                 QLineEdit, QScrollArea, QTextEdit,
+                                 QVBoxLayout, QWidget)
     IS_GUI = True
 except ImportError:
     pass

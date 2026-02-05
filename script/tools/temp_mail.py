@@ -1,10 +1,12 @@
-import requests
-import time
-from datetime import datetime, timedelta
-from bs4 import BeautifulSoup
-from ..shared_utils import Color
 import random
 import string
+import time
+from datetime import datetime, timedelta
+
+import requests
+from bs4 import BeautifulSoup
+
+from ..shared_utils import Color
 
 
 def get_domains():

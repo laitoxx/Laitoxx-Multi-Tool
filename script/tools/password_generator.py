@@ -15,6 +15,7 @@
 
 import random
 import string
+
 from ..shared_utils import Color
 
 

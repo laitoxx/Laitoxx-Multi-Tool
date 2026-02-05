@@ -1,12 +1,15 @@
 import asyncio
 import time
+
 import aiohttp
+from playwright.async_api import async_playwright
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from playwright.async_api import async_playwright
+
 from ..config import Config, logger
-from ..utils.spoofing import generate_spoofed_headers, generate_cookies, spoof_fingerprint
 from ..utils.proxy import get_async_tor_connector, get_random_proxy
+from ..utils.spoofing import (generate_cookies, generate_spoofed_headers,
+                              spoof_fingerprint)
 
 
 class Layer7Attack:
@@ -114,9 +117,10 @@ class BrowserAttack(Layer7Attack):
 
 def get_locust_attack():
     try:
-        from locust import HttpUser, task, between
+        from locust import HttpUser, between, task
+
         from ..config import Config, logger
-        from ..utils.spoofing import generate_spoofed_headers, generate_cookies
+        from ..utils.spoofing import generate_cookies, generate_spoofed_headers
 
         class LocustAttack(Layer7Attack):
             def run(self, threads=Config['threads']):
@@ -148,8 +152,9 @@ def get_locust_attack():
 
 def get_artillery_attack():
     try:
-        import subprocess
         import json
+        import subprocess
+
         from ..config import Config, logger
 
         class ArtilleryAttack(Layer7Attack):
@@ -190,6 +195,7 @@ def get_artillery_attack():
 def get_jmeter_attack():
     try:
         import subprocess
+
         from ..config import Config, logger
 
         class JMeterAttack(Layer7Attack):

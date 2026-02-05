@@ -1,7 +1,8 @@
-from faker import Faker
-from fake_useragent import UserAgent
 import random
 import string
+
+from fake_useragent import UserAgent
+from faker import Faker
 
 fake = Faker()
 ua = UserAgent()

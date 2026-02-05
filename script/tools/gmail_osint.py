@@ -15,6 +15,7 @@
 
 import requests
 from bs4 import BeautifulSoup
+
 from ..shared_utils import Color
 
 
@@ -69,12 +70,12 @@ def gmail_osint():
                     value = lines[i + 1]
                     if "http" in value:
                         data[key] = value
-                    else: 
+                    else:
                         data[key] = line.split(
                             ':')[-1].strip() if ':' in line else value
 
         profile_page = result_div.find(
-            'a', href=lambda href: href and "maps.google.com" in href) # type: ignore
+            'a', href=lambda href: href and "maps.google.com" in href)  # type: ignore
         if profile_page:
             data["Google Maps Profile"] = profile_page['href']
 
@@ -82,7 +83,7 @@ def gmail_osint():
             data["Google Calendar"] = "No public calendar found"
         else:
             calendar_link = result_div.find(
-                'a', href=lambda href: href and "calendar.google.com" in href) # type: ignore
+                'a', href=lambda href: href and "calendar.google.com" in href)  # type: ignore
             if calendar_link:
                 data["Google Calendar"] = calendar_link['href']
 

@@ -14,10 +14,11 @@
 """
 
 from colorama import Fore, init
-from pystyle import Anime, Colors, Colorate, Center
+from pystyle import Anime, Center, Colorate, Colors
 from telegraph import Telegraph
 
 init(autoreset=True)
+
 
 class Color:
     DARK_RED = Fore.RED
@@ -99,7 +100,6 @@ intro = """
 def show_intro():
     Anime.Fade(Center.Center(intro), Colors.black_to_red,
                Colorate.Vertical, interval=0.045, enter=True)
-
 
 
 def change_color_scheme(scheme):

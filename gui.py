@@ -13,68 +13,69 @@
                       t.me/laitoxx
 """
 
-from script.tools.temp_mail import temp_mail
-from script.tools.data_search import data_search_tool
-from script.tools.nmap_scanner.nmap_scanner import nmap_scanner_tool
-from script.tools.hash_tools.rainbow_table_generator import rainbow_table_tool
-from script.tools.hash_tools.dictionary_cracker import dictionary_cracker_tool
-from script.tools.hash_tools.hash_identifier import hash_identifier_tool
-from script.tools.hash_tools.text_hasher import text_hasher_tool
-from ddos.attacks import layer4, layer7
-from ddos.main import run_ddos_attack
-from script.tools.phishing_bot import phishing
-from script.tools.web_crawler import web_crawler
-from script.tools.obfuscator import obfuscate_tool
-from script.tools.user_checker import check_username
-from script.tools.telegram_search import telegram_search
-from script.tools.google_osint import google_osint
-from script.tools.ip_logger import logger_ip
-from script.tools.subdomain_finder import find_subdomains
-from script.tools.sql_scanner import sql_injection_scanner_tool
-from script.tools.admin_finder import find_admin_panel
-from script.tools.mac_lookup import search_mac_address
-from script.tools.xss_scanner import xss_scan
-from script.tools.url_checker import check_url
-from script.tools.site_checker import check_site
-from script.tools.proxy_fetcher import get_proxy_list
-from script.tools.db_searcher import search_database
-from script.tools.gmail_osint import gmail_osint
-from script.tools.port_scanner import port_scanner_tool
-from script.tools.password_generator import password_generator_tool
-from script.tools.text_transformer import transform_text
-from script.tools.website_info import get_website_info
-from script.tools.email_validator import check_email_address
-from script.tools.ip_info import get_ip
-from script.tools.user_search_by_phone import search_by_number
-import sys
-import io
-import contextlib
 import builtins
-import os
-import requests
+import contextlib
+import datetime
+import hashlib
+import io
 import json
+import logging
+import os
+import platform
 import re
+import subprocess
+import sys
 import threading
 import time
-import platform
-import logging
-import datetime
-import subprocess
-import hashlib
-from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
-                             QPushButton, QStackedWidget, QLabel, QGraphicsBlurEffect,
-                             QTextEdit, QGridLayout, QInputDialog, QSplitter,
-                             QHBoxLayout, QSpacerItem, QSizePolicy, QColorDialog,
-                             QFileDialog, QDialog, QFormLayout, QLineEdit,
-                             QDialogButtonBox, QScrollArea, QComboBox, QCheckBox,
-                             QMessageBox)
-from PyQt6.QtGui import QMovie, QResizeEvent, QColor, QFont, QPixmap, QIcon
-from PyQt6.QtCore import Qt, QUrl, QObject, pyqtSignal, QThread
-from PyQt6.QtMultimedia import QMediaPlayer, QVideoSink, QVideoFrame
 
+import requests
+from PyQt6.QtCore import QObject, Qt, QThread, QUrl, pyqtSignal
+from PyQt6.QtGui import QColor, QFont, QIcon, QMovie, QPixmap, QResizeEvent
+from PyQt6.QtMultimedia import QMediaPlayer, QVideoFrame, QVideoSink
+from PyQt6.QtWidgets import (QApplication, QCheckBox, QColorDialog, QComboBox,
+                             QDialog, QDialogButtonBox, QFileDialog,
+                             QFormLayout, QGraphicsBlurEffect, QGridLayout,
+                             QHBoxLayout, QInputDialog, QLabel, QLineEdit,
+                             QMainWindow, QMessageBox, QPushButton,
+                             QScrollArea, QSizePolicy, QSpacerItem, QSplitter,
+                             QStackedWidget, QTextEdit, QVBoxLayout, QWidget)
+
+from ddos.attacks import layer4, layer7
+from ddos.main import run_ddos_attack
+from i18n import TRANSLATIONS
 # --- Local Imports ---
 from plugin_builder import PluginBuilderWindow
-from i18n import TRANSLATIONS
+from script.tools.admin_finder import find_admin_panel
+from script.tools.data_search import data_search_tool
+from script.tools.db_searcher import search_database
+from script.tools.email_validator import check_email_address
+from script.tools.gmail_osint import gmail_osint
+from script.tools.google_osint import google_osint
+from script.tools.hash_tools.dictionary_cracker import dictionary_cracker_tool
+from script.tools.hash_tools.hash_identifier import hash_identifier_tool
+from script.tools.hash_tools.rainbow_table_generator import rainbow_table_tool
+from script.tools.hash_tools.text_hasher import text_hasher_tool
+from script.tools.ip_info import get_ip
+from script.tools.ip_logger import logger_ip
+from script.tools.mac_lookup import search_mac_address
+from script.tools.nmap_scanner.nmap_scanner import nmap_scanner_tool
+from script.tools.obfuscator import obfuscate_tool
+from script.tools.password_generator import password_generator_tool
+from script.tools.phishing_bot import phishing
+from script.tools.port_scanner import port_scanner_tool
+from script.tools.proxy_fetcher import get_proxy_list
+from script.tools.site_checker import check_site
+from script.tools.sql_scanner import sql_injection_scanner_tool
+from script.tools.subdomain_finder import find_subdomains
+from script.tools.telegram_search import telegram_search
+from script.tools.temp_mail import temp_mail
+from script.tools.text_transformer import transform_text
+from script.tools.url_checker import check_url
+from script.tools.user_checker import check_username
+from script.tools.user_search_by_phone import search_by_number
+from script.tools.web_crawler import web_crawler
+from script.tools.website_info import get_website_info
+from script.tools.xss_scanner import xss_scan
 
 # rebyat, ny eta pizdets...
 # --- Translator Setup ---

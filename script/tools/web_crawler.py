@@ -1,8 +1,10 @@
+from collections import deque
+from urllib.parse import urljoin, urlparse
+
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+
 from ..shared_utils import Color
-from collections import deque
 
 
 def get_all_links(session, url):

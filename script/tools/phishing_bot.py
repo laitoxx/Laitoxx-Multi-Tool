@@ -13,9 +13,11 @@
                       t.me/laitoxx
 """
 
-import telebot # fy, kakoe govno! rewrite to aiogram
-from telebot import types
 import csv
+
+import telebot  # fy, kakoe govno! rewrite to aiogram
+from telebot import types
+
 from ..shared_utils import Color
 
 

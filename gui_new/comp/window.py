@@ -13,19 +13,20 @@
                       t.me/laitoxx
 """
 
-from ..utils.translations import Translator
-
-from PyQt6.QtWidgets import (QVBoxLayout, QTextEdit, QFileDialog,
-                             QDialog, QDialogButtonBox)
-
-from typing import Any
 import logging
 import os
+from typing import Any
+
+from PyQt6.QtWidgets import (QDialog, QDialogButtonBox, QFileDialog, QTextEdit,
+                             QVBoxLayout)
+
+from ..utils.translations import Translator
 
 translator = Translator()
 
+
 class PluginExecutionWindow(QDialog):
-    def __init__(self, plugin_data: dict, 
+    def __init__(self, plugin_data: dict,
                  parent: Any = None):
         super().__init__(parent)
         self.plugin_data: dict = plugin_data

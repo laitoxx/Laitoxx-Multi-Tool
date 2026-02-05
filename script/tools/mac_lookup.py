@@ -13,8 +13,10 @@
                       t.me/laitoxx
 """
 
-import requests
 import re
+
+import requests
+
 from ..shared_utils import Color
 
 

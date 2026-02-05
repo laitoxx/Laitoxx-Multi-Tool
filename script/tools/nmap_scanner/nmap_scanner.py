@@ -16,11 +16,15 @@
 import subprocess
 from pathlib import Path
 
+
 def nmap_scanner_tool():
-    NMAP_PATH: Path = Path(r"C:\Program Files (x86)\Nmap\zenmap\bin\pythonw.exe") #edit your nmap path, pls
+    # edit your nmap path, pls
+    NMAP_PATH: Path = Path(
+        r"C:\Program Files (x86)\Nmap\zenmap\bin\pythonw.exe")
 
     try:
-        subprocess.Popen([NMAP_PATH, "-c", "from zenmapGUI.App import run;run()"])
+        subprocess.Popen(
+            [NMAP_PATH, "-c", "from zenmapGUI.App import run;run()"])
         print("Zenmap launched successfully.")
     except FileNotFoundError:
         print("Zenmap Error: Zenmap not found at the specified path.")

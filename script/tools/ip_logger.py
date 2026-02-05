@@ -13,8 +13,9 @@
                       t.me/laitoxx
 """
 
-from ..shared_utils import Color, telegraph, MAX_TITLE_LENGTH
 from telegraph import TelegraphException
+
+from ..shared_utils import MAX_TITLE_LENGTH, Color, telegraph
 
 
 def create_article_loop():

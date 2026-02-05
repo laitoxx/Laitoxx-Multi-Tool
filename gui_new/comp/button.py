@@ -13,10 +13,11 @@
                       t.me/laitoxx
 """
 
-from PyQt6.QtWidgets import QPushButton
 from typing import Any
+
+from PyQt6.QtWidgets import QPushButton
+
 
 class GlassButton(QPushButton):
     def __init__(self, text: str, parent: Any = None):
         super().__init__(text, parent)
-

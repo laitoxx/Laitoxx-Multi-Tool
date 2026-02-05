@@ -1,6 +1,8 @@
-import requests
 import time
 from urllib.parse import urlparse
+
+import requests
+
 from ..shared_utils import Color
 
 

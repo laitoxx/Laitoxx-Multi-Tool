@@ -13,10 +13,12 @@
                       t.me/laitoxx
 """
 
-import requests
-from urllib.parse import urljoin
-from ..shared_utils import Color
 import concurrent.futures
+from urllib.parse import urljoin
+
+import requests
+
+from ..shared_utils import Color
 
 
 def check_path(url, path, session):

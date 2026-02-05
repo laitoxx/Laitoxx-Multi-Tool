@@ -17,9 +17,8 @@ import csv
 import hashlib
 import json
 import re
-from io import StringIO
-from typing import Dict, List, Optional, Tuple
 from collections.abc import Callable, Sequence
+from io import StringIO
 
 import requests
 from bs4 import BeautifulSoup

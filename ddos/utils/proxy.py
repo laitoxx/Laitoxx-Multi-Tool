@@ -1,8 +1,10 @@
-import requests
-from torpy.http.requests import tor_requests_session
-from ..config import Config, logger
 import random
+
+import requests
 from aiohttp_socks import ProxyConnector
+from torpy.http.requests import tor_requests_session
+
+from ..config import Config, logger
 
 
 def get_proxies():

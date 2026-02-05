@@ -1,5 +1,7 @@
 import requests
+
 from ..shared_utils import Color
+
 _gevent_orig_ssl = None
 try:
     # If gevent has monkeypatched ssl but preserved the original class as
@@ -22,10 +24,12 @@ def choose_proxy_type_gui_fallback():
     """Return 'http'|'socks4'|'socks5' using a PyQt dialog when available, else console input."""
     # Try PyQt dialog when running inside the GUI
     try:
-        from PyQt6.QtWidgets import QApplication, QComboBox
-        from PyQt6.QtCore import Qt
-        from gui import CustomInputDialog
         import threading
+
+        from PyQt6.QtCore import Qt
+        from PyQt6.QtWidgets import QApplication, QComboBox
+
+        from gui import CustomInputDialog
 
         app = QApplication.instance()
         if app is not None and threading.current_thread() is threading.main_thread():
@@ -110,8 +114,10 @@ def get_proxy_list():
 
     # Display list: use GUI message box with option to open a viewer dialog when available
     try:
-        from PyQt6.QtWidgets import QApplication, QMessageBox, QDialog, QVBoxLayout, QTextEdit, QFileDialog
         import threading
+
+        from PyQt6.QtWidgets import (QApplication, QDialog, QFileDialog,
+                                     QMessageBox, QTextEdit, QVBoxLayout)
         app = QApplication.instance()
         if app is not None and threading.current_thread() is threading.main_thread():
             resp = QMessageBox.question(None, 'Proxy fetcher', 'Display the list of fetched proxies?',

@@ -1,7 +1,9 @@
+import html
 import os
 import sys
+
 import requests
-import html
+
 from ..shared_utils import Color
 
 

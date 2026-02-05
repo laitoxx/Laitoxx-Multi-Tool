@@ -1,4 +1,5 @@
 import requests
+
 from ..shared_utils import Color
 
 

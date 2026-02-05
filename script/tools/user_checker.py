@@ -1,5 +1,7 @@
-import requests
 import concurrent.futures
+
+import requests
+
 from ..shared_utils import Color
 
 
