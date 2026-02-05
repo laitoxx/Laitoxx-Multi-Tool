@@ -22,10 +22,10 @@ class I18n:
         self.language: str = language
         self.translations: dict = self.load_translations()
 
-    def load_translations(self):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
+    def load_translations(self) -> dict:
+        base_dir: str = os.path.dirname(os.path.abspath(__file__))
 
-        filepath = os.path.join(
+        filepath:str = os.path.join(
             base_dir, '..', 'translations', f'{self.language}.json')
 
         try:
@@ -37,7 +37,7 @@ class I18n:
                 return self.load_translations()
             return {}
 
-    def translate(self, key, **kwargs):
+    def translate(self, key: str, **kwargs) -> str | dict:
         return self.translations.get(key, key).format(**kwargs)
 
 
