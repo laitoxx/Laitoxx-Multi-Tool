@@ -18,22 +18,22 @@ import os
 
 
 class I18n:
-    def __init__(self, language='ru'):
-        self.language = language
-        self.translations = self.load_translations()
+    def __init__(self, language: str = 'ru') -> None:
+        self.language: str = language
+        self.translations: dict = self.load_translations()
 
     def load_translations(self):
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        # Simplified path construction
+
         filepath = os.path.join(
             base_dir, '..', 'translations', f'{self.language}.json')
 
         try:
-            with open(filepath, encoding='utf-8') as f:
-                return json.load(f)
+            with open(filepath, encoding='utf-8') as file:
+                return json.load(file)
         except FileNotFoundError:
             if self.language != 'ru':
-                self.language = 'ru'  # Fallback to Russian
+                self.language = 'ru'
                 return self.load_translations()
             return {}
 
@@ -41,12 +41,10 @@ class I18n:
         return self.translations.get(key, key).format(**kwargs)
 
 
-def get_current_language():
-    # In a real app, this might read from a config file
-    # For now, we can assume a default or a simple file-based setting
+def get_current_language() -> str:
     try:
-        with open("language.settings") as f:
-            return f.read().strip()
+        with open("language.settings") as file:
+            return file.read().strip()
     except FileNotFoundError:
         return 'ru'
 
@@ -327,12 +325,11 @@ TRANSLATIONS = {
     }
 }
 
-# Ensure the translations directory and files exist
-base_dir = os.path.dirname(os.path.abspath(__file__))
-translations_dir = os.path.join(base_dir, '..', 'translations')
+base_dir: str = os.path.dirname(os.path.abspath(__file__))
+translations_dir: str  = os.path.join(base_dir, '..', 'translations')
 os.makedirs(translations_dir, exist_ok=True)
 
 for lang, trans_data in TRANSLATIONS.items():
-    filepath = os.path.join(translations_dir, f'{lang}.json')
-    with open(filepath, 'w', encoding='utf-8') as f:
-        json.dump(trans_data, f, ensure_ascii=False, indent=4)
+    filepath: str = os.path.join(translations_dir, f'{lang}.json')
+    with open(filepath, 'w', encoding='utf-8') as file:
+        json.dump(trans_data, file, ensure_ascii=False, indent=4)
