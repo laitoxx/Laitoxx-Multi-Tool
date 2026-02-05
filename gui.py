@@ -27,6 +27,7 @@ import subprocess
 import sys
 import threading
 import time
+from pathlib import Path
 
 import requests
 from PyQt6.QtCore import QObject, Qt, QThread, QUrl, pyqtSignal
@@ -184,9 +185,9 @@ class PluginExecutionWindow(QDialog):
             except Exception as e:
                 logging.error(translator.get("log_save_error", e=e))
 
-
+THEMES_PATH = Path("themes/")
 CONFIG_FILE = "background_config.txt"
-DEFAULT_THEME_FILE = "theme.json"
+DEFAULT_THEME_FILE = "themes/theme.json"
 LAST_THEME_CONFIG_FILE = "last_theme.txt"
 PLUGIN_DIR = "plugins"
 AGREEMENT_CONFIG_FILE = "user_agreement_accepted.txt"
@@ -220,9 +221,10 @@ def save_user_agreement():
 
 
 def load_theme(filepath):
+    path: str = THEMES_PATH / filepath
     try:
-        if os.path.exists(filepath):
-            with open(filepath) as f:
+        if os.path.exists(path):
+            with open(path) as f:
                 return json.load(f)
     except (json.JSONDecodeError, OSError):
         return None
@@ -230,7 +232,8 @@ def load_theme(filepath):
 
 
 def save_theme(filepath, theme_data):
-    with open(filepath, "w") as f:
+    path = THEMES_PATH / filepath
+    with open(path, "w") as f:
         json.dump(theme_data, f, indent=4)
 
 
