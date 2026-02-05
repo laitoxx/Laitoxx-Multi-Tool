@@ -77,4 +77,5 @@ dmypy.json
 db/
 logs/
 laitoxxnew/
+last_theme.txt
 user_agreement_accepted.txt
