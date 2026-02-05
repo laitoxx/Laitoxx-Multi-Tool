@@ -19,7 +19,6 @@ from ..shared_utils import Color
 
 
 def search_database():
-    """Searches for data in files located in the 'db' directory."""
     db_dir = 'db/'
     if not os.path.exists(db_dir) or not os.path.isdir(db_dir):
         print(

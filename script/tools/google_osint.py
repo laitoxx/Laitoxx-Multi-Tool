@@ -103,7 +103,6 @@ if IS_GUI:
 
             self.layout = QVBoxLayout(self)
 
-            # Search engines selection
             engines_group = QGroupBox("Search Engines")
             engines_layout = QHBoxLayout(engines_group)
 
@@ -118,11 +117,9 @@ if IS_GUI:
 
             self.layout.addWidget(engines_group)
 
-            # Operators section
             operators_group = QGroupBox("Dork Operators")
             operators_layout = QVBoxLayout(operators_group)
 
-            # Create scrollable area for operators
             scroll_area = QScrollArea()
             scroll_widget = QWidget()
             self.grid_layout = QGridLayout(scroll_widget)
@@ -132,14 +129,12 @@ if IS_GUI:
 
             row, col = 0, 0
             for op_name, description in self.operators.items():
-                # Checkbox
                 cb = QCheckBox(op_name)
                 cb.setToolTip(description)
                 cb.stateChanged.connect(self.toggle_operator_input)
                 self.grid_layout.addWidget(cb, row, col)
                 self.operator_checkboxes[op_name] = cb
 
-                # Input field (initially hidden)
                 input_field = QLineEdit()
                 input_field.setPlaceholderText(f"Enter value for {op_name}")
                 input_field.setVisible(False)
@@ -147,7 +142,7 @@ if IS_GUI:
                 self.operator_inputs[op_name] = input_field
 
                 col += 2
-                if col >= 6:  # 3 columns of operator + input
+                if col >= 6:
                     col = 0
                     row += 1
 
@@ -156,7 +151,6 @@ if IS_GUI:
             operators_layout.addWidget(scroll_area)
             self.layout.addWidget(operators_group)
 
-            # Base query input
             query_group = QGroupBox("Search Query")
             query_layout = QVBoxLayout(query_group)
             self.base_query_input = QLineEdit()
@@ -165,7 +159,6 @@ if IS_GUI:
             query_layout.addWidget(self.base_query_input)
             self.layout.addWidget(query_group)
 
-            # Generated query preview
             preview_group = QGroupBox("Generated Query Preview")
             preview_layout = QVBoxLayout(preview_group)
             self.query_preview = QTextEdit()
@@ -174,7 +167,6 @@ if IS_GUI:
             preview_layout.addWidget(self.query_preview)
             self.layout.addWidget(preview_group)
 
-            # Buttons
             button_box = QDialogButtonBox()
             self.search_button = button_box.addButton(
                 "Search", QDialogButtonBox.ButtonRole.AcceptRole)
@@ -192,7 +184,6 @@ if IS_GUI:
 
             self.layout.addWidget(button_box)
 
-            # Connect signals for live preview
             self.base_query_input.textChanged.connect(self.update_preview)
             for cb in self.operator_checkboxes.values():
                 cb.stateChanged.connect(self.update_preview)
@@ -203,7 +194,6 @@ if IS_GUI:
             self.selected_engines = [
                 engine for engine, cb in self.engine_checkboxes.items() if cb.isChecked()]
             if not self.selected_engines:
-                # Ensure at least one engine
                 self.selected_engines = ["google"]
 
         def toggle_operator_input(self):
@@ -216,12 +206,10 @@ if IS_GUI:
         def update_preview(self):
             query_parts = []
 
-            # Add base query
             base_query = self.base_query_input.text().strip()
             if base_query:
                 query_parts.append(base_query)
 
-            # Add selected operators
             for op_name, cb in self.operator_checkboxes.items():
                 if cb.isChecked():
                     value = self.operator_inputs[op_name].text().strip()
@@ -241,7 +229,6 @@ if IS_GUI:
             if not query:
                 return
 
-            # Open search in selected engines
             for engine in self.selected_engines:
                 if engine == "google":
                     url = f"https://www.google.com/search?q={quote_plus(query)}"
@@ -344,11 +331,7 @@ if IS_GUI:
 
 
 def google_osint():
-    """
-    Constructs advanced Google dorking queries with various operators and opens them in the user's default web browser.
-    """
     if IS_GUI:
-        # Try to get the main window from the call stack
         import inspect
         for frame in inspect.stack():
             if 'MainWindow' in str(frame.frame.f_code):
@@ -358,12 +341,11 @@ def google_osint():
                     dialog.exec()
                     return
 
-    # Fallback to console mode
     print(
         f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Google OSINT Dork Builder")
     print(f"{Color.DARK_GRAY}Build advanced Google dorks with multiple operators.")
 
-    # Available dork operators with detailed explanations
+
     operators = {
         "1": {"name": "site", "desc": "Search within a specific site/domain. Syntax: site:domain.com"},
         "2": {"name": "inurl", "desc": "Search for URLs containing specific words. Syntax: inurl:word"},
@@ -411,7 +393,6 @@ def google_osint():
         "44": {"name": "custom", "desc": "Enter custom operator or advanced dork manually"}
     }
 
-    # Display operators menu
     print(f"\n{Color.DARK_GRAY}Available Dork Operators:")
     for key, op in operators.items():
         print(
@@ -427,7 +408,7 @@ def google_osint():
 
     if choice.lower() == 'help':
         show_dork_examples()
-        return google_osint()  # Restart after showing help
+        return google_osint()
 
     if choice == '0':
         return manual_dork_builder()
@@ -447,7 +428,6 @@ def google_osint():
             f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No valid operators selected!")
         return
 
-    # Build the dork query
     query_parts = []
 
     for op in selected_ops:
@@ -471,7 +451,6 @@ def google_osint():
                 else:
                     query_parts.append(f"{op_name}:{value}")
 
-    # Add base search terms
     base_query = input(
         f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.WHITE} Enter base search terms (optional): {Color.RESET}").strip()
     if base_query:
@@ -524,7 +503,6 @@ def google_osint():
         f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Generated Dork:")
     print(f"{Color.LIGHT_BLUE}{final_query}{Color.RESET}")
 
-    # Open search in selected engines
     for engine in selected_engines:
         if engine == "google":
             url = f"https://www.google.com/search?q={quote_plus(final_query)}"
@@ -550,7 +528,6 @@ def google_osint():
 
 
 def manual_dork_builder():
-    """Manual dork query builder for advanced users."""
     print(
         f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Manual Dork Builder")
     print(f"{Color.DARK_GRAY}Enter your complete dork query manually.")
@@ -563,7 +540,6 @@ def manual_dork_builder():
             f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No query provided!")
         return
 
-    # Ask user which search engines to use
     print(f"\n{Color.DARK_GRAY}Available Search Engines:")
     print(f"{Color.LIGHT_BLUE}1.{Color.RESET} Google (recommended for most dorks)")
     print(f"{Color.LIGHT_BLUE}2.{Color.RESET} Bing (good for NEAR/n and advanced operators)")
@@ -598,7 +574,6 @@ def manual_dork_builder():
     if not selected_engines:
         selected_engines = ["google"]
 
-    # Open search in selected engines
     for engine in selected_engines:
         if engine == "google":
             url = f"https://www.google.com/search?q={quote_plus(query)}"
@@ -624,7 +599,6 @@ def manual_dork_builder():
 
 
 def show_dork_examples():
-    """Display examples of common Google dorks."""
     print(
         f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Google Dork Examples")
     print(f"{Color.DARK_GRAY}📚 Advanced Dork Examples with Explanations:")
