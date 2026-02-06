@@ -21,19 +21,12 @@ from ..shared_utils import Color
 
 
 def is_valid_mac_address(mac: str) -> bool:
-    """
-    Validates a MAC address format.
-    """
-    # Regex for MAC address validation (e.g., 00:1A:2B:3C:4D:5E or 00-1A-2B-3C-4D-5E)
     pattern = re.compile(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$')
     return pattern.match(mac) is not None
 
 
-def search_mac_address():
-    """
-    Searches for the manufacturer of a given MAC address using an API.
-    """
-    mac_address = input(
+def search_mac_address() -> bool:
+    mac_address: str = input(
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter the MAC address to search: {Color.RESET}").strip()
 
     if not is_valid_mac_address(mac_address):
@@ -41,16 +34,16 @@ def search_mac_address():
             f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid MAC address format. Please use format like XX:XX:XX:XX:XX:XX.")
         return
 
-    url = f"https://api.macvendors.com/{mac_address}"
+    url: str = f"https://api.macvendors.com/{mac_address}"
 
     print(
         f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Looking up MAC address: {mac_address}...")
 
     try:
-        response = requests.get(url, timeout=10)
+        response: requests.Response = requests.get(url, timeout=10)
 
         if response.status_code == 200:
-            manufacturer = response.text
+            manufacturer: str = response.text
             print(
                 f"\n{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Manufacturer found:")
             print(
@@ -70,3 +63,5 @@ def search_mac_address():
     except requests.exceptions.RequestException as e:
         print(
             f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An error occurred while fetching data: {e}")
+    
+    return True

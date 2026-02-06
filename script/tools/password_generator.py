@@ -16,13 +16,11 @@
 import random
 import string
 
+from typing import LiteralString, List
 from ..shared_utils import Color
 
 
-def get_characters(complexity):
-    """
-    Returns a character set based on the chosen complexity level.
-    """
+def get_characters(complexity: str) -> LiteralString:
     if complexity == "low":
         return string.ascii_letters + string.digits
     elif complexity == "medium":
@@ -33,23 +31,20 @@ def get_characters(complexity):
         return string.ascii_letters + string.digits
 
 
-def password_generator_tool():
-    """
-    Generates a password of a specified length and complexity.
-    """
-    args = input(
+def password_generator_tool() -> None:
+    args: str = input(
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter password length and complexity (e.g., 12 medium) -> {Color.RESET}")
     if args is None:
         return
-    args = args.strip()
+    args: str = args.strip()
     if args:
-        parts = args.split()
+        parts: List[str] = args.split()
         if not parts:
-            password_length = 12
-            complexity = "medium"
+            password_length: int = 12
+            complexity: str = "medium"
         else:
             try:
-                password_length = int(parts[0])
+                password_length: int = int(parts[0])
                 if password_length <= 0:
                     print(
                         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED}Password length must be a positive number.{Color.RESET}")
@@ -58,17 +53,17 @@ def password_generator_tool():
                 print(
                     f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED}Invalid input. Please enter a valid number for the length.{Color.RESET}")
                 return
-            complexity = parts[1] if len(parts) > 1 else "medium"
+            complexity: str = parts[1] if len(parts) > 1 else "medium"
     else:
-        password_length = 12
-        complexity = "medium"
+        password_length: int = 12
+        complexity: str = "medium"
 
-    complexity = complexity.lower()
+    complexity: str = complexity.lower()
     if complexity not in ["low", "medium", "high"]:
-        complexity = "medium"
+        complexity: str = "medium"
 
-    characters = get_characters(complexity)
-    password = "".join(random.choice(characters)
+    characters: LiteralString = get_characters(complexity)
+    password: str = "".join(random.choice(characters)
                        for _ in range(password_length))
 
     print(

@@ -3,7 +3,7 @@ import subprocess
 from ..shared_utils import Color
 
 
-def port_scanner_tool():
+def port_scanner_tool() -> None:
 
     try:
         subprocess.Popen([r"C:\Program Files (x86)\Nmap\zenmap\bin\pythonw.exe",

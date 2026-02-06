@@ -18,25 +18,20 @@ import marshal
 import os
 import zlib
 
+from typing import List
 from ..shared_utils import Color
 
 
-def obfuscate_code(original_code, method):
-    """
-    Applies a specific obfuscation method to the given code string.
-    """
+def obfuscate_code(original_code: str, method: int) ->None | str:
     try:
         if method == 1:
-            # Marshal compilation
             compiled_code = compile(original_code, '<string>', 'exec')
             dumped_code = marshal.dumps(compiled_code)
             return f"import marshal; exec(marshal.loads({repr(dumped_code)}))"
         elif method == 2:
-            # Zlib compression
             compressed_code = zlib.compress(original_code.encode('utf-8'))
             return f"import zlib; exec(zlib.decompress({repr(compressed_code)}).decode('utf-8'))"
         elif method == 3:
-            # Marshal + Zlib + Base64
             compiled_code = compile(original_code, '<string>', 'exec')
             marshaled_code = marshal.dumps(compiled_code)
             compressed_code = zlib.compress(marshaled_code)
@@ -50,10 +45,7 @@ def obfuscate_code(original_code, method):
         return None
 
 
-def obfuscate_tool():
-    """
-    Provides a user interface for obfuscating Python files.
-    """
+def obfuscate_tool() -> bool:
     while True:
         print(
             f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Python File Obfuscation Tool")
@@ -68,18 +60,18 @@ def obfuscate_tool():
         print(
             f"  {Color.DARK_GRAY}[{Color.DARK_RED}0{Color.DARK_GRAY}]{Color.LIGHT_RED} Back to Main Menu")
 
-        choice = input(
-            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Select an option: {Color.RESET}").strip()
+        choice: int = int(input(
+            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Select an option: {Color.RESET}"))
 
-        if choice == "0":
-            return
+        if choice == 0:
+            return False
 
-        if choice not in ['1', '2', '3', '4']:
+        if choice not in range(1, 4):
             print(
                 f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid option. Please select a valid choice.")
             continue
 
-        file_path = input(
+        file_path: str = input(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Enter the path to the Python file (.py): {Color.RESET}").strip()
 
         if not os.path.isfile(file_path) or not file_path.endswith('.py'):
@@ -89,25 +81,25 @@ def obfuscate_tool():
 
         try:
             with open(file_path, encoding='utf-8') as f:
-                original_code = f.read()
+                original_code: str = f.read()
         except Exception as e:
             print(
                 f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Error reading file: {e}")
             continue
 
-        methods_to_run = []
-        if choice == '4':
-            methods_to_run = [1, 2, 3]
+        methods_to_run: List[int] = []
+        if choice == 4:
+            methods_to_run: List[int] = range(1, 3)
         else:
             methods_to_run.append(int(choice))
 
         for method in methods_to_run:
             print(
                 f"{Color.DARK_GRAY}[{Color.LIGHT_BLUE}i{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Applying obfuscation method {method}...")
-            obfuscated_code = obfuscate_code(original_code, method)
+            obfuscated_code: str = obfuscate_code(original_code, method)
 
             if obfuscated_code:
-                output_filename = file_path.replace(
+                output_filename: str = file_path.replace(
                     '.py', f'_obf_method{method}.py')
                 try:
                     with open(output_filename, 'w', encoding='utf-8') as f:
@@ -117,4 +109,6 @@ def obfuscate_tool():
                 except Exception as e:
                     print(
                         f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Error saving file {output_filename}: {e}")
-        break  # Exit the loop after processing a file
+        break
+
+    return True

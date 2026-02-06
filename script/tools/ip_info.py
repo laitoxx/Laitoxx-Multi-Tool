@@ -20,10 +20,7 @@ import requests
 from ..shared_utils import Color
 
 
-def get_ip():
-    """
-    Retrieves and displays information about an IP address or domain.
-    """
+def get_ip() -> None | bool:
     ip_input = input(
         f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}Enter IP address or domain: {Color.RESET}')
     if ip_input is None:
@@ -35,7 +32,6 @@ def get_ip():
             f'{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}No input provided.')
         return
 
-    # Resolve domain to IP if necessary
     try:
         ip = socket.gethostbyname(ip_input)
         print(
@@ -59,7 +55,6 @@ def get_ip():
                 f'\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} API Error: {message}')
             return
 
-        # Map of keys to display labels for cleaner output
         display_map = {
             "ip": "IP Address", "type": "Type",
             "continent": "Continent", "country": "Country",
@@ -78,7 +73,6 @@ def get_ip():
                 print(
                     f"{Color.DARK_RED}│ {Color.LIGHT_RED}{label:<20}: {Color.WHITE}{value}")
 
-        # Connection info is nested
         connection = info.get("connection", {})
         if connection:
             print(
@@ -101,3 +95,5 @@ def get_ip():
     except ValueError:  # JSONDecodeError
         print(
             f'\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}Could not decode the response from the API.')
+    
+    return True

