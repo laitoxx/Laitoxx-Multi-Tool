@@ -15,8 +15,8 @@
 
 import random
 import string
+from typing import List, LiteralString
 
-from typing import LiteralString, List
 from ..shared_utils import Color
 
 
@@ -38,7 +38,7 @@ def password_generator_tool() -> None:
         return
     args: str = args.strip()
     if args:
-        parts: List[str] = args.split()
+        parts: list[str] = args.split()
         if not parts:
             password_length: int = 12
             complexity: str = "medium"
@@ -64,7 +64,7 @@ def password_generator_tool() -> None:
 
     characters: LiteralString = get_characters(complexity)
     password: str = "".join(random.choice(characters)
-                       for _ in range(password_length))
+                            for _ in range(password_length))
 
     print(
         f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_GREEN}Generated Password: {Color.WHITE}{password}{Color.RESET}")

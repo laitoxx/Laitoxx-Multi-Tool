@@ -1,6 +1,7 @@
+from typing import Any, Dict
+
 import requests
 
-from typing import Dict, Any
 from ..shared_utils import Color
 
 _gevent_orig_ssl = None
@@ -10,7 +11,7 @@ try:
 except Exception:
     _gevent_orig_ssl = None
 
-PROXY_SCRAPER_RAW: Dict[str, str] = {
+PROXY_SCRAPER_RAW: dict[str, str] = {
     'http': 'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/http.txt',
     'socks4': 'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/socks4.txt',
     'socks5': 'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/socks5.txt'

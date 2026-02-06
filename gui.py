@@ -185,6 +185,7 @@ class PluginExecutionWindow(QDialog):
             except Exception as e:
                 logging.error(translator.get("log_save_error", e=e))
 
+
 THEMES_PATH = Path("themes/")
 CONFIG_FILE = "background_config.txt"
 DEFAULT_THEME_FILE = "themes/theme.json"

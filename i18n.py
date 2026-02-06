@@ -25,7 +25,7 @@ class I18n:
     def load_translations(self) -> dict:
         base_dir: str = os.path.dirname(os.path.abspath(__file__))
 
-        filepath:str = os.path.join(
+        filepath: str = os.path.join(
             base_dir, '..', 'translations', f'{self.language}.json')
 
         try:
@@ -326,7 +326,7 @@ TRANSLATIONS = {
 }
 
 base_dir: str = os.path.dirname(os.path.abspath(__file__))
-translations_dir: str  = os.path.join(base_dir, '..', 'translations')
+translations_dir: str = os.path.join(base_dir, '..', 'translations')
 os.makedirs(translations_dir, exist_ok=True)
 
 for lang, trans_data in TRANSLATIONS.items():

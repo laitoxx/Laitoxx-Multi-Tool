@@ -345,7 +345,6 @@ def google_osint():
         f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Google OSINT Dork Builder")
     print(f"{Color.DARK_GRAY}Build advanced Google dorks with multiple operators.")
 
-
     operators = {
         "1": {"name": "site", "desc": "Search within a specific site/domain. Syntax: site:domain.com"},
         "2": {"name": "inurl", "desc": "Search for URLs containing specific words. Syntax: inurl:word"},

@@ -63,5 +63,5 @@ def search_mac_address() -> bool:
     except requests.exceptions.RequestException as e:
         print(
             f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An error occurred while fetching data: {e}")
-    
+
     return True

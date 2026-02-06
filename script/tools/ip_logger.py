@@ -112,5 +112,5 @@ def logger_ip() -> bool:
         else:
             print(
                 f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid choice. Please try again.")
-            
+
     return True

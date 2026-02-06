@@ -17,12 +17,12 @@ import base64
 import marshal
 import os
 import zlib
-
 from typing import List
+
 from ..shared_utils import Color
 
 
-def obfuscate_code(original_code: str, method: int) ->None | str:
+def obfuscate_code(original_code: str, method: int) -> None | str:
     try:
         if method == 1:
             compiled_code = compile(original_code, '<string>', 'exec')
@@ -87,9 +87,9 @@ def obfuscate_tool() -> bool:
                 f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Error reading file: {e}")
             continue
 
-        methods_to_run: List[int] = []
+        methods_to_run: list[int] = []
         if choice == 4:
-            methods_to_run: List[int] = range(1, 3)
+            methods_to_run: list[int] = range(1, 3)
         else:
             methods_to_run.append(int(choice))
 

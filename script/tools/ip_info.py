@@ -95,5 +95,5 @@ def get_ip() -> None | bool:
     except ValueError:  # JSONDecodeError
         print(
             f'\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}Could not decode the response from the API.')
-    
+
     return True
