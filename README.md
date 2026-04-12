@@ -55,16 +55,15 @@ To create your own plugin:
 * Username search  
 
 #### Web & Network Tools:
-* SQL vulnerability scanner  
-* Admin panel finder  
 * Port scanner (Nmap-based)  
 * Subdomain finder  
-* Web crawler  
+* CMS Detector
+* Technologies Fingerprinting
+* Web security tools(http inspecting, jwt token analyzer and etc..)
 
 #### Utilities:
 * Local database search  
-* Password generator  
-* Python obfuscator  
+* Hash Tools  
 * And much more...
 
 ### 🚀 Installation & Usage
@@ -86,7 +85,6 @@ To create your own plugin:
     python gui.py
     ```
 
-📌 **Audience**: Cybersecurity researchers, ethical hackers, and OSINT specialists.
 
 ---
 
@@ -140,17 +138,16 @@ Laitoxx поддерживает расширение функционала ч�
 * Telegram OSINT  
 * Поиск по нику  
 
-#### Веб и сеть:
-* SQL scanner  
-* Поиск админок  
+#### Веб и сеть: 
 * Сканер портов (Nmap)  
 * Поиск субдоменов  
-* Краулер  
+* CMS детектор
+* Определитель Технологий
+* Инструменты веб безопасности
 
 #### Утилиты:
 * Поиск по БД  
-* Генератор паролей  
-* Обфускация Python  
+* Инструменты работы с хешами
 * И другое  
 
 ### 🚀 Установка
@@ -171,5 +168,3 @@ Laitoxx поддерживает расширение функционала ч�
     ```sh
     python gui.py
     ```
-
-📌 **Для кого**: специалисты по кибербезопасности, OSINT-аналитики, исследователи.
