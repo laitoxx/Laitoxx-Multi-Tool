@@ -1,0 +1,36 @@
+{
+  "github_chronolocation": {
+    "enabled": true,
+    "config": {}
+  },
+  "ioc_extractor": {
+    "enabled": true,
+    "config": {}
+  },
+  "ip_lookup": {
+    "enabled": true,
+    "config": {}
+  },
+  "leakosint_search": {
+    "enabled": true,
+    "config": {
+      "token": "",
+      "limit": 100.0,
+      "lang": "ru",
+      "type": "json",
+      "depth": 1.0,
+      "depth_max_queries": 5.0,
+      "depth_name_only": false,
+      "debug_dump": true,
+      "debug_dump_limit": 5.0,
+      "max_records_per_db": 20.0,
+      "max_fields_per_record": 12.0,
+      "dedupe_values": false,
+      "graph_include_all_fields": false,
+      "graph_compact_fields": true,
+      "graph_compact_max_values": 6.0,
+      "graph_skip_db_nodes": true,
+      "graph_filter_junk": true
+    }
+  }
+}
