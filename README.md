@@ -1,7 +1,6 @@
-# Laitoxx Multi-Tool V2.2.1
+# Laitoxx Multi-Tool V2.3
 
-<img width="1914" height="997" alt="Screenshot 2026-04-12 111243.png" src="https://github.com/user-attachments/assets/8063d5ee-b8a3-417b-a1aa-d81471ed79b6" />
-
+<img src="./Screenshot 2026-04-12 111243.png" alt="Laitoxx banner" width="100%"/>
 
 ---
 
