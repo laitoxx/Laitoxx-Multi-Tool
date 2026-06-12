@@ -409,22 +409,9 @@ class NetworkInfoWindow(QDialog):
                 import json
 
                 tags = {
-                    "building": [
-                        "residential",
-                        "apartments",
-                        "house",
-                        "hotel",
-                        "dormitory",
-                    ],
-                    "amenity": [
-                        "cafe",
-                        "restaurant",
-                        "bar",
-                        "pub",
-                        "fast_food",
-                        "food_court",
-                    ],
-                    "leisure": ["park", "resort", "sports_centre"],
+                    "building": True,
+                    "amenity": True,
+                    "leisure": True,
                 }
                 gdf = ox.features_from_point((self.lat, self.lon), tags=tags, dist=500)
                 if not gdf.empty:
@@ -609,8 +596,7 @@ class NetworkInfoWindow(QDialog):
 
                         wloc_json = line.replace("APPLE_WLOC_DATA:", "")
                         self.wloc_data = json.loads(wloc_json)
-                        if self.mode == "ip":
-                            self._fetch_osint_data_bg()
+                        self._fetch_osint_data_bg()
                     except Exception as e:
                         print("Failed to parse WLOC JSON:", e)
                     continue
