@@ -306,7 +306,7 @@ class NetworkInfoWindow(QDialog):
                 }}
             }}
             
-            var geoJsonStr = {__import__("json").dumps(data.get("geojson")) if data.get("geojson") else "null"};
+            var geoJsonStr = {__import__("json").dumps(data.get("geojson"))};
             if (geoJsonStr && typeof L !== 'undefined') {{
                 L.geoJSON(geoJsonStr, {{
                     pointToLayer: function (feature, latlng) {{
@@ -334,7 +334,7 @@ class NetworkInfoWindow(QDialog):
             }}
             
             // Plot WLOC WiFi Points if available
-            var wlocData = {__import__("json").dumps(getattr(self, "wloc_data", [])) if hasattr(self, "wloc_data") else "[]"};
+            var wlocData = {__import__("json").dumps(getattr(self, "wloc_data", []))};
             if (wlocData && wlocData.length > 0 && typeof L !== 'undefined') {{
                 wlocData.forEach(function(item) {{
                     var circle = L.circleMarker([item.lat, item.lon], {{
@@ -413,7 +413,7 @@ class NetworkInfoWindow(QDialog):
                     "amenity": True,
                     "leisure": True,
                 }
-                gdf = ox.features_from_point((self.lat, self.lon), tags=tags, dist=10000)
+                gdf = ox.features_from_point((self.lat, self.lon), tags=tags, dist=1000)
                 if not gdf.empty:
                     # Drop columns that have complex types
                     for col in gdf.columns:
