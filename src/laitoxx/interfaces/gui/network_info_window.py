@@ -413,7 +413,7 @@ class NetworkInfoWindow(QDialog):
                     "amenity": True,
                     "leisure": True,
                 }
-                gdf = ox.features_from_point((self.lat, self.lon), tags=tags, dist=1000)
+                gdf = ox.features_from_point((self.lat, self.lon), tags=tags, dist=200)
                 if not gdf.empty:
                     # Drop columns that have complex types
                     for col in gdf.columns:
