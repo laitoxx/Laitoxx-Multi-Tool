@@ -21,7 +21,6 @@ pefile
 phonenumbers
 pillow
 pdfid
-playwright
 pyexiv2
 pymongo
 PyQt6
