@@ -1,0 +1,16 @@
+{
+    "name": "LeakOSINT — mikromark",
+    "direction": "LR",
+    "nodes": [
+        {
+            "id": "N8610C6",
+            "label": "mikromark",
+            "node_type": "Person",
+            "description": "Исходный запрос",
+            "metadata": {},
+            "mermaid_shape": "round",
+            "mermaid_style": "fill:#FFD700,stroke:#8B4513,stroke-width:2px,color:#000"
+        }
+    ],
+    "edges": []
+}

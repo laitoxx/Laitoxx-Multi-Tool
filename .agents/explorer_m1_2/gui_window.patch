@@ -1,0 +1,39 @@
+--- src/laitoxx/features/utilities/metadata_viewer/gui_window.py
++++ src/laitoxx/features/utilities/metadata_viewer/gui_window.py
+@@ -327,35 +327,35 @@
+             file_node = Node(
+                 id=str(uuid.uuid4()),
+                 label=data.get("FileName", os.path.basename(filepath)),
+-                node_type="document"
++                node_type="Document"
+             )
+             graph_win._graph.add_node(file_node)
+             added_files += 1
+             
+             # Extract Authors
+             for key in ["Author", "Creator", "Producer", "OwnerName"]:
+                 val = data.get(key)
+                 if val:
+                     val_str = str(val)
+                     if val_str not in author_nodes:
+-                        author_node = Node(id=str(uuid.uuid4()), label=val_str, node_type="person")
++                        author_node = Node(id=str(uuid.uuid4()), label=val_str, node_type="Person")
+                         graph_win._graph.add_node(author_node)
+                         author_nodes[val_str] = author_node
+                     edge = Edge(id=str(uuid.uuid4()), source_id=author_nodes[val_str].id, target_id=file_node.id, label="created/edited", edge_type="default")
+                     graph_win._graph.add_edge(edge)
+                     added_edges += 1
+                     
+             # Extract Software
+             for key in ["EXIF:Software", "Software", "Tika:creator", "Hachoir:Software"]:
+                 val = data.get(key)
+                 if val:
+                     val_str = str(val)
+                     if val_str not in software_nodes:
+-                        software_node = Node(id=str(uuid.uuid4()), label=val_str, node_type="custom", shape="hexagon")
++                        software_node = Node(id=str(uuid.uuid4()), label=val_str, node_type="Custom", mermaid_shape="hexagon")
+                         graph_win._graph.add_node(software_node)
+                         software_nodes[val_str] = software_node
+                     edge = Edge(id=str(uuid.uuid4()), source_id=file_node.id, target_id=software_nodes[val_str].id, label="created with", edge_type="default")
+                     graph_win._graph.add_edge(edge)
+                     added_edges += 1

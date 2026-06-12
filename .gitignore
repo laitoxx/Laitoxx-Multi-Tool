@@ -1,0 +1,29 @@
+# Python virtual environment
+venv/
+env/
+.env
+
+# Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Test and update scripts
+test_*.py
+tests/test_*.py
+update_readmes.py
+translate_plugin_docs.py
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Application data
+logs/
+cache/
+
+# Local settings
+settings/app_settings.json
+update_*.py

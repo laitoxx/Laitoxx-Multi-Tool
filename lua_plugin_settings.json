@@ -14,7 +14,7 @@
   "leakosint_search": {
     "enabled": true,
     "config": {
-      "token": "",
+      "token": "1618822425:2AfTtUBO\n",
       "limit": 100.0,
       "lang": "ru",
       "type": "json",

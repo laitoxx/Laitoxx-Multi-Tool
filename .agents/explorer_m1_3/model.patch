@@ -1,0 +1,143 @@
+--- a/src/laitoxx/shared/graph/model.py
++++ b/src/laitoxx/shared/graph/model.py
+@@ -87,6 +87,9 @@
+     # Mermaid display
+     mermaid_shape: str = "[]"          # e.g. "[]", "()", "(())", "{}"
+     mermaid_style: str = ""            # CSS style string
++    # Temporal fields
++    valid_from: Optional[str] = None
++    valid_to: Optional[str] = None
+     # Internal
+     id: str = field(default_factory=lambda: f"N{uuid.uuid4().hex[:6].upper()}")
+ 
+@@ -108,6 +111,8 @@
+             "metadata": self.metadata,
+             "mermaid_shape": self.mermaid_shape,
+             "mermaid_style": self.mermaid_style,
++            "valid_from": self.valid_from,
++            "valid_to": self.valid_to,
+         }
+ 
+     @classmethod
+@@ -120,6 +125,8 @@
+             metadata=d.get("metadata", {}),
+             mermaid_shape=d.get("mermaid_shape", "[]"),
+             mermaid_style=d.get("mermaid_style", ""),
++            valid_from=d.get("valid_from", None),
++            valid_to=d.get("valid_to", None),
+         )
+         n.id = d.get("id", n.id)
+         return n
+@@ -134,6 +141,9 @@
+     # Mermaid display
+     mermaid_line: str = "-->"          # e.g. "-->", "==>", "-.->", "---"
+     mermaid_style: str = ""            # linkStyle CSS string
++    # Temporal fields
++    valid_from: Optional[str] = None
++    valid_to: Optional[str] = None
+     # Internal
+     id: str = field(default_factory=lambda: f"E{uuid.uuid4().hex[:6].upper()}")
+ 
+@@ -147,6 +157,8 @@
+             "metadata": self.metadata,
+             "mermaid_line": self.mermaid_line,
+             "mermaid_style": self.mermaid_style,
++            "valid_from": self.valid_from,
++            "valid_to": self.valid_to,
+         }
+ 
+     @classmethod
+@@ -159,6 +171,8 @@
+             metadata=d.get("metadata", {}),
+             mermaid_line=d.get("mermaid_line", "-->"),
+             mermaid_style=d.get("mermaid_style", ""),
++            valid_from=d.get("valid_from", None),
++            valid_to=d.get("valid_to", None),
+         )
+         e.id = d.get("id", e.id)
+         return e
+@@ -204,6 +218,65 @@
+     def get_edge(self, edge_id: str) -> Optional[Edge]:
+         return next((e for e in self.edges if e.id == edge_id), None)
+ 
++    def merge_nodes(self, primary_id: str, duplicate_ids: list[str]) -> None:
++        """
++        Merge the duplicate nodes into the primary node.
++        Combines descriptions and metadata, updates and re-routes all edges
++        pointing to/from duplicate nodes to point to the primary node,
++        and deduplicates any resulting duplicate edges.
++        """
++        primary = self.get_node(primary_id)
++        if not primary:
++            raise ValueError(f"Primary node with id '{primary_id}' not found.")
++
++        # Ensure primary is not in duplicate_ids
++        duplicate_ids_clean = [dup_id for dup_id in duplicate_ids if dup_id != primary_id]
++
++        for dup_id in duplicate_ids_clean:
++            dup = self.get_node(dup_id)
++            if not dup:
++                continue
++
++            # Merge descriptions
++            if dup.description:
++                if primary.description:
++                    primary.description = f"{primary.description}\n{dup.description}"
++                else:
++                    primary.description = dup.description
++
++            # Merge metadata
++            for k, v in dup.metadata.items():
++                if k not in primary.metadata:
++                    primary.metadata[k] = v
++                elif primary.metadata[k] != v:
++                    primary.metadata[k] = f"{primary.metadata[k]}, {v}"
++
++            # Merge temporal fields
++            if dup.valid_from:
++                if not primary.valid_from or dup.valid_from < primary.valid_from:
++                    primary.valid_from = dup.valid_from
++            if dup.valid_to:
++                if not primary.valid_to or dup.valid_to > primary.valid_to:
++                    primary.valid_to = dup.valid_to
++
++        # Re-route edges
++        for edge in self.edges:
++            if edge.source_id in duplicate_ids_clean:
++                edge.source_id = primary_id
++            if edge.target_id in duplicate_ids_clean:
++                edge.target_id = primary_id
++
++        # Deduplicate edges (by source_id, target_id, edge_type, label)
++        seen = {}
++        unique_edges = []
++        for edge in self.edges:
++            key = (edge.source_id, edge.target_id, edge.edge_type, edge.label)
++            if key not in seen:
++                seen[key] = edge
++                unique_edges.append(edge)
++            else:
++                # Merge metadata of duplicates
++                existing_edge = seen[key]
++                for k, v in edge.metadata.items():
++                    if k not in existing_edge.metadata:
++                        existing_edge.metadata[k] = v
++                    elif existing_edge.metadata[k] != v:
++                        existing_edge.metadata[k] = f"{existing_edge.metadata[k]}, {v}"
++                
++                # Merge temporal fields of duplicate edges
++                if edge.valid_from:
++                    if not existing_edge.valid_from or edge.valid_from < existing_edge.valid_from:
++                        existing_edge.valid_from = edge.valid_from
++                if edge.valid_to:
++                    if not existing_edge.valid_to or edge.valid_to > existing_edge.valid_to:
++                        existing_edge.valid_to = edge.valid_to
++
++        self.edges = unique_edges
++
++        # Clean duplicate nodes
++        self.nodes = [n for n in self.nodes if n.id not in duplicate_ids_clean]
++
+     # ------------------------------------------------------------------
+     # Serialization
+     # ------------------------------------------------------------------

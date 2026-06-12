@@ -1,0 +1,15 @@
+{
+    "open_website_on_startup": false,
+    "performance_mode": true,
+    "language": "en",
+    "theme_path": "../../resources/themes/default.json",
+    "background_path": "../../resources/background/background0.gif",
+    "proxy": {
+        "enabled": false,
+        "type": "http",
+        "host": "",
+        "port": "",
+        "username": "",
+        "password": ""
+    }
+}
