@@ -52,22 +52,44 @@ Full guide: 👉 [Plugin Development Guide (English)](docs/pluginBuilding.en.md)
 * Password Generator
 
 ### 🚀 Installation & Usage
+
+Laitoxx provides convenient installation scripts for all major operating systems. You can download the tool using Git or by downloading the ZIP archive.
+
+#### 🔽 Option 1: With Git (Recommended)
 1. **Clone the repository:**
    ```sh
    git clone https://github.com/Laitoxx/Laitoxx-Multi-Tool.git
-   ```
-2. **Navigate to the project directory:**
-   ```sh
    cd Laitoxx-Multi-Tool
    ```
-3. **Install dependencies:**
-   ```sh
-   pip install -r requirements.txt
-   ```
-4. **Run the application:**
-   ```sh
-   python start.py
-   ```
+
+#### 🔽 Option 2: Without Git
+1. Download the repository as a ZIP file from GitHub (Click **Code** -> **Download ZIP**).
+2. Extract the ZIP file and open a terminal/command prompt in the extracted folder (`Laitoxx-Multi-Tool-main`).
+
+---
+
+#### 🐧 Ubuntu/Debian (Linux)
+Run the automated installation script:
+```sh
+chmod +x install.sh
+./install.sh
+```
+*To run the tool later, simply use: `python3 start.py`*
+
+#### 🍎 MacOS
+Run the automated installation script:
+```sh
+chmod +x install.sh
+./install.sh
+```
+*To run the tool later, simply use: `python3 start.py`*
+
+#### 🪟 Windows
+Double-click the `install.bat` file, or run it via Command Prompt:
+```cmd
+install.bat
+```
+*To run the tool later, simply use: `python start.py`*
 
 ### ✨ Changelog v2.3.1
 * **Global Wi-Fi Tracking**: Locate Wi-Fi routers worldwide. You can now reveal the exact coordinates of entire neighborhoods of routers just by searching an IP address or a single MAC address.

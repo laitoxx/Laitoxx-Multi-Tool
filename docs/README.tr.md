@@ -52,22 +52,44 @@ Kılavuz: 👉 [Eklenti Geliştirme Kılavuzu (Türkçe)](pluginBuilding.tr.md)
 * Parola Oluşturucu
 
 ### 🚀 Kurulum ve Kullanım
+
+Laitoxx, tüm önemli işletim sistemleri için otomatik kurulum komut dosyaları (script) sunar. Aracı Git kullanarak veya bir ZIP arşivi indirerek indirebilirsiniz.
+
+#### 🔽 Seçenek 1: Git ile (Önerilen)
 1. **Depoyu klonlayın:**
    ```sh
    git clone https://github.com/Laitoxx/Laitoxx-Multi-Tool.git
-   ```
-2. **Proje dizinine gidin:**
-   ```sh
    cd Laitoxx-Multi-Tool
    ```
-3. **Bağımlılıkları yükleyin:**
-   ```sh
-   pip install -r requirements.txt
-   ```
-4. **Uygulamayı çalıştırın:**
-   ```sh
-   python start.py
-   ```
+
+#### 🔽 Seçenek 2: Git olmadan
+1. Depoyu GitHub'dan bir ZIP dosyası olarak indirin (**Code** -> **Download ZIP**'e tıklayın).
+2. ZIP arşivini çıkartın ve açılan klasörde (`Laitoxx-Multi-Tool-main`) bir terminal açın.
+
+---
+
+#### 🐧 Ubuntu/Debian (Linux)
+Otomatik kurulum komut dosyasını çalıştırın:
+```sh
+chmod +x install.sh
+./install.sh
+```
+*Daha sonra çalıştırmak için şunu kullanın: `python3 start.py`*
+
+#### 🍎 MacOS
+Otomatik kurulum komut dosyasını çalıştırın:
+```sh
+chmod +x install.sh
+./install.sh
+```
+*Daha sonra çalıştırmak için şunu kullanın: `python3 start.py`*
+
+#### 🪟 Windows
+`install.bat` dosyasına çift tıklayın veya komut satırı (CMD) aracılığıyla çalıştırın:
+```cmd
+install.bat
+```
+*Daha sonra çalıştırmak için şunu kullanın: `python start.py`*
 
 ### ✨ Değişiklik Günlüğü (Changelog) v2.3.1
 * **Küresel Wi-Fi Takibi**: Dünya çapındaki Wi-Fi yönlendiricilerini bulun. Sadece bir IP adresi veya tek bir MAC adresi aratarak tüm bir yönlendirici mahallesinin kesin koordinatlarını ortaya çıkarabilirsiniz.
