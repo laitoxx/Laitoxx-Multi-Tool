@@ -271,6 +271,11 @@ class NetworkInfoWindow(QDialog):
         if not self.map_view:
             return
 
+        if "osmnx_error" in data:
+            self.console_output.append(f"\n[WARNING] OSMNX Map Overlay failed to load:\n{data['osmnx_error']}\n")
+            self.console_output.append("This usually happens on Windows if 'geopandas'/'fiona' or C++ Build Tools are missing, or if OpenStreetMap blocked the IP.\n")
+
+
         js_code = f"""
         (function() {{
             var existing = document.getElementById('overlay');
@@ -427,6 +432,7 @@ class NetworkInfoWindow(QDialog):
                 import logging
 
                 logging.warning(f"OSMNX error: {e}")
+                data["osmnx_error"] = str(e)
 
             # Freifunk OpenWiFiMap bridge to Apple WPS (for IP mode)
             if (
