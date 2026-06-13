@@ -23,6 +23,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QMovie, QResizeEvent, QFont, QTextCursor
 from PyQt6.QtCore import Qt, QUrl, QThread
+from laitoxx.interfaces.gui.worker import Worker, stop_and_detach_thread
 from PyQt6.QtMultimedia import QMediaPlayer
 from PyQt6.QtMultimediaWidgets import QVideoWidget
 from PyQt6.QtWidgets import QGraphicsBlurEffect
@@ -1046,9 +1047,7 @@ class MainWindow(QMainWindow):
             thread = entry.get("thread")
             if thread:
                 try:
-                    thread.requestInterruption()
-                    thread.quit()
-                    thread.wait()
+                    stop_and_detach_thread(thread, worker)
                 except RuntimeError:
                     pass
                 except Exception:

@@ -10,8 +10,24 @@ import contextlib
 import subprocess
 import threading
 
-from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal, QThread
 
+# Global registry to keep references to stopped threads until they finish
+# naturally, preventing "QThread: Destroyed while thread is still running" crashes.
+_zombie_threads = []
+
+def stop_and_detach_thread(thread: QThread, worker=None):
+    """Safely stops a thread without blocking the GUI."""
+    global _zombie_threads
+    if thread and thread.isRunning():
+        if worker and hasattr(worker, 'cancel'):
+            worker.cancel()
+        thread.quit()
+        thread.setParent(None)
+        _zombie_threads.append(thread)
+        
+    # Clean up finished zombies
+    _zombie_threads = [t for t in _zombie_threads if t.isRunning()]
 
 def remove_ansi_codes(text):
     return re.sub(r"(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]", "", text)

@@ -42,6 +42,7 @@ from PyQt6.QtWidgets import (
 )
 
 from laitoxx.interfaces.gui.translator import translator
+from laitoxx.interfaces.gui.worker import stop_and_detach_thread
 from laitoxx.core.settings.theme import DEFAULT_THEME, load_default_theme
 from ._image_workers import (
     ForensicsWorker,
@@ -1004,12 +1005,13 @@ class ImageSearchWindow(QDialog):
             self._load_file(path)
 
     def _cleanup_threads(self) -> None:
-        for t_attr in ("_hash_thread", "_search_thread", "_forensics_thread"):
-            t = getattr(self, t_attr, None)
-            if t and t.isRunning():
-                t.quit()
-                t.wait()
-            setattr(self, t_attr, None)
+        for prefix in ("_hash", "_search", "_forensics"):
+            t = getattr(self, f"{prefix}_thread", None)
+            w = getattr(self, f"{prefix}_worker", None)
+            if t:
+                stop_and_detach_thread(t, w)
+            setattr(self, f"{prefix}_thread", None)
+            setattr(self, f"{prefix}_worker", None)
 
     def _load_file(self, path: str) -> None:
         self._cleanup_threads()

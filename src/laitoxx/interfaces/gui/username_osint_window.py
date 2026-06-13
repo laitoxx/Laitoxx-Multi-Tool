@@ -56,6 +56,7 @@ from PyQt6.QtCore import (
 )
 
 from laitoxx.interfaces.gui.translator import translator
+from laitoxx.interfaces.gui.worker import stop_and_detach_thread
 
 from laitoxx.features.osint.username_osint.models import (
     CheckResult,
@@ -1083,13 +1084,10 @@ class UsernameOsintWindow(QDialog):
         self._thread.start()
 
     def _stop_search(self):
-        if self._worker:
-            self._worker.cancel()
-        if self._thread and self._thread.isRunning():
-            self._thread.quit()
-            if not self._thread.wait(5000):
-                self._thread.terminate()
-                self._thread.wait(2000)
+        if self._thread:
+            stop_and_detach_thread(self._thread, self._worker)
+            self._thread = None
+            self._worker = None
 
     def _cleanup_thread(self):
         self._worker = None

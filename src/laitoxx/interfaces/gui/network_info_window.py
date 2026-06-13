@@ -23,7 +23,7 @@ except ImportError:
     QWebEngineSettings = None
     logging.warning("PyQt6-WebEngine not installed. Maps will not be rendered.")
 
-from laitoxx.interfaces.gui.worker import Worker
+from laitoxx.interfaces.gui.worker import Worker, stop_and_detach_thread
 from laitoxx.interfaces.gui.translator import translator
 
 
@@ -517,15 +517,9 @@ class NetworkInfoWindow(QDialog):
 
         # Stop previous worker if running
         if self._worker_thread:
-            try:
-                if self._worker_thread.isRunning():
-                    if self._worker:
-                        self._worker.cancel()
-                    self._worker_thread.quit()
-                    self._worker_thread.wait()
-            except RuntimeError:
-                self._worker_thread = None
-                self._worker = None
+            stop_and_detach_thread(self._worker_thread, self._worker)
+            self._worker_thread = None
+            self._worker = None
 
         # Import dynamically to avoid circular imports
         if self.mode == "ip":
@@ -562,14 +556,7 @@ class NetworkInfoWindow(QDialog):
 
     def closeEvent(self, event):
         if self._worker_thread:
-            try:
-                if self._worker_thread.isRunning():
-                    if self._worker:
-                        self._worker.cancel()
-                    self._worker_thread.quit()
-                    self._worker_thread.wait()
-            except RuntimeError:
-                pass
+            stop_and_detach_thread(self._worker_thread, self._worker)
         super().closeEvent(event)
 
     def _handle_output(self, text: str):
