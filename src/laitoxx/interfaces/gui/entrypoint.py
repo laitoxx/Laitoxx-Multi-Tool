@@ -31,7 +31,7 @@ logging.basicConfig(
 
 logging.info("Application starting...")
 
-PROJECT_SITE = "https://laitoxx.su"
+PROJECT_SITE = "https://laitoxx.wtf"
 
 
 def _open_project_site():

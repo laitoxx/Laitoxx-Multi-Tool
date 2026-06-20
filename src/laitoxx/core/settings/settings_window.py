@@ -23,6 +23,7 @@ from PyQt6.QtWidgets import (
     QFileDialog,
     QMessageBox,
     QFormLayout,
+    QSpinBox,
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 
@@ -134,6 +135,7 @@ class SettingsWindow(QDialog):
             ("sw_nav_themes", self._t("sw_nav_themes")),
             ("sw_nav_background", self._t("sw_nav_background")),
             ("sw_nav_proxy", self._t("sw_nav_proxy")),
+            ("sw_nav_schedule", self._t("sw_nav_schedule")),
         ]
         for key, label in sections:
             item = QListWidgetItem(label)
@@ -151,12 +153,14 @@ class SettingsWindow(QDialog):
         self._page_themes = self._build_page_themes()
         self._page_background = self._build_page_background()
         self._page_proxy = self._build_page_proxy()
+        self._page_schedule = self._build_page_schedule()
 
         for page in (
             self._page_general,
             self._page_themes,
             self._page_background,
             self._page_proxy,
+            self._page_schedule,
         ):
             self._stack.addWidget(page)
 
@@ -387,6 +391,54 @@ class SettingsWindow(QDialog):
         QMessageBox.information(
             self, self._t("sw_proxy_saved_title"), self._t("sw_proxy_saved_msg")
         )
+
+    # ── Page: Schedule ───────────────────────────────────────────────────────
+
+    def _build_page_schedule(self) -> QWidget:
+        page, lay = self._make_page("sw_schedule_title", spacing=16)
+
+        self._chk_schedule = QCheckBox(self._t("sw_schedule_enable"))
+        self._chk_schedule.setChecked(settings.auto_theme_schedule)
+        self._chk_schedule.setStyleSheet(self._LABEL_STYLE)
+        lay.addWidget(self._chk_schedule)
+
+        self._combo_day_theme = QComboBox()
+        self._combo_day_theme.setMinimumWidth(180)
+        self._populate_combo(self._combo_day_theme, list_themes(), settings.day_theme)
+        self._add_labeled_row(lay, self._t("sw_schedule_day_theme") + ":", self._combo_day_theme)
+
+        self._spin_day_start = QSpinBox()
+        self._spin_day_start.setRange(0, 23)
+        self._spin_day_start.setValue(settings.day_start)
+        self._spin_day_start.setSuffix(":00")
+        self._spin_day_start.setStyleSheet("QSpinBox { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius:6px; color:white; padding:4px 8px; }")
+        self._add_labeled_row(lay, self._t("sw_schedule_day_start") + ":", self._spin_day_start)
+
+        self._combo_night_theme = QComboBox()
+        self._combo_night_theme.setMinimumWidth(180)
+        self._populate_combo(self._combo_night_theme, list_themes(), settings.night_theme)
+        self._add_labeled_row(lay, self._t("sw_schedule_night_theme") + ":", self._combo_night_theme)
+
+        self._spin_night_start = QSpinBox()
+        self._spin_night_start.setRange(0, 23)
+        self._spin_night_start.setValue(settings.night_start)
+        self._spin_night_start.setSuffix(":00")
+        self._spin_night_start.setStyleSheet("QSpinBox { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius:6px; color:white; padding:4px 8px; }")
+        self._add_labeled_row(lay, self._t("sw_schedule_night_start") + ":", self._spin_night_start)
+
+        btn_save = QPushButton(self._t("save"))
+        btn_save.clicked.connect(self._on_save_schedule)
+        lay.addWidget(btn_save)
+
+        lay.addStretch()
+        return page
+
+    def _on_save_schedule(self):
+        settings.auto_theme_schedule = self._chk_schedule.isChecked()
+        settings.day_theme = self._combo_day_theme.currentData() or ""
+        settings.night_theme = self._combo_night_theme.currentData() or ""
+        settings.day_start = self._spin_day_start.value()
+        settings.night_start = self._spin_night_start.value()
 
     # ── General page callbacks ────────────────────────────────────────────────
 

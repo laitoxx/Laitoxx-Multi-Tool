@@ -560,7 +560,7 @@ class UsernameOsintWindow(QDialog):
         self._stat_total = _StatCard("\u2630", "0", _t("uo_total", "Checked"), _ACCENT)
         self._stat_errors = _StatCard("\u26a0", "0", _t("uo_errors", "Errors"), _ORANGE)
         self._stat_conf = _StatCard(
-            "\u272a", "—", _t("uo_confidence", "Confidence"), _BLUE
+            "\u272a", "-", _t("uo_confidence", "Confidence"), _BLUE
         )
         for card in (
             self._stat_found,
@@ -1185,7 +1185,7 @@ class UsernameOsintWindow(QDialog):
         errors = sum(1 for r in self._results if r.status in ("error", "timeout"))
         waf = sum(1 for r in self._results if r.status == "waf_blocked")
         confs = [r.confidence for r in self._results if r.is_found and r.confidence > 0]
-        avg = f"{int(sum(confs) / len(confs) * 100)}%" if confs else "—"
+        avg = f"{int(sum(confs) / len(confs) * 100)}%" if confs else "-"
 
         self._stat_found.set_value(str(found))
         self._stat_total.set_value(str(total))

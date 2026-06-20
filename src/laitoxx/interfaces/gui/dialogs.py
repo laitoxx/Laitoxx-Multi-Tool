@@ -119,7 +119,7 @@ class HashToolsDialog(QDialog):
         ),
         "Dictionary Cracker": (
             "This tool cracks a hash using a wordlist (dictionary attack).\n\n"
-            "Pure Python implementation — may be slow for large wordlists.\n"
+            "Pure Python implementation - may be slow for large wordlists.\n"
             "For better performance, use specialized tools like Hashcat.\n\n"
             "Supported algorithms: md5, sha1, sha256, etc."
         ),
@@ -348,7 +348,7 @@ class WebSecurityDialog(QDialog):
         layout = QVBoxLayout(self)
 
         info = QLabel(
-            "Passive web security checks — no payloads injected.\n"
+            "Passive web security checks - no payloads injected.\n"
             "Enter the target URL and select which check to run."
         )
         info.setWordWrap(True)
@@ -567,7 +567,7 @@ class CidrCalculatorDialog(QDialog):
 
         self.check_ip_input = QLineEdit()
         self.check_ip_input.setPlaceholderText(
-            "Optional — check if this IP is in range"
+            "Optional - check if this IP is in range"
         )
         form.addRow("Check IP:", self.check_ip_input)
 

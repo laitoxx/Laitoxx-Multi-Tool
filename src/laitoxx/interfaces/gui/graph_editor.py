@@ -948,7 +948,7 @@ class _PropPanel(GlassPanel):
             k_lbl.setFixedWidth(72)
             k_lbl.setStyleSheet(f"color: {_TEXT_DIM}; font-size: 11px;")
             self._key_labels.append(k_lbl)
-            val = QLabel("—")
+            val = QLabel("-")
             val.setWordWrap(True)
             val.setStyleSheet(f"color: {_TEXT_SEC}; font-size: 11px;")
             self._fields[key] = val
@@ -974,12 +974,12 @@ class _PropPanel(GlassPanel):
 
     def _set(self, key: str, value: str):
         if key in self._fields:
-            self._fields[key].setText(value or "—")
+            self._fields[key].setText(value or "-")
 
     def clear(self):
         self._current_id = None
         for lbl in self._fields.values():
-            lbl.setText("—")
+            lbl.setText("-")
 
 
 class NodePropertiesPanel(_PropPanel):

@@ -29,6 +29,7 @@ DEFAULT_THEME: dict = {
     "panel_bg_color": "rgba(20, 8, 8, 0.80)",
     "border_color": "rgba(255, 68, 68, 0.30)",
     "text_secondary_color": "#cc9999",
+    "border_radius": 10,
 }
 
 

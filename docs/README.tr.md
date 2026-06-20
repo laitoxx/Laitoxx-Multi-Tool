@@ -1,4 +1,4 @@
-# Laitoxx Multi-Tool V2.3.1
+# Laitoxx Multi-Tool V2.3.2
 
 [English](../README.md) | [Русский](README.ru.md) | [Українська](README.uk.md) | [Türkçe](README.tr.md)
 
@@ -17,6 +17,7 @@ Kılavuz: 👉 [Eklenti Geliştirme Kılavuzu (Türkçe)](pluginBuilding.tr.md)
 ### 🔹 Özellikler
 * **Modern Arayüz (GUI)**
 * **Lua Eklentileri ile Genişletilebilirlik**
+* **Akıllı Palet Üreticili Gelismis Tema Editoru**
 * **Özelleştirilebilir Temalar**
 * **Grafik Düzenleyici (İlişki Görselleştirme)**
 * **SOCKS5 Proxy Desteği**
@@ -91,10 +92,18 @@ install.bat
 ```
 *Daha sonra çalıştırmak için şunu kullanın: `python start.py`*
 
-### ✨ Değişiklik Günlüğü (Changelog) v2.3.1
-* **Küresel Wi-Fi Takibi**: Dünya çapındaki Wi-Fi yönlendiricilerini bulun. Sadece bir IP adresi veya tek bir MAC adresi aratarak tüm bir yönlendirici mahallesinin kesin koordinatlarını ortaya çıkarabilirsiniz.
-* **Akıllı İnteraktif Haritalar**: Haritalar artık bir hedefin fiziksel konumunu görselleştirmeye yardımcı olmak için konutları, kafeleri, parkları ve yakındaki Wi-Fi noktalarını otomatik olarak vurguluyor.
-* **Gelişmiş Meta Veri Görüntüleyici**: Görüntülerden ve belgelerden gizli meta verileri (Exif, GPS, yazar bilgisi) çıkarmak, analiz etmek ve güvenli bir şekilde silmek için güçlü bir araç eklendi.
-* **Arayüz Geliştirmeleri**: Uygulamanın ağır aramalar sırasında hızlı ve duyarlı kalması için sorunsuz yükleme animasyonları ve arka plan işlemleri eklendi.
-* **Çoklu Dil Desteği**: Ağ OSINT pencereleri artık tamamen çevrildi ve İngilizce, Rusça, Ukraynaca ve Türkçe arasında dinamik olarak geçiş yapıyor.
-* **Performans İyileştirmeleri**: Daha istikrarlı, güvenli ve hızlı bir deneyim için devasa dahili optimizasyonlar yapıldı.
+### ✨ Degisiklik Gunlugu (Changelog) v2.3.2
+* **Tema Editoru Yeniden Tasarlandi**: Renk tema editoru tamamen yeniden yapildi. Artik akilli palet ureteci (tamamlayici, triadik ve analoglu semalar), goruntuden palet cikarma, canli onizleme paneli, renk korlugu simulasyonu (deuteranopi, protanopi, tritanopi), WCAG kontrast otomatik duzeltme, ekrandan renk damlaligi, renk kopyalama/yapistirma, tema tersine cevirme, global kose yuvarlakligi kaydirici ve favori ve arama ozellikleriyle tam tema kutuphanesi sunmaktadir.
+* **Gunduz/Gece Otomatik Tema Zamanlama**: Ayarlara, belirli saatlerde gunduz ve gece temalari arasinda otomatik gecis yapan bir zamanlama sistemi eklendi.
+* **Tema Olusturma Dugmesi Geri Getirildi**: Kenar cubugundaki "Renk Temasi Olustur" dugmesi eksikti ve geri getirildi.
+* **Hata Duzeltme - Kullanici Adi Arama**: Profil sayfasinda beklenen meta veriler bulunmadiginda islenmeyen `NoneType` hatasina neden olan Telegram kullanici adi aramasindaki cokme duzeltildi.
+* **Hata Duzeltme - Pencere Basliklari**: Gorev cubugunda terminal penceresinin "python" olarak goruntulenmesi dahil, uygulamadaki yanlis pencere basliklari duzeltildi.
+* **Hata Duzeltme - Arayuz Metinleri**: Iletisim kutularinda ve arac panellerinde cok sayida tutarsiz etiket, ayirici ve aciklama duzeltildi.
+
+### ✨ Degisiklik Gunlugu (Changelog) v2.3.1
+* **Kuresel Wi-Fi Takibi**: Dunya genelindeki Wi-Fi yonlendiricilerini bulun. Sadece bir IP adresi veya tek bir MAC adresi aratarak tum bir yonlendirici mahallesinin kesin koordinatlarini ortaya cikarmak artik mumkun.
+* **Akilli Interaktif Haritalar**: Haritalar artik bir hedefin fiziksel konumunu gorselleştirmek icin konutlari, kafeleri, parklari ve yakindaki Wi-Fi noktalarini otomatik olarak vurguluyor.
+* **Gelismis Meta Veri Goruntuleyici**: Goruntülerden ve belgelerden gizli meta verileri (Exif, GPS, yazar bilgisi) cikarmak, analiz etmek ve guvenli bir sekilde silmek icin guclu bir arac eklendi.
+* **Arayuz Gelistirmeleri**: Uygulamanin agir aramalar sirasinda hizli ve duyarli kalmasi icin sorunsuz yukleme animasyonlari ve arka plan islemleri eklendi.
+* **Coklu Dil Destegi**: Ag OSINT pencereleri artik tamamen cevrildi ve Ingilizce, Rusca, Ukraynaca ve Turkce arasinda dinamik olarak gecis yapiyor.
+* **Performans Iyilestirmeleri**: Daha istikrarli, guvenli ve hizli bir deneyim icin devasa dahili optimizasyonlar yapildi.

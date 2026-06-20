@@ -533,7 +533,7 @@ CODE_SNIPPETS = {
     local output = {}
     for i, item in ipairs(results) do
         output[#output + 1] = string.format(
-            "%d. %s — %s",
+            "%d. %s - %s",
             i,
             tostring(item.name or "N/A"),
             tostring(item.value or "N/A")
@@ -557,7 +557,7 @@ CODE_SNIPPETS = {
 
 # Dynamic tips that rotate in the status bar
 LUA_TIPS = [
-    "host:print() outputs text to the UI — use it for progress updates",
+    "host:print() outputs text to the UI - use it for progress updates",
     "Return nil, 'error message' to signal errors to the user",
     "host:http_get(url, timeout) returns body or nil, error",
     "host:json_decode(str) converts JSON to a Lua table",
@@ -565,7 +565,7 @@ LUA_TIPS = [
     "Use host:url_encode(query) before inserting into URLs",
     "host:cache_get/cache_set provide in-memory session cache",
     "Files via host:read_file/write_file are sandboxed to plugin dir",
-    "host:sleep(seconds) max 60s — use sparingly",
+    "host:sleep(seconds) max 60s - use sparingly",
     "host:hash(text, 'sha256') hashes text with any supported algorithm",
     "Use local variables to avoid polluting the sandbox environment",
     "table.concat(lines, '\\n') is the best way to build multiline output",
@@ -740,7 +740,7 @@ def check_lua_syntax(source: str) -> list[dict]:
                 issues.append(
                     {
                         "line": i,
-                        "message": "Empty function body — did you mean to add code?",
+                        "message": "Empty function body - did you mean to add code?",
                         "severity": "warning",
                     }
                 )
@@ -762,7 +762,7 @@ def check_lua_syntax(source: str) -> list[dict]:
         issues.append(
             {
                 "line": len(lines),
-                "message": f"Missing {diff} 'end' statement(s) — unclosed block(s)",
+                "message": f"Missing {diff} 'end' statement(s) - unclosed block(s)",
                 "severity": "error",
             }
         )
@@ -771,7 +771,7 @@ def check_lua_syntax(source: str) -> list[dict]:
         issues.append(
             {
                 "line": len(lines),
-                "message": f"Extra {diff} 'end' statement(s) — no matching block opener",
+                "message": f"Extra {diff} 'end' statement(s) - no matching block opener",
                 "severity": "error",
             }
         )
@@ -1042,10 +1042,10 @@ class PluginBuilderWindow(QDialog):
         form.addRow("Description:", self.meta_description)
 
         self.meta_type = QComboBox()
-        self.meta_type.addItem("Search — query external sources", "search")
-        self.meta_type.addItem("Processor — transform/enrich data", "processor")
-        self.meta_type.addItem("Formatter — format/export results", "formatter")
-        self.meta_type.addItem("Passive Scanner — analyze input", "passive_scanner")
+        self.meta_type.addItem("Search - query external sources", "search")
+        self.meta_type.addItem("Processor - transform/enrich data", "processor")
+        self.meta_type.addItem("Formatter - format/export results", "formatter")
+        self.meta_type.addItem("Passive Scanner - analyze input", "passive_scanner")
         form.addRow("Plugin Type:", self.meta_type)
 
         # OS checkboxes
@@ -1087,7 +1087,7 @@ class PluginBuilderWindow(QDialog):
 
         self.editor.setPlainText(code)
         self._current_filename = re.sub(r"[^a-zA-Z0-9_]", "_", name).lower() + ".lua"
-        self.setWindowTitle(f"Plugin Builder — {self._current_filename}")
+        self.setWindowTitle(f"Plugin Builder - {self._current_filename}")
         self.stacked_widget.setCurrentIndex(1)
         self._show_random_tip()
 
@@ -1218,7 +1218,7 @@ class PluginBuilderWindow(QDialog):
                 self.editor.setPlainText(f.read())
             self._current_filename = os.path.basename(filepath)
             self.plugin_path = filepath
-            self.setWindowTitle(f"Plugin Builder — {self._current_filename}")
+            self.setWindowTitle(f"Plugin Builder - {self._current_filename}")
             self._show_random_tip()
         except Exception as e:
             self.issues_area.setText(f"Error loading file: {e}")
@@ -1261,7 +1261,7 @@ class PluginBuilderWindow(QDialog):
                 f.write(source)
             self.plugin_path = filepath
             self._current_filename = os.path.basename(filepath)
-            self.setWindowTitle(f"Plugin Builder — {self._current_filename}")
+            self.setWindowTitle(f"Plugin Builder - {self._current_filename}")
             self.issues_area.setHtml(
                 f'<span style="color: #98c379;">&#10004; Saved to {filepath}</span>'
             )

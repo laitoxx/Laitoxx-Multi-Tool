@@ -9,11 +9,13 @@ Layout (3-panel monolithic window):
 
 from __future__ import annotations
 
+import colorsys
 import math
 import re
 from typing import Optional
 
 from PyQt6.QtWidgets import (
+    QApplication,
     QDialog,
     QWidget,
     QVBoxLayout,
@@ -24,6 +26,11 @@ from PyQt6.QtWidgets import (
     QFrame,
     QListWidget,
     QListWidgetItem,
+    QTabWidget,
+    QSlider,
+    QComboBox,
+    QScrollArea,
+    QMessageBox,
 )
 from PyQt6.QtGui import (
     QColor,
@@ -225,20 +232,131 @@ def _to_css(color: QColor, original_str: str) -> str:
     return color.name()
 
 
+def _wcag_lum(c: QColor) -> float:
+    """Relative luminance of a color per WCAG 2.1."""
+    vals = [c.redF(), c.greenF(), c.blueF()]
+    lin = [v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4 for v in vals]
+    return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+
+
 def _wcag_contrast(fg: QColor, bg: QColor) -> float:
     """Relative luminance contrast ratio (WCAG 2.1)."""
-
-    def lum(c: QColor) -> float:
-        vals = [c.redF(), c.greenF(), c.blueF()]
-        lin = [
-            v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4 for v in vals
-        ]
-        return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
-
-    l1, l2 = lum(fg), lum(bg)
+    l1, l2 = _wcag_lum(fg), _wcag_lum(bg)
     if l1 < l2:
         l1, l2 = l2, l1
     return (l1 + 0.05) / (l2 + 0.05)
+
+
+def _generate_palette(base: QColor) -> dict[str, list[QColor]]:
+    """Generate complementary/triadic/analogous color schemes from base."""
+    r, g, b = base.redF(), base.greenF(), base.blueF()
+    h, s, v = colorsys.rgb_to_hsv(r, g, b)
+
+    def from_hsv(h2: float, s2: float, v2: float) -> QColor:
+        r2, g2, b2 = colorsys.hsv_to_rgb(h2 % 1.0, max(0.0, min(1.0, s2)), max(0.0, min(1.0, v2)))
+        return QColor.fromRgbF(r2, g2, b2)
+
+    return {
+        "complementary": [base, from_hsv(h + 0.5, s, v)],
+        "triadic": [base, from_hsv(h + 0.333, s, v), from_hsv(h + 0.667, s, v)],
+        "analogous": [
+            from_hsv(h - 0.167, s, v),
+            from_hsv(h - 0.083, s, v),
+            base,
+            from_hsv(h + 0.083, s, v),
+            from_hsv(h + 0.167, s, v),
+        ],
+    }
+
+
+_CB_MATRICES: dict[str, list[list[float]]] = {
+    "deuteranopia": [
+        [0.367, 0.861, -0.228],
+        [0.280, 0.673,  0.047],
+        [-0.012, 0.043, 0.969],
+    ],
+    "protanopia": [
+        [0.152, 1.053, -0.205],
+        [0.115, 0.786,  0.099],
+        [-0.004, -0.048, 1.052],
+    ],
+    "tritanopia": [
+        [1.256, -0.077, -0.179],
+        [-0.078, 0.931,  0.148],
+        [0.005,  0.691,  0.304],
+    ],
+}
+
+
+def _apply_colorblind_matrix(color: QColor, mode: str) -> QColor:
+    """Simulate color blindness by applying a 3×3 RGB transform."""
+    if mode not in _CB_MATRICES:
+        return color
+    m = _CB_MATRICES[mode]
+    r, g, b = color.redF(), color.greenF(), color.blueF()
+    nr = max(0.0, min(1.0, m[0][0] * r + m[0][1] * g + m[0][2] * b))
+    ng = max(0.0, min(1.0, m[1][0] * r + m[1][1] * g + m[1][2] * b))
+    nb = max(0.0, min(1.0, m[2][0] * r + m[2][1] * g + m[2][2] * b))
+    return QColor.fromRgbF(nr, ng, nb, color.alphaF())
+
+
+def _wcag_autofix(fg: QColor, bg: QColor, target: float = 4.5) -> QColor:
+    """Adjust fg value (HSV) until WCAG contrast ≥ target against bg."""
+    r, g, b = fg.redF(), fg.greenF(), fg.blueF()
+    h, s, v = colorsys.rgb_to_hsv(r, g, b)
+    for direction in (-1, 1):
+        test_v = v
+        for _ in range(50):
+            test_v = max(0.0, min(1.0, test_v + direction * 0.02))
+            r2, g2, b2 = colorsys.hsv_to_rgb(h, s, test_v)
+            candidate = QColor.fromRgbF(r2, g2, b2, fg.alphaF())
+            if _wcag_contrast(candidate, bg) >= target:
+                return candidate
+    return fg
+
+
+def _palette_to_theme(colors: list[QColor], base: dict) -> dict:
+    """Map a list of palette colors onto the 19 theme keys sensibly."""
+    if not colors:
+        return {}
+
+    c0 = colors[0]
+    r, g, b = c0.redF(), c0.greenF(), c0.blueF()
+    h, s, v = colorsys.rgb_to_hsv(r, g, b)
+
+    def mk(h2, s2, v2, a=1.0) -> str:
+        r2, g2, b2 = colorsys.hsv_to_rgb(h2 % 1.0, max(0.0, min(1.0, s2)), max(0.0, min(1.0, v2)))
+        if a < 1.0:
+            return f"rgba({int(r2*255)}, {int(g2*255)}, {int(b2*255)}, {a:.2f})"
+        return QColor.fromRgbF(r2, g2, b2).name()
+
+    cl = colors[-1]
+    rl, gl, bl = cl.redF(), cl.greenF(), cl.blueF()
+    hl, sl, vl = colorsys.rgb_to_hsv(rl, gl, bl)
+
+    result = {
+        "accent_color": mk(h, s, v),
+        "accent_dim_color": mk(h, s, v * 0.7),
+        "button_bg_color": mk(h, s, v, 0.15),
+        "button_hover_bg_color": mk(h, s, v, 0.25),
+        "button_pressed_bg_color": mk(h, s, v, 0.40),
+        "button_border_color": mk(h, s, v, 0.40),
+        "button_text_color": "white",
+        "text_area_bg_color": mk(h, s * 0.3, v * 0.12, 0.85),
+        "text_area_border_color": mk(h, s, v, 0.30),
+        "text_area_text_color": "white",
+        "sidebar_bg_color": mk(h, s * 0.3, v * 0.12, 0.50),
+        "title_text_color": mk(h, s, v),
+        "plugin_canvas_bg_color": mk(hl, sl * 0.4, vl * 0.15),
+        "scrollbar_handle_color": mk(h, s, v, 0.40),
+        "scrollbar_handle_hover_color": mk(h, s, v, 0.70),
+        "window_bg_color": mk(hl, sl * 0.4, vl * 0.10, 0.92),
+        "panel_bg_color": mk(hl, sl * 0.4, vl * 0.12, 0.80),
+        "border_color": mk(h, s, v, 0.30),
+        "text_secondary_color": mk(h, s * 0.5, v * 0.85),
+    }
+    result["border_radius"] = base.get("border_radius", 10)
+    return result
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -620,19 +738,188 @@ def _build_dialog_ss(theme: dict) -> str:
 """
 
 
+class _EyedropperOverlay(QWidget):
+    """Fullscreen transparent overlay that captures a single click to pick a screen color."""
+
+    color_picked = pyqtSignal(QColor)
+
+    def __init__(self):
+        super().__init__()
+        self.setWindowFlags(
+            Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.WindowStaysOnTopHint
+            | Qt.WindowType.Tool
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        screen = QApplication.primaryScreen().geometry()
+        self.setGeometry(screen)
+        self.setCursor(Qt.CursorShape.CrossCursor)
+        self.showFullScreen()
+
+    def mousePressEvent(self, event):
+        pos = event.globalPosition().toPoint()
+        try:
+            screen = QApplication.primaryScreen()
+            px = screen.grabWindow(0, pos.x(), pos.y(), 1, 1)
+            color = QColor(px.toImage().pixel(0, 0))
+            self.color_picked.emit(color)
+        except Exception:
+            pass
+        self.close()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Escape:
+            self.close()
+
+
+class _SwatchLabel(QLabel):
+    """Colored swatch that emits a signal when clicked."""
+
+    clicked = pyqtSignal(QColor)
+
+    def __init__(self, color: QColor | None = None, parent=None):
+        super().__init__(parent)
+        self.setFixedSize(36, 36)
+        self.setStyleSheet("border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);")
+        self._color = color or QColor("transparent")
+        self._refresh()
+
+    def set_color(self, color: QColor):
+        self._color = color
+        self._refresh()
+
+    def color(self) -> QColor:
+        return self._color
+
+    def _refresh(self):
+        px = QPixmap(36, 36)
+        px.fill(self._color)
+        self.setPixmap(px)
+
+    def mousePressEvent(self, event):
+        if self._color.isValid() and self._color.alpha() > 0:
+            self.clicked.emit(self._color)
+
+
+class _PreviewPane(QWidget):
+    """Live preview of how the current theme looks on real UI elements."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        from PyQt6.QtWidgets import QPlainTextEdit, QLineEdit as _LE
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(12, 12, 12, 12)
+        lay.setSpacing(8)
+
+        self._title_lbl = QLabel("Title Text")
+        self._title_lbl.setObjectName("preview_title")
+        lay.addWidget(self._title_lbl)
+
+        self._secondary_lbl = QLabel("Secondary / dim text")
+        self._secondary_lbl.setObjectName("preview_secondary")
+        lay.addWidget(self._secondary_lbl)
+
+        row = QHBoxLayout()
+        self._btn_normal = QPushButton("Sample Button")
+        self._btn_normal.setObjectName("preview_btn")
+        self._btn_hover = QPushButton("Hover State")
+        self._btn_hover.setObjectName("preview_btn_hover")
+        row.addWidget(self._btn_normal)
+        row.addWidget(self._btn_hover)
+        lay.addLayout(row)
+
+        self._input = _LE()
+        self._input.setPlaceholderText("Input field placeholder...")
+        self._input.setObjectName("preview_input")
+        lay.addWidget(self._input)
+
+        self._text_area = QPlainTextEdit()
+        self._text_area.setPlainText("Text area content\nLine two\nLine three")
+        self._text_area.setObjectName("preview_textarea")
+        self._text_area.setFixedHeight(80)
+        lay.addWidget(self._text_area)
+
+        self._panel = QFrame()
+        self._panel.setObjectName("preview_panel")
+        self._panel.setFixedHeight(32)
+        panel_lbl = QLabel("  Panel / Sidebar")
+        panel_lbl.setObjectName("preview_panel_lbl")
+        panel_lay = QHBoxLayout(self._panel)
+        panel_lay.setContentsMargins(0, 0, 0, 0)
+        panel_lay.addWidget(panel_lbl)
+        lay.addWidget(self._panel)
+
+        lay.addStretch()
+
+    def apply_theme(self, td: dict, colorblind_mode: str = "none", dark_bg: bool = True):
+        """Restyle all preview widgets from theme data."""
+        def col(key: str, fallback: str = "#888") -> str:
+            css = td.get(key, fallback)
+            c = _parse_color(css)
+            if colorblind_mode != "none":
+                c = _apply_colorblind_matrix(c, colorblind_mode)
+            c.setAlpha(255)
+            return c.name()
+
+        def col_a(key: str, fallback: str = "#888", alpha: int = 255) -> str:
+            css = td.get(key, fallback)
+            c = _parse_color(css)
+            if colorblind_mode != "none":
+                c = _apply_colorblind_matrix(c, colorblind_mode)
+            c.setAlpha(alpha)
+            return c.name(QColor.NameFormat.HexArgb)
+
+        br = td.get("border_radius", 10)
+        bg = "#ffffff" if not dark_bg else "#0a0a0a"
+        accent = col("accent_color", _ACCENT)
+        txt = col("text_area_text_color", _TEXT)
+        txt2 = col("text_secondary_color", _TEXT_DIM)
+        btn_bg = col_a("button_bg_color", "rgba(200,0,0,0.1)", 180)
+        btn_hov = col_a("button_hover_bg_color", "rgba(200,0,0,0.2)", 200)
+        btn_bdr = col_a("button_border_color", "rgba(255,255,255,0.2)", 100)
+        btn_txt = col("button_text_color", "white")
+        ta_bg = col_a("text_area_bg_color", "rgba(0,0,0,0.5)", 200)
+        ta_bdr = col("text_area_border_color", "#888")
+        panel = col_a("panel_bg_color", "rgba(20,8,8,0.8)", 220)
+
+        self.setStyleSheet(f"background: {bg};")
+        self._title_lbl.setStyleSheet(f"color: {accent}; font-size: 14px; font-weight: bold; background: transparent;")
+        self._secondary_lbl.setStyleSheet(f"color: {txt2}; font-size: 12px; background: transparent;")
+        self._btn_normal.setStyleSheet(
+            f"QPushButton {{ background: {btn_bg}; border: 1px solid {btn_bdr}; border-radius: {br}px; color: {btn_txt}; padding: 6px 14px; }}"
+        )
+        self._btn_hover.setStyleSheet(
+            f"QPushButton {{ background: {btn_hov}; border: 1px solid {accent}; border-radius: {br}px; color: {btn_txt}; padding: 6px 14px; }}"
+        )
+        self._input.setStyleSheet(
+            f"QLineEdit {{ background: {ta_bg}; border: 1px solid {ta_bdr}; border-radius: {br}px; color: {txt}; padding: 4px 8px; }}"
+        )
+        self._text_area.setStyleSheet(
+            f"QPlainTextEdit {{ background: {ta_bg}; border: 1px solid {ta_bdr}; border-radius: {br}px; color: {txt}; }}"
+        )
+        self._panel.setStyleSheet(f"QFrame {{ background: {panel}; border-radius: {br}px; }}")
+        lbl = self._panel.findChild(QLabel, "preview_panel_lbl")
+        if lbl:
+            lbl.setStyleSheet(f"color: {txt}; background: transparent;")
+
+
 class ThemeEditorDialog(QDialog):
     """Monolithic theme editor — live preview, custom picker, presets, history."""
 
     def __init__(self, parent, current_theme: dict):
         super().__init__(parent)
         self.setWindowTitle(translator.get("theme_editor_title"))
-        self.setMinimumSize(820, 560)
-        self.resize(960, 620)
+        self.setMinimumSize(960, 600)
+        self.resize(1100, 680)
 
         self.theme_data = current_theme.copy()
         self.original_theme = current_theme.copy()
         self._current_key: Optional[str] = None
         self._updating_hex = False
+        self._last_palette: list[QColor] = []
+        self._colorblind_mode: str = "none"
+        self._preview_dark: bool = True
+        self._eyedropper: Optional[_EyedropperOverlay] = None
 
         # build flat ordered list  key → display label
         theme_map_raw = translator.get("theme_map")
@@ -654,6 +941,7 @@ class ThemeEditorDialog(QDialog):
         self.setStyleSheet(_build_dialog_ss(current_theme))
         self._restyle_panels(current_theme)
         self._populate_list()
+        self._populate_library()
         # select first item
         if self._list.count() > 0:
             self._list.setCurrentRow(0)
@@ -694,80 +982,29 @@ class ThemeEditorDialog(QDialog):
 
         root.addWidget(left)
 
-        # ── Center panel ─────────────────────────────────────────────────
+        # ── Center panel with tabs ───────────────────────────────────────────
         self._center_pane = QWidget()
         center = self._center_pane
         center.setStyleSheet(f"background: {_PANEL};")
         center_layout = QVBoxLayout(center)
-        center_layout.setContentsMargins(20, 16, 20, 16)
-        center_layout.setSpacing(10)
+        center_layout.setContentsMargins(12, 12, 12, 12)
+        center_layout.setSpacing(8)
 
-        # Title of selected element
+        # Title of selected element (outside tabs)
         self._element_lbl = QLabel("")
         self._element_lbl.setStyleSheet(
             f"color: {_ACCENT}; font-size: 14px; font-weight: 700; background: transparent;"
         )
         center_layout.addWidget(self._element_lbl)
 
-        # Hue/SV wheel
-        wheel_row = QHBoxLayout()
-        self._wheel = _HueSatWheel()
-        self._wheel.color_changed.connect(self._on_wheel_changed)
-        wheel_row.addStretch()
-        wheel_row.addWidget(self._wheel)
-        wheel_row.addStretch()
-        center_layout.addLayout(wheel_row)
+        # Tabs
+        self._center_tabs = QTabWidget()
+        self._center_tabs.addTab(self._build_picker_tab(), translator.get("te_presets").split()[0] if False else "Color Picker")
+        self._center_tabs.addTab(self._build_palettes_tab(), translator.get("te_tab_palettes"))
+        self._center_tabs.addTab(self._build_preview_tab(), translator.get("te_tab_preview"))
+        center_layout.addWidget(self._center_tabs, 1)
 
-        # Alpha bar
-        alpha_row = QHBoxLayout()
-        alpha_lbl = QLabel("Alpha")
-        alpha_lbl.setFixedWidth(42)
-        self._alpha_bar = _AlphaBar()
-        self._alpha_bar.alpha_changed.connect(self._on_alpha_changed)
-        self._alpha_val_lbl = QLabel("100%")
-        self._alpha_val_lbl.setFixedWidth(38)
-        self._alpha_val_lbl.setStyleSheet(
-            f"color: {_ACCENT}; font-size: 11px; font-weight: 600; background: transparent;"
-        )
-        alpha_row.addWidget(alpha_lbl)
-        alpha_row.addWidget(self._alpha_bar, 1)
-        alpha_row.addWidget(self._alpha_val_lbl)
-        center_layout.addLayout(alpha_row)
-
-        # Hex input + current color swatch
-        hex_row = QHBoxLayout()
-        hex_lbl = QLabel("HEX / CSS")
-        hex_lbl.setFixedWidth(68)
-        self._hex_input = QLineEdit()
-        self._hex_input.setPlaceholderText("#rrggbb or rgba(…)")
-        self._hex_input.textEdited.connect(self._on_hex_edited)
-        self._swatch = QLabel()
-        self._swatch.setFixedSize(36, 24)
-        self._swatch.setStyleSheet(
-            "border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);"
-        )
-        hex_row.addWidget(hex_lbl)
-        hex_row.addWidget(self._hex_input, 1)
-        hex_row.addWidget(self._swatch)
-        center_layout.addLayout(hex_row)
-
-        # Contrast indicator
-        self._contrast = _ContrastBadge("")
-        center_layout.addWidget(self._contrast)
-
-        # Color history
-        hist_lbl = QLabel(translator.get("te_history"))
-        hist_lbl.setStyleSheet(
-            f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;"
-        )
-        center_layout.addWidget(hist_lbl)
-        self._history = _ColorHistory()
-        self._history.color_picked.connect(self._apply_css_string)
-        center_layout.addWidget(self._history)
-
-        center_layout.addStretch()
-
-        # Bottom buttons
+        # Bottom buttons (outside tabs)
         btn_row = QHBoxLayout()
         btn_row.setSpacing(8)
         self._btn_apply = QPushButton(translator.get("save_theme"))
@@ -792,52 +1029,315 @@ class ThemeEditorDialog(QDialog):
 
         root.addWidget(center, 1)
 
-        # ── Right panel ─────────────────────────────────────────────────
+        # ── Right panel — tabbed (Tools + Library) ───────────────────────────
         self._right_pane = QWidget()
         right = self._right_pane
-        right.setFixedWidth(190)
+        right.setFixedWidth(230)
         right.setStyleSheet(f"background: {_PANEL2}; border-left: 1px solid {_BORDER};")
         right_layout = QVBoxLayout(right)
-        right_layout.setContentsMargins(10, 12, 10, 10)
-        right_layout.setSpacing(8)
+        right_layout.setContentsMargins(0, 0, 0, 0)
+        right_layout.setSpacing(0)
+
+        self._right_tabs = QTabWidget()
+        self._right_tabs.addTab(self._build_tools_tab(), translator.get("te_presets"))
+        self._right_tabs.addTab(self._build_library_tab(), translator.get("te_tab_library"))
+        right_layout.addWidget(self._right_tabs)
+
+        root.addWidget(right)
+
+    def _build_picker_tab(self) -> QWidget:
+        """Color Picker tab — existing wheel/alpha/hex/contrast/history."""
+        tab = QWidget()
+        lay = QVBoxLayout(tab)
+        lay.setContentsMargins(8, 12, 8, 8)
+        lay.setSpacing(10)
+
+        # Hue/SV wheel
+        wheel_row = QHBoxLayout()
+        self._wheel = _HueSatWheel()
+        self._wheel.color_changed.connect(self._on_wheel_changed)
+        wheel_row.addStretch()
+        wheel_row.addWidget(self._wheel)
+        wheel_row.addStretch()
+        lay.addLayout(wheel_row)
+
+        # Alpha bar
+        alpha_row = QHBoxLayout()
+        alpha_lbl = QLabel("Alpha")
+        alpha_lbl.setFixedWidth(42)
+        self._alpha_bar = _AlphaBar()
+        self._alpha_bar.alpha_changed.connect(self._on_alpha_changed)
+        self._alpha_val_lbl = QLabel("100%")
+        self._alpha_val_lbl.setFixedWidth(38)
+        self._alpha_val_lbl.setStyleSheet(
+            f"color: {_ACCENT}; font-size: 11px; font-weight: 600; background: transparent;"
+        )
+        alpha_row.addWidget(alpha_lbl)
+        alpha_row.addWidget(self._alpha_bar, 1)
+        alpha_row.addWidget(self._alpha_val_lbl)
+        lay.addLayout(alpha_row)
+
+        # Hex input + swatch
+        hex_row = QHBoxLayout()
+        hex_lbl = QLabel("HEX / CSS")
+        hex_lbl.setFixedWidth(68)
+        self._hex_input = QLineEdit()
+        self._hex_input.setPlaceholderText("#rrggbb or rgba(…)")
+        self._hex_input.textEdited.connect(self._on_hex_edited)
+        self._swatch = QLabel()
+        self._swatch.setFixedSize(36, 24)
+        self._swatch.setStyleSheet(
+            "border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);"
+        )
+        hex_row.addWidget(hex_lbl)
+        hex_row.addWidget(self._hex_input, 1)
+        hex_row.addWidget(self._swatch)
+        lay.addLayout(hex_row)
+
+        # Contrast indicator
+        self._contrast = _ContrastBadge("")
+        lay.addWidget(self._contrast)
+
+        # Color history
+        hist_lbl = QLabel(translator.get("te_history"))
+        hist_lbl.setStyleSheet(
+            f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;"
+        )
+        lay.addWidget(hist_lbl)
+        self._history = _ColorHistory()
+        self._history.color_picked.connect(self._apply_css_string)
+        lay.addWidget(self._history)
+
+        lay.addStretch()
+        return tab
+
+    def _build_palettes_tab(self) -> QWidget:
+        """Smart Palettes tab — harmony generation + image extraction."""
+        tab = QWidget()
+        lay = QVBoxLayout(tab)
+        lay.setContentsMargins(10, 12, 10, 10)
+        lay.setSpacing(8)
+
+        self._palette_base_lbl = QLabel("")
+        self._palette_base_lbl.setStyleSheet(
+            f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;"
+        )
+        lay.addWidget(self._palette_base_lbl)
+
+        # Harmony type buttons
+        mode_row = QHBoxLayout()
+        mode_row.setSpacing(4)
+        for mode_key, mode_id in [
+            ("te_palette_complementary", "complementary"),
+            ("te_palette_triadic", "triadic"),
+            ("te_palette_analogous", "analogous"),
+        ]:
+            btn = QPushButton(translator.get(mode_key))
+            btn.clicked.connect(lambda _, m=mode_id: self._show_palette(m))
+            mode_row.addWidget(btn)
+        lay.addLayout(mode_row)
+
+        # Palette swatches
+        swatch_row = QHBoxLayout()
+        swatch_row.setSpacing(4)
+        self._palette_swatches: list[_SwatchLabel] = []
+        for _ in range(5):
+            sw = _SwatchLabel()
+            sw.clicked.connect(self._on_palette_swatch_clicked)
+            swatch_row.addWidget(sw)
+            self._palette_swatches.append(sw)
+        swatch_row.addStretch()
+        lay.addLayout(swatch_row)
+
+        btn_apply_all = QPushButton(translator.get("te_apply_to_all"))
+        btn_apply_all.clicked.connect(self._apply_palette_to_all)
+        lay.addWidget(btn_apply_all)
+
+        sep = QFrame()
+        sep.setFrameShape(QFrame.Shape.HLine)
+        sep.setStyleSheet(f"color: {_BORDER};")
+        lay.addWidget(sep)
+
+        btn_from_image = QPushButton(translator.get("te_extract_image"))
+        btn_from_image.clicked.connect(self._extract_from_image)
+        lay.addWidget(btn_from_image)
+
+        # Image palette swatches (hidden initially)
+        img_row = QHBoxLayout()
+        img_row.setSpacing(4)
+        self._image_swatches: list[_SwatchLabel] = []
+        for _ in range(6):
+            sw = _SwatchLabel()
+            sw.clicked.connect(self._on_palette_swatch_clicked)
+            img_row.addWidget(sw)
+            self._image_swatches.append(sw)
+        img_row.addStretch()
+        self._img_swatch_container = QWidget()
+        self._img_swatch_container.setLayout(img_row)
+        self._img_swatch_container.hide()
+        lay.addWidget(self._img_swatch_container)
+
+        lay.addStretch()
+        return tab
+
+    def _build_preview_tab(self) -> QWidget:
+        """Preview tab — live demo of the current theme."""
+        tab = QWidget()
+        lay = QVBoxLayout(tab)
+        lay.setContentsMargins(8, 8, 8, 8)
+        lay.setSpacing(6)
+
+        # BG toggle button
+        self._btn_bg_toggle = QPushButton(translator.get("te_preview_light_bg"))
+        self._btn_bg_toggle.clicked.connect(self._toggle_preview_bg)
+        lay.addWidget(self._btn_bg_toggle)
+
+        # Preview pane in scroll area
+        self._preview_pane = _PreviewPane()
+        scroll = QScrollArea()
+        scroll.setWidget(self._preview_pane)
+        scroll.setWidgetResizable(True)
+        scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
+        lay.addWidget(scroll, 1)
+
+        return tab
+
+    def _build_tools_tab(self) -> QWidget:
+        """Tools tab — copy/paste/eyedropper, WCAG fix, colorblind sim, border radius, invert, presets, export."""
+        tab = QWidget()
+        lay = QVBoxLayout(tab)
+        lay.setContentsMargins(10, 10, 10, 10)
+        lay.setSpacing(6)
+
+        def section(key: str):
+            lbl = QLabel(translator.get(key))
+            lbl.setStyleSheet(
+                f"color: {_ACCENT}; font-size: 11px; font-weight: 700; background: transparent;"
+            )
+            lay.addWidget(lbl)
+
+        section("te_copy_color")
+
+        row1 = QHBoxLayout()
+        btn_copy = QPushButton(translator.get("te_copy_color"))
+        btn_copy.clicked.connect(self._copy_color)
+        btn_paste = QPushButton(translator.get("te_paste_color"))
+        btn_paste.clicked.connect(self._paste_color)
+        row1.addWidget(btn_copy)
+        row1.addWidget(btn_paste)
+        lay.addLayout(row1)
+
+        btn_eye = QPushButton(translator.get("te_eyedropper"))
+        btn_eye.clicked.connect(self._start_eyedropper)
+        lay.addWidget(btn_eye)
+
+        btn_wcag = QPushButton(translator.get("te_wcag_fix"))
+        btn_wcag.clicked.connect(self._wcag_autofix_selected)
+        lay.addWidget(btn_wcag)
+
+        sep1 = QFrame()
+        sep1.setFrameShape(QFrame.Shape.HLine)
+        sep1.setStyleSheet(f"color: {_BORDER};")
+        lay.addWidget(sep1)
+
+        cb_row = QHBoxLayout()
+        cb_lbl = QLabel(translator.get("te_colorblind") + ":")
+        cb_lbl.setFixedWidth(70)
+        self._combo_colorblind = QComboBox()
+        self._combo_colorblind.addItem(translator.get("te_colorblind_none"), "none")
+        self._combo_colorblind.addItem(translator.get("te_colorblind_deuteranopia"), "deuteranopia")
+        self._combo_colorblind.addItem(translator.get("te_colorblind_protanopia"), "protanopia")
+        self._combo_colorblind.addItem(translator.get("te_colorblind_tritanopia"), "tritanopia")
+        self._combo_colorblind.currentIndexChanged.connect(self._on_colorblind_changed)
+        cb_row.addWidget(cb_lbl)
+        cb_row.addWidget(self._combo_colorblind)
+        lay.addLayout(cb_row)
+
+        br_row = QHBoxLayout()
+        br_lbl = QLabel(translator.get("te_border_radius") + ":")
+        br_lbl.setFixedWidth(90)
+        self._br_slider = QSlider(Qt.Orientation.Horizontal)
+        self._br_slider.setRange(0, 20)
+        self._br_slider.setValue(int(self.theme_data.get("border_radius", 10)))
+        self._br_slider.valueChanged.connect(self._on_border_radius_changed)
+        self._br_label = QLabel(f"{int(self.theme_data.get('border_radius', 10))}px")
+        self._br_label.setFixedWidth(32)
+        br_row.addWidget(br_lbl)
+        br_row.addWidget(self._br_slider, 1)
+        br_row.addWidget(self._br_label)
+        lay.addLayout(br_row)
+
+        btn_invert = QPushButton(translator.get("te_invert_theme"))
+        btn_invert.clicked.connect(self._invert_theme)
+        lay.addWidget(btn_invert)
+
+        sep2 = QFrame()
+        sep2.setFrameShape(QFrame.Shape.HLine)
+        sep2.setStyleSheet(f"color: {_BORDER};")
+        lay.addWidget(sep2)
 
         self._presets_lbl = QLabel(translator.get("te_presets"))
         self._presets_lbl.setStyleSheet(
-            f"color: {_ACCENT}; font-size: 12px; font-weight: 700; background: transparent;"
+            f"color: {_ACCENT}; font-size: 11px; font-weight: 700; background: transparent;"
         )
-        right_layout.addWidget(self._presets_lbl)
+        lay.addWidget(self._presets_lbl)
 
         for name in PRESETS:
             btn = QPushButton(name)
             btn.setStyleSheet(
                 f"QPushButton {{ background: rgba(255,255,255,0.04); border: 1px solid {_BORDER};"
-                f" border-radius: 6px; color: {_TEXT}; padding: 5px 8px; text-align: left; }}"
+                f" border-radius: 6px; color: {_TEXT}; padding: 4px 8px; text-align: left; }}"
                 f"QPushButton:hover {{ background: rgba(192,132,252,0.18); border-color: {_ACCENT}; }}"
             )
             btn.clicked.connect(lambda _, n=name: self._apply_preset(n))
-            right_layout.addWidget(btn)
+            lay.addWidget(btn)
 
-        sep = QFrame()
-        sep.setFrameShape(QFrame.Shape.HLine)
-        sep.setStyleSheet(f"color: {_BORDER};")
-        right_layout.addWidget(sep)
+        sep3 = QFrame()
+        sep3.setFrameShape(QFrame.Shape.HLine)
+        sep3.setStyleSheet(f"color: {_BORDER};")
+        lay.addWidget(sep3)
 
         self._export_lbl = QLabel(translator.get("te_export"))
         self._export_lbl.setStyleSheet(
-            f"color: {_ACCENT}; font-size: 12px; font-weight: 700; background: transparent;"
+            f"color: {_ACCENT}; font-size: 11px; font-weight: 700; background: transparent;"
         )
-        right_layout.addWidget(self._export_lbl)
+        lay.addWidget(self._export_lbl)
 
         btn_export = QPushButton(translator.get("te_export_json"))
         btn_export.clicked.connect(self._export_json)
-        right_layout.addWidget(btn_export)
+        lay.addWidget(btn_export)
 
         btn_import = QPushButton(translator.get("te_import_json"))
         btn_import.clicked.connect(self._import_json)
-        right_layout.addWidget(btn_import)
+        lay.addWidget(btn_import)
 
-        right_layout.addStretch()
-        root.addWidget(right)
+        lay.addStretch()
+        return tab
+
+    def _build_library_tab(self) -> QWidget:
+        """Library tab — browse all themes with favorites."""
+        tab = QWidget()
+        lay = QVBoxLayout(tab)
+        lay.setContentsMargins(8, 10, 8, 8)
+        lay.setSpacing(6)
+
+        self._lib_search = QLineEdit()
+        self._lib_search.setPlaceholderText(translator.get("te_search_themes"))
+        self._lib_search.textChanged.connect(self._populate_library)
+        lay.addWidget(self._lib_search)
+
+        self._lib_list = QListWidget()
+        self._lib_list.setSpacing(1)
+        self._lib_list.itemDoubleClicked.connect(self._apply_library_theme)
+        lay.addWidget(self._lib_list, 1)
+
+        row = QHBoxLayout()
+        btn_apply = QPushButton(translator.get("te_apply_preset"))
+        btn_apply.clicked.connect(self._apply_library_theme)
+        row.addWidget(btn_apply)
+        lay.addLayout(row)
+
+        return tab
 
     # ══════════════════════════════════════════════════════════════════════
     # Restyle panels from theme
@@ -891,10 +1391,29 @@ class ThemeEditorDialog(QDialog):
                 f"QPushButton:hover {{ background: {btn_hov}; }}"
             )
 
-        # Preset buttons in right panel — walk all QPushButton in right pane
+        # Style tab widgets
+        tab_ss = (
+            f"QTabWidget::pane {{ border: 1px solid {bdr}; background: {panel_bg}; }}"
+            f"QTabBar::tab {{ background: {panel_bg}; color: {txt}; padding: 4px 8px; font-size: 11px; }}"
+            f"QTabBar::tab:selected {{ background: {btn_bg}; color: {accent}; border-bottom: 2px solid {accent}; }}"
+            f"QTabBar::tab:hover {{ background: {btn_hov}; }}"
+        )
+        if hasattr(self, "_center_tabs"):
+            self._center_tabs.setStyleSheet(tab_ss)
+        if hasattr(self, "_right_tabs"):
+            self._right_tabs.setStyleSheet(tab_ss)
+
+        # Section labels in tools tab
+        for attr in ("_presets_lbl", "_export_lbl"):
+            if hasattr(self, attr):
+                getattr(self, attr).setStyleSheet(
+                    f"color: {accent}; font-size: 11px; font-weight: 700; background: transparent;"
+                )
+
+        # Preset buttons — walk all QPushButton in right pane
         preset_ss = (
             f"QPushButton {{ background: rgba(255,255,255,0.04); border: 1px solid {bdr};"
-            f" border-radius: 6px; color: {txt}; padding: 5px 8px; text-align: left; }}"
+            f" border-radius: 6px; color: {txt}; padding: 4px 8px; text-align: left; }}"
             f"QPushButton:hover {{ background: {btn_hov}; border-color: {accent}; }}"
         )
         if hasattr(self, "_right_pane"):
@@ -976,11 +1495,15 @@ class ThemeEditorDialog(QDialog):
         if not key:
             return
         self._current_key = key
-        css = self.theme_data.get(key, "#ffffff")
-        color = _parse_color(css)
         display = self._theme_map.get(key, key)
         self._element_lbl.setText(display)
+        if key == "border_radius":
+            return  # handled by slider in Tools tab
+        css = self.theme_data.get(key, "#ffffff")
+        color = _parse_color(css)
         self._load_color(color, css)
+        if hasattr(self, "_palette_base_lbl"):
+            self._palette_base_lbl.setText(f"Base: {display}")
 
     def _load_color(self, color: QColor, css: str):
         self._wheel.set_color(color)
@@ -1052,6 +1575,9 @@ class ThemeEditorDialog(QDialog):
         if self.parent() and hasattr(self.parent(), "theme_data"):
             self.parent().theme_data = self.theme_data
             self.parent().apply_theme()
+        # Update preview pane if visible
+        if hasattr(self, "_center_tabs") and self._center_tabs.currentIndex() == 2:
+            self._update_preview()
 
     # ══════════════════════════════════════════════════════════════════════
     # Visual helpers
@@ -1131,6 +1657,233 @@ class ThemeEditorDialog(QDialog):
                 if self.parent() and hasattr(self.parent(), "theme_data"):
                     self.parent().theme_data = self.theme_data
                     self.parent().apply_theme()
+
+    # ══════════════════════════════════════════════════════════════════════
+    # Smart Palettes
+    # ══════════════════════════════════════════════════════════════════════
+
+    def _show_palette(self, mode: str):
+        if not self._current_key or self._current_key == "border_radius":
+            return
+        css = self.theme_data.get(self._current_key, "#ffffff")
+        base = _parse_color(css)
+        palette = _generate_palette(base)
+        colors = palette.get(mode, [])
+        self._last_palette = colors
+        # Pad to 5 swatches
+        for i, sw in enumerate(self._palette_swatches):
+            if i < len(colors):
+                sw.set_color(colors[i])
+            else:
+                sw.set_color(QColor("transparent"))
+
+    def _on_palette_swatch_clicked(self, color: QColor):
+        if self._current_key and self._current_key != "border_radius":
+            self._apply_css_string(color.name())
+
+    def _apply_palette_to_all(self):
+        if not self._last_palette:
+            return
+        result = _palette_to_theme(self._last_palette, self.theme_data)
+        self.theme_data.update(result)
+        if self._current_key and self._current_key != "border_radius":
+            css = self.theme_data.get(self._current_key, "#ffffff")
+            self._load_color(_parse_color(css), css)
+        if self.parent() and hasattr(self.parent(), "theme_data"):
+            self.parent().theme_data = self.theme_data
+            self.parent().apply_theme()
+        self._update_preview()
+
+    def _extract_from_image(self):
+        try:
+            from PIL import Image
+        except ImportError:
+            QMessageBox.warning(self, "Error", "Pillow not installed.")
+            return
+        from PyQt6.QtWidgets import QFileDialog
+        path, _ = QFileDialog.getOpenFileName(
+            self, translator.get("te_extract_image"), "", "Images (*.png *.jpg *.jpeg *.bmp *.webp)"
+        )
+        if not path:
+            return
+        try:
+            img = Image.open(path).convert("RGB").resize((150, 150))
+            quantized = img.quantize(colors=6)
+            palette_rgb = quantized.getpalette()[:18]
+            colors = [QColor(palette_rgb[i * 3], palette_rgb[i * 3 + 1], palette_rgb[i * 3 + 2]) for i in range(6)]
+            self._last_palette = colors
+            for i, sw in enumerate(self._image_swatches):
+                sw.set_color(colors[i])
+            self._img_swatch_container.show()
+        except Exception as e:
+            QMessageBox.warning(self, "Error", str(e))
+
+    # ══════════════════════════════════════════════════════════════════════
+    # Preview
+    # ══════════════════════════════════════════════════════════════════════
+
+    def _update_preview(self):
+        if hasattr(self, "_preview_pane"):
+            self._preview_pane.apply_theme(self.theme_data, self._colorblind_mode, self._preview_dark)
+
+    def _toggle_preview_bg(self):
+        self._preview_dark = not self._preview_dark
+        if self._preview_dark:
+            self._btn_bg_toggle.setText(translator.get("te_preview_light_bg"))
+        else:
+            self._btn_bg_toggle.setText(translator.get("te_preview_dark_bg"))
+        self._update_preview()
+
+    # ══════════════════════════════════════════════════════════════════════
+    # Tools
+    # ══════════════════════════════════════════════════════════════════════
+
+    def _copy_color(self):
+        if not self._current_key or self._current_key == "border_radius":
+            return
+        css = self.theme_data.get(self._current_key, "#ffffff")
+        color = _parse_color(css)
+        QApplication.clipboard().setText(color.name())
+
+    def _paste_color(self):
+        if not self._current_key or self._current_key == "border_radius":
+            return
+        text = QApplication.clipboard().text().strip()
+        color = _parse_color(text)
+        if color.isValid():
+            self._apply_css_string(text)
+
+    def _start_eyedropper(self):
+        self._eyedropper = _EyedropperOverlay()
+        self._eyedropper.color_picked.connect(self._on_eyedropper_color)
+
+    def _on_eyedropper_color(self, color: QColor):
+        if self._current_key and self._current_key != "border_radius":
+            self._apply_css_string(color.name())
+
+    def _wcag_autofix_selected(self):
+        if not self._current_key or self._current_key == "border_radius":
+            return
+        fg_css = self.theme_data.get(self._current_key, "#ffffff")
+        fg = _parse_color(fg_css)
+        bg_css = self.theme_data.get("text_area_bg_color", "#000000")
+        bg = _parse_color(bg_css)
+        bg.setAlpha(255)
+        fg.setAlpha(255)
+        fixed = _wcag_autofix(fg, bg)
+        self._apply_css_string(fixed.name())
+
+    def _on_border_radius_changed(self, value: int):
+        self.theme_data["border_radius"] = value
+        if hasattr(self, "_br_label"):
+            self._br_label.setText(f"{value}px")
+        if self.parent() and hasattr(self.parent(), "theme_data"):
+            self.parent().theme_data = self.theme_data
+            self.parent().apply_theme()
+        self._update_preview()
+
+    def _invert_theme(self):
+        for key in list(self.theme_data.keys()):
+            if key == "border_radius":
+                continue
+            css = self.theme_data.get(key, "")
+            if not css:
+                continue
+            color = _parse_color(css)
+            if not color.isValid():
+                continue
+            r, g, b = color.redF(), color.greenF(), color.blueF()
+            h, s, v = colorsys.rgb_to_hsv(r, g, b)
+            r2, g2, b2 = colorsys.hsv_to_rgb(h, s, 1.0 - v)
+            inverted = QColor.fromRgbF(r2, g2, b2, color.alphaF())
+            self.theme_data[key] = _to_css(inverted, css)
+        if self._current_key and self._current_key != "border_radius":
+            css = self.theme_data.get(self._current_key, "#ffffff")
+            self._load_color(_parse_color(css), css)
+        self._update_preview()
+        if self.parent() and hasattr(self.parent(), "theme_data"):
+            self.parent().theme_data = self.theme_data
+            self.parent().apply_theme()
+
+    def _on_colorblind_changed(self, idx: int):
+        mode = self._combo_colorblind.itemData(idx) or "none"
+        self._colorblind_mode = mode
+        self._update_preview()
+
+    # ══════════════════════════════════════════════════════════════════════
+    # Library
+    # ══════════════════════════════════════════════════════════════════════
+
+    def _populate_library(self, search: str = ""):
+        from laitoxx.core.settings.theme import list_themes
+        from laitoxx.core.settings.app_settings import settings
+
+        self._lib_list.clear()
+        search = search.lower()
+        themes = list_themes()
+        favs = settings.favorite_themes
+
+        for name, path in themes:
+            if search and search not in name.lower():
+                continue
+            item = QListWidgetItem()
+            item.setData(Qt.ItemDataRole.UserRole, path)
+
+            # Build row widget with name + star button
+            row_w = QWidget()
+            row_lay = QHBoxLayout(row_w)
+            row_lay.setContentsMargins(4, 2, 4, 2)
+            row_lay.setSpacing(4)
+
+            name_lbl = QLabel(name)
+            name_lbl.setStyleSheet(f"color: {_TEXT}; font-size: 12px; background: transparent;")
+            row_lay.addWidget(name_lbl, 1)
+
+            is_fav = path in favs
+            star_btn = QPushButton("★" if is_fav else "☆")
+            star_btn.setFixedSize(24, 24)
+            star_btn.setStyleSheet(
+                f"QPushButton {{ background: transparent; border: none; color: {'#f9c74f' if is_fav else _TEXT_DIM}; font-size: 14px; }}"
+                f"QPushButton:hover {{ color: #f9c74f; }}"
+            )
+            star_btn.clicked.connect(lambda _, p=path: self._toggle_favorite(p))
+            row_lay.addWidget(star_btn)
+
+            self._lib_list.addItem(item)
+            item.setSizeHint(row_w.sizeHint())
+            self._lib_list.setItemWidget(item, row_w)
+
+    def _apply_library_theme(self):
+        item = self._lib_list.currentItem()
+        if not item:
+            return
+        path = item.data(Qt.ItemDataRole.UserRole)
+        if not path:
+            return
+        from laitoxx.core.settings.theme import load_theme
+        data = load_theme(path)
+        if data:
+            self.theme_data.update(data)
+            if self._current_key and self._current_key != "border_radius":
+                css = self.theme_data.get(self._current_key, "#ffffff")
+                self._load_color(_parse_color(css), css)
+            if self.parent() and hasattr(self.parent(), "theme_data"):
+                self.parent().theme_data = self.theme_data
+                self.parent().apply_theme()
+            self._update_preview()
+            # Update border radius slider
+            if hasattr(self, "_br_slider"):
+                self._br_slider.setValue(int(self.theme_data.get("border_radius", 10)))
+
+    def _toggle_favorite(self, path: str):
+        from laitoxx.core.settings.app_settings import settings
+        favs = list(settings.favorite_themes)
+        if path in favs:
+            favs.remove(path)
+        else:
+            favs.append(path)
+        settings.favorite_themes = favs
+        self._populate_library(self._lib_search.text())
 
     # ══════════════════════════════════════════════════════════════════════
     # Dialog close actions

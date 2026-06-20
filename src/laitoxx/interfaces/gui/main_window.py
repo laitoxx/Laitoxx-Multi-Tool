@@ -22,7 +22,7 @@ from PyQt6.QtWidgets import (
     QMessageBox,
 )
 from PyQt6.QtGui import QMovie, QResizeEvent, QFont, QTextCursor
-from PyQt6.QtCore import Qt, QUrl, QThread
+from PyQt6.QtCore import Qt, QUrl, QThread, QTimer
 from laitoxx.interfaces.gui.worker import Worker, stop_and_detach_thread
 from PyQt6.QtMultimedia import QMediaPlayer
 from PyQt6.QtMultimediaWidgets import QVideoWidget
@@ -109,6 +109,10 @@ class MainWindow(QMainWindow):
         self.load_lua_plugins()
         self.retranslate_ui()
         self._load_and_set_initial_background()
+        self._last_schedule_hour: int = -1
+        self._schedule_timer = QTimer(self)
+        self._schedule_timer.timeout.connect(self._check_theme_schedule)
+        self._schedule_timer.start(60_000)
         logging.info("MainWindow.__init__ finished.")
 
     # ------------------------------------------------------------------
@@ -161,6 +165,7 @@ class MainWindow(QMainWindow):
         self.btn_settings = GlassButton("")
         self.btn_plugin_builder = GlassButton("")
         self.btn_graph_editor = GlassButton("")
+        self.btn_create_theme = GlassButton("")
 
         from PyQt6.QtWidgets import QComboBox
 
@@ -174,7 +179,7 @@ class MainWindow(QMainWindow):
         self.btn_hide_ui = GlassButton("")
         self.btn_exit = GlassButton("")
 
-        for btn in (self.btn_settings, self.btn_plugin_builder, self.btn_graph_editor):
+        for btn in (self.btn_settings, self.btn_plugin_builder, self.btn_graph_editor, self.btn_create_theme):
             layout.addWidget(btn)
         layout.addWidget(self.btn_hide_ui)
         layout.addWidget(self.combo_lang)
@@ -188,6 +193,7 @@ class MainWindow(QMainWindow):
         self.btn_settings.clicked.connect(self._open_settings)
         self.btn_plugin_builder.clicked.connect(self._open_plugin_builder)
         self.btn_graph_editor.clicked.connect(self._open_graph_editor)
+        self.btn_create_theme.clicked.connect(self._create_new_theme)
         self.combo_lang.currentIndexChanged.connect(self._on_combo_lang_changed)
         self.btn_hide_ui.clicked.connect(self._toggle_ui_visibility)
         self.btn_exit.clicked.connect(self.close)
@@ -324,11 +330,12 @@ class MainWindow(QMainWindow):
     def apply_theme(self):
         td = DEFAULT_THEME.copy()
         td.update(self.theme_data or {})
+        _br = td.get("border_radius", 10)
         btn = (
             f"QPushButton {{"
             f" background-color: {td['button_bg_color']};"
             f" border: 1px solid {td['button_border_color']};"
-            f" border-radius: 10px; color: {td['button_text_color']};"
+            f" border-radius: {_br}px; color: {td['button_text_color']};"
             f" padding: 10px; font-size: 14px; }}"
             f"QPushButton:hover {{ background-color: {td['button_hover_bg_color']}; }}"
             f"QPushButton:pressed {{ background-color: {td['button_pressed_bg_color']}; }}"
@@ -337,10 +344,10 @@ class MainWindow(QMainWindow):
         if self.unhide_button:
             self.unhide_button.setStyleSheet(btn)
         self.sidebar_widget.setStyleSheet(
-            f"background-color: {td['sidebar_bg_color']}; border-radius: 10px;"
+            f"background-color: {td['sidebar_bg_color']}; border-radius: {_br}px;"
         )
         self.active_tools_widget.setStyleSheet(
-            f"background-color: {td['sidebar_bg_color']}; border-radius: 10px;"
+            f"background-color: {td['sidebar_bg_color']}; border-radius: {_br}px;"
         )
         scrollbar = (
             "QScrollBar:vertical { border: none; background: transparent; width: 8px;"
@@ -362,7 +369,7 @@ class MainWindow(QMainWindow):
         text_area = (
             f"QPlainTextEdit {{ background-color: {td['text_area_bg_color']};"
             f" border: 1px solid {td['text_area_border_color']};"
-            f" border-radius: 10px; color: {td['text_area_text_color']}; font-size: 14px; }}"
+            f" border-radius: {_br}px; color: {td['text_area_text_color']}; font-size: 14px; }}"
         )
         self.output_area.setStyleSheet(text_area + scrollbar)
         tooltip_style = (
@@ -409,6 +416,27 @@ class MainWindow(QMainWindow):
                 settings.theme_path = saved_path
             else:
                 self._set_output(translator.get("load_theme_error"))
+
+    def _check_theme_schedule(self):
+        if not settings.auto_theme_schedule:
+            return
+        import datetime
+        hour = datetime.datetime.now().hour
+        if hour == self._last_schedule_hour:
+            return
+        target = None
+        if settings.day_theme and hour == settings.day_start:
+            target = settings.day_theme
+        elif settings.night_theme and hour == settings.night_start:
+            target = settings.night_theme
+        if target:
+            from laitoxx.core.settings.theme import load_theme
+            data = load_theme(target)
+            if data:
+                self.theme_data.update(data)
+                settings.theme_path = target
+                self.apply_theme()
+                self._last_schedule_hour = hour
 
     def _create_new_theme(self):
         editor = ThemeEditorDialog(self, self.theme_data)
@@ -470,6 +498,7 @@ class MainWindow(QMainWindow):
         self.btn_settings.setText(translator.get("settings"))
         self.btn_plugin_builder.setText(translator.get("plugin_builder"))
         self.btn_graph_editor.setText(translator.get("graph_editor"))
+        self.btn_create_theme.setText(translator.get("create_color_theme"))
         self.btn_hide_ui.setText(translator.get("hide_ui"))
         self.btn_exit.setText(translator.get("exit"))
         self._btn_popout.setText("⧉ " + translator.get("terminal"))
@@ -572,7 +601,7 @@ class MainWindow(QMainWindow):
         """Discover and load Lua plugins from the lua_plugins directory."""
         self.lua_plugins = []
         if not HAS_LUA:
-            logging.warning("lupa not installed — Lua plugins disabled.")
+            logging.warning("lupa not installed - Lua plugins disabled.")
             return
         try:
             self.lua_plugins = discover_lua_plugins()

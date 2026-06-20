@@ -69,6 +69,12 @@ _DEFAULTS: dict = {
         "username": "",
         "password": "",
     },
+    "favorite_themes": [],
+    "auto_theme_schedule": False,
+    "day_theme": "",
+    "night_theme": "",
+    "day_start": 8,
+    "night_start": 20,
 }
 
 
@@ -181,6 +187,60 @@ class AppSettings:
     @proxy.setter
     def proxy(self, value: dict):
         self._data["proxy"] = value
+        self.save()
+
+    @property
+    def favorite_themes(self) -> list:
+        return list(self._data.get("favorite_themes", []))
+
+    @favorite_themes.setter
+    def favorite_themes(self, value: list):
+        self._data["favorite_themes"] = list(value)
+        self.save()
+
+    @property
+    def auto_theme_schedule(self) -> bool:
+        return bool(self._data.get("auto_theme_schedule", False))
+
+    @auto_theme_schedule.setter
+    def auto_theme_schedule(self, value: bool):
+        self._data["auto_theme_schedule"] = bool(value)
+        self.save()
+
+    @property
+    def day_theme(self) -> str:
+        return self._data.get("day_theme", "")
+
+    @day_theme.setter
+    def day_theme(self, value: str):
+        self._data["day_theme"] = value
+        self.save()
+
+    @property
+    def night_theme(self) -> str:
+        return self._data.get("night_theme", "")
+
+    @night_theme.setter
+    def night_theme(self, value: str):
+        self._data["night_theme"] = value
+        self.save()
+
+    @property
+    def day_start(self) -> int:
+        return int(self._data.get("day_start", 8))
+
+    @day_start.setter
+    def day_start(self, value: int):
+        self._data["day_start"] = int(value)
+        self.save()
+
+    @property
+    def night_start(self) -> int:
+        return int(self._data.get("night_start", 20))
+
+    @night_start.setter
+    def night_start(self, value: int):
+        self._data["night_start"] = int(value)
         self.save()
 
     # ── Migration ──────────────────────────────────────────────────────────────

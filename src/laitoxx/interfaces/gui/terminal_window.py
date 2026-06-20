@@ -35,6 +35,7 @@ class TerminalWindow(QDialog):
             parent, Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setWindowTitle("Terminal")
         self.setMinimumSize(520, 340)
         self.resize(820, 520)
         self._theme = theme_data

@@ -64,12 +64,12 @@ def _print_header(header: dict):
     if str(alg).lower() == "none":
         print(
             f"\n{Color.DARK_GRAY}  [{Color.RED}!{Color.DARK_GRAY}]{Color.RED}"
-            f" ALG:NONE vulnerability — signature not verified!"
+            f" ALG:NONE vulnerability - signature not verified!"
         )
     elif alg not in _SUPPORTED_ALGOS:
         print(
             f"\n{Color.DARK_GRAY}  [{Color.YELLOW}!{Color.DARK_GRAY}]{Color.YELLOW}"
-            f" Algorithm '{alg}' is not HS256/384/512 — cracking not supported."
+            f" Algorithm '{alg}' is not HS256/384/512 - cracking not supported."
         )
 
 

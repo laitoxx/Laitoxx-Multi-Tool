@@ -121,6 +121,11 @@ def telegram_search(config=None):
         print(
             f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Error: The search method '{method_name}' does not exist."
         )
+    except TypeError:
+        print(
+            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Could not parse Telegram response."
+            f" The account may be private, deleted, or does not exist."
+        )
     except Exception as e:
         print(
             f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An unexpected error occurred: {e}"

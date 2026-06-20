@@ -250,7 +250,7 @@ _FORENSICS_CHECK_FALLBACKS: dict[str, str] = {
 class ImageSearchWindow(QDialog):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.setWindowTitle(_t("is_title", "LAITOXX — Image Analysis"))
+        self.setWindowTitle(_t("is_title", "LAITOXX - Image Analysis"))
         self.setMinimumSize(520, 420)
         self.resize(980, 680)
 
@@ -1439,7 +1439,7 @@ class ImageSearchWindow(QDialog):
         self._hash_row_widgets.clear()
 
         for key in _HASH_ORDER:
-            self._add_hash_row(key, hashes.get(key, "—"))
+            self._add_hash_row(key, hashes.get(key, "-"))
 
         self._hashes_vlay.addStretch()
 
@@ -1639,7 +1639,7 @@ class ImageSearchWindow(QDialog):
             exif = report["exif"]
             if "error" in exif:
                 html_parts.append(
-                    f'<p><span style="color:{ORANGE}">⚠ EXIF: {_t("error", "Error")} — {exif["error"]}</span></p>'
+                    f'<p><span style="color:{ORANGE}">⚠ EXIF: {_t("error", "Error")} - {exif["error"]}</span></p>'
                 )
             else:
                 html_parts.append(
@@ -1666,7 +1666,7 @@ class ImageSearchWindow(QDialog):
             ela = report["ela"]
             if "error" in ela:
                 html_parts.append(
-                    f'<p><span style="color:{ORANGE}">⚠ ELA: {_t("error", "Error")} — {ela["error"]}</span></p>'
+                    f'<p><span style="color:{ORANGE}">⚠ ELA: {_t("error", "Error")} - {ela["error"]}</span></p>'
                 )
             else:
                 ela_image = ela.get("ela_image")
@@ -1682,7 +1682,7 @@ class ImageSearchWindow(QDialog):
                     f'<p><b style="color:{ac}">{_t("is_ela_section", "🔎 ELA (Error Level Analysis)")}</b></p>'
                 )
                 html_parts.append(
-                    f'<p><b style="color:{color}">{mean_v}</b> — '
+                    f'<p><b style="color:{color}">{mean_v}</b> - '
                     f'<span style="color:{color}">{verdict_str}</span></p>'
                 )
                 if is_susp:
@@ -1695,7 +1695,7 @@ class ImageSearchWindow(QDialog):
             if "error" in cl:
                 html_parts.append(
                     f'<p><span style="color:{ORANGE}">⚠ {_t("is_clone_section", "Clone")}: '
-                    f"{_t('error', 'Error')} — {cl['error']}</span></p>"
+                    f"{_t('error', 'Error')} - {cl['error']}</span></p>"
                 )
             else:
                 dupes = cl.get("duplicate_blocks", 0)
@@ -1711,7 +1711,7 @@ class ImageSearchWindow(QDialog):
                 )
                 html_parts.append(
                     f'<p><b style="color:{color}">{dupes}</b>'
-                    f' — <span style="color:{color}">{susp_str}</span></p>'
+                    f' - <span style="color:{color}">{susp_str}</span></p>'
                 )
                 if susp:
                     suspicious_count += 1
@@ -1723,7 +1723,7 @@ class ImageSearchWindow(QDialog):
             if "error" in ns:
                 html_parts.append(
                     f'<p><span style="color:{ORANGE}">⚠ {_t("is_noise_section", "Noise")}: '
-                    f"{_t('error', 'Error')} — {ns['error']}</span></p>"
+                    f"{_t('error', 'Error')} - {ns['error']}</span></p>"
                 )
             else:
                 susp = ns.get("suspicious", False)
@@ -1739,7 +1739,7 @@ class ImageSearchWindow(QDialog):
                 )
                 html_parts.append(
                     f'<p><b style="color:{color}">{ratio}</b>'
-                    f' — <span style="color:{color}">{susp_str}</span></p>'
+                    f' - <span style="color:{color}">{susp_str}</span></p>'
                 )
                 if susp:
                     suspicious_count += 1
@@ -1751,7 +1751,7 @@ class ImageSearchWindow(QDialog):
             if "error" in col:
                 html_parts.append(
                     f'<p><span style="color:{ORANGE}">⚠ {_t("is_color_section", "Color")}: '
-                    f"{_t('error', 'Error')} — {col['error']}</span></p>"
+                    f"{_t('error', 'Error')} - {col['error']}</span></p>"
                 )
             else:
                 wb_map = {
@@ -1760,7 +1760,7 @@ class ImageSearchWindow(QDialog):
                     "нейтральный": _t("is_wb_neutral", "neutral"),
                 }
                 wb = wb_map.get(
-                    col.get("white_balance", ""), col.get("white_balance", "—")
+                    col.get("white_balance", ""), col.get("white_balance", "-")
                 )
                 r, g, b = (
                     col.get("r_mean", 0),

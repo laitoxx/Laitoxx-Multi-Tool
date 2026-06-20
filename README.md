@@ -1,4 +1,4 @@
-# Laitoxx Multi-Tool V2.3.1
+# Laitoxx Multi-Tool V2.3.2
 
 [English](README.md) | [Русский](docs/README.ru.md) | [Українська](docs/README.uk.md) | [Türkçe](docs/README.tr.md)
 
@@ -17,6 +17,7 @@ Full guide: 👉 [Plugin Development Guide (English)](docs/pluginBuilding.en.md)
 ### 🔹 Features
 * **Modern GUI**
 * **Extensible via Plugins (Lua)**
+* **Advanced Theme Editor with Smart Palette Generator**
 * **Customizable Themes**
 * **Graph Editor (Relationship Visualization)**
 * **SOCKS5 Proxy Support**
@@ -90,6 +91,14 @@ Double-click the `install.bat` file, or run it via Command Prompt:
 install.bat
 ```
 *To run the tool later, simply use: `python start.py`*
+
+### ✨ Changelog v2.3.2
+* **Theme Editor Overhaul**: Completely rebuilt the color theme editor. It now features a Smart Palette Generator (complementary, triadic and analogous schemes), image-based palette extraction, a live Preview panel, colorblind simulation (deuteranopia, protanopia, tritanopia), WCAG contrast auto-fix, a screen color eyedropper, copy/paste color, theme inversion, a global border radius slider, and a full theme Library with favorites and search.
+* **Day/Night Auto-Theme Schedule**: Added a schedule system in Settings that automatically switches between a day and a night theme at configured hours.
+* **Theme Creation Button Restored**: The "Create Color Theme" button in the sidebar was missing and has been restored.
+* **Bugfix - Username Search Crash**: Fixed a crash in Telegram username lookup that caused an unhandled `NoneType` error when a profile page lacked expected metadata.
+* **Bugfix - Window Titles**: Fixed incorrect window titles across the application, including the terminal window showing "python" in the taskbar.
+* **Bugfix - UI Text Consistency**: Fixed numerous inconsistent labels, separators and descriptions across dialogs and tool panels.
 
 ### ✨ Changelog v2.3.1
 * **Global Wi-Fi Tracking**: Locate Wi-Fi routers worldwide. You can now reveal the exact coordinates of entire neighborhoods of routers just by searching an IP address or a single MAC address.
