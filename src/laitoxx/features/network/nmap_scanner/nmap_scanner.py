@@ -3,7 +3,7 @@ import subprocess
 
 def nmap_scanner_tool():
     """
-    Launch zenmap GUI for scanning instead of programmatic nmap.
+    Launch zenmap GUI/Nmap for scanning instead of programmatic nmap.
     """
     import platform
     import shutil
@@ -23,8 +23,23 @@ def nmap_scanner_tool():
                     ]
                 )
                 print("Zenmap launched successfully.")
-            else:
-                raise FileNotFoundError
+
+            elif platform.system() == "Linux":
+                nmap_cmd = shutil.which("nmap")
+                if nmap_cmd:
+                    print("Zenmap not found. Falling back to Nmap CLI.")
+                    print("Please enter the target manually in the terminal window that opens.")
+                    print("Example: nmap -F scanme.nmap.org")
+
+                    subprocess.Popen([
+                    "xterm",
+                    "-e",
+                    "bash",
+                    "-c",
+                    "echo 'Enter your Nmap command manually.'; exec bash"
+                 ])
+                else:
+                    raise FileNotFoundError
     except FileNotFoundError:
         print("Zenmap Error: Zenmap not found at the specified path.")
         print(

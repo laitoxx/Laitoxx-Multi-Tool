@@ -1,3 +1,4 @@
+import platform
 import subprocess
 from laitoxx.features.utilities.shared_utils import Color
 
@@ -25,7 +26,30 @@ def port_scanner_tool():
                 )
                 print("Zenmap launched successfully.")
             else:
-                raise FileNotFoundError
+                nmap_cmd = shutil.which("nmap")
+
+                if nmap_cmd:
+                    print("Zenmap not found.")
+                    print("Launching Nmap instead...\n")
+
+                    target = input("Enter target IP or domain: ")
+
+                    subprocess.run([
+                    nmap_cmd,
+                    "-sV",
+                    target
+                    ])
+
+                else:
+                    raise print("Neither Zenmap nor Nmap was found.")
+
+                    if platform.system() == "Linux":
+                        print("Install Nmap:")
+                        print("sudo pacman -S nmap")
+
+                    elif platform.system() == "Windows":
+                        print("Download Nmap/Zenmap from:")
+                        print("https://nmap.org/download")
     except FileNotFoundError:
         print(
             f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Zenmap Error: Zenmap not found at the specified path."
