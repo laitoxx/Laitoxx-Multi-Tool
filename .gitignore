@@ -9,11 +9,16 @@ __pycache__/
 *$py.class
 .pytest_cache/
 
-# Test and update scripts
-test_*.py
-tests/test_*.py
+# Test artifacts
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Misc scripts (not part of the package)
 update_readmes.py
 translate_plugin_docs.py
+update_*.py
 
 # IDE / OS files
 .vscode/
@@ -26,4 +31,3 @@ cache/
 
 # Local settings
 settings/app_settings.json
-update_*.py
