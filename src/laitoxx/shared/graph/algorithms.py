@@ -5,8 +5,9 @@ Provides shortest path finding and node centrality calculations.
 
 from __future__ import annotations
 
-import networkx as nx
 from typing import TYPE_CHECKING
+
+import networkx as nx
 
 if TYPE_CHECKING:
     from laitoxx.shared.graph.model import Graph

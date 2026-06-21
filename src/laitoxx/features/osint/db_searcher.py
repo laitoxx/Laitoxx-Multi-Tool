@@ -1,7 +1,8 @@
-import os
 import json
-from laitoxx.features.utilities.shared_utils import Color
+import os
+
 from laitoxx.core.settings.paths import _ROOT
+from laitoxx.features.utilities.shared_utils import Color
 
 
 def search_database():
@@ -214,7 +215,7 @@ def search_database():
 
         # --- TEXT SEARCH (CSV/TXT/JSON/SQL) ---
         try:
-            with open(filepath, "r", encoding="UTF-8", errors="ignore") as f:
+            with open(filepath, encoding="UTF-8", errors="ignore") as f:
                 header_line = f.readline().strip()
                 delimiters = [",", ";", "\t", "|"]
                 delimiter = next((d for d in delimiters if d in header_line), None)

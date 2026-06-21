@@ -9,7 +9,7 @@ import difflib
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from laitoxx.shared.graph.model import Node, Graph
+    from laitoxx.shared.graph.model import Graph, Node
 
 
 class EntityResolver:

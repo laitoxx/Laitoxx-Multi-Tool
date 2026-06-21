@@ -1,4 +1,5 @@
 import re
+
 from laitoxx.features.utilities.shared_utils import Color
 
 

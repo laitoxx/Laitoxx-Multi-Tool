@@ -17,7 +17,7 @@ from typing import Any
 from PyQt6.QtCore import QObject, pyqtSignal
 
 try:
-    from PIL import Image, ImageChops, ImageFilter, ImageStat, ExifTags
+    from PIL import ExifTags, Image, ImageChops, ImageFilter, ImageStat
 
     HAS_PIL = True
 except ImportError:
@@ -38,7 +38,7 @@ except ImportError:
     HAS_REQUESTS = False
 
 
-def pil_to_qpixmap(pil_img: "Image.Image"):
+def pil_to_qpixmap(pil_img: Image.Image):
     """Конвертирует PIL Image в QPixmap."""
     from PyQt6.QtGui import QPixmap
 
@@ -72,14 +72,14 @@ class SearchWorker(QObject):
     finished = pyqtSignal(dict)  # {engine: url}
     error = pyqtSignal(str)
 
-    def __init__(self, pil_img: "Image.Image", engines: list[str]) -> None:
+    def __init__(self, pil_img: Image.Image, engines: list[str]) -> None:
         super().__init__()
         self._img = pil_img
         self._engines = engines
 
     def run(self) -> None:
-        import urllib.parse
         import traceback
+        import urllib.parse
 
         try:
             buf = io.BytesIO()
@@ -132,7 +132,7 @@ _PERCEPTUAL_HASHES: tuple[str, ...] = ("pHash", "aHash", "dHash", "wHash")
 class HashWorker(QObject):
     finished = pyqtSignal(dict)
 
-    def __init__(self, path: str, pil_img: "Image.Image") -> None:
+    def __init__(self, path: str, pil_img: Image.Image) -> None:
         super().__init__()
         self._path = path
         self._img = pil_img
@@ -175,7 +175,7 @@ class ForensicsWorker(QObject):
 
     def __init__(
         self,
-        pil_img: "Image.Image",
+        pil_img: Image.Image,
         path: str,
         checks: dict[str, bool],
     ) -> None:

@@ -1,45 +1,45 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List
 
-from laitoxx.features.osint.user_search_by_phone import search_by_number
-from laitoxx.features.network.ip_info import get_ip
-from laitoxx.features.osint.email_validator import check_email_address
-from laitoxx.features.web_audit.website_info import get_website_info
-from laitoxx.features.network.port_scanner import port_scanner_tool
-from laitoxx.features.osint.gmail_osint import gmail_osint
-from laitoxx.features.osint.db_searcher import search_database
-from laitoxx.features.network.mac_lookup import search_mac_address
-from laitoxx.features.network.subdomain_finder import find_subdomains
-from laitoxx.features.osint.google_osint import google_osint
-from laitoxx.features.osint.telegram_search import telegram_search
-from laitoxx.features.osint.username_osint import username_osint_tool
-from laitoxx.features.web_audit.web_crawler import web_crawler
-from laitoxx.features.web_audit.http_inspector import http_inspector
-from laitoxx.features.web_audit.tech_detector import tech_detector
-from laitoxx.features.web_audit.cms_audit import cms_audit
-from laitoxx.features.crypto.hash_tools.text_hasher import text_hasher_tool
 from laitoxx.features.crypto.hash_tools.hash_identifier import hash_identifier_tool
 from laitoxx.features.crypto.hash_tools.rainbow_table_generator import (
     rainbow_table_tool,
 )
-from laitoxx.features.network.nmap_scanner.nmap_scanner import nmap_scanner_tool
+from laitoxx.features.crypto.hash_tools.text_hasher import text_hasher_tool
 from laitoxx.features.crypto.jwt_analyzer import jwt_analyzer_tool
-from laitoxx.features.web_audit.web_security_tools import web_security_tools
-from laitoxx.features.utilities.text_transformer import text_transformer_tool
 from laitoxx.features.crypto.password_generator import password_generator_tool
-from laitoxx.features.utilities.regex_tester import regex_tester_tool
 from laitoxx.features.network.cidr_calculator import cidr_calculator_tool
+from laitoxx.features.network.ip_info import get_ip
+from laitoxx.features.network.mac_lookup import search_mac_address
+from laitoxx.features.network.nmap_scanner.nmap_scanner import nmap_scanner_tool
+from laitoxx.features.network.port_scanner import port_scanner_tool
+from laitoxx.features.network.subdomain_finder import find_subdomains
+from laitoxx.features.osint.db_searcher import search_database
+from laitoxx.features.osint.email_validator import check_email_address
+from laitoxx.features.osint.gmail_osint import gmail_osint
+from laitoxx.features.osint.google_osint import google_osint
 from laitoxx.features.osint.image_search import image_search_tool
+from laitoxx.features.osint.telegram_search import telegram_search
+from laitoxx.features.osint.user_search_by_phone import search_by_number
+from laitoxx.features.osint.username_osint import username_osint_tool
 from laitoxx.features.utilities.metadata_viewer import metadata_viewer_tool
+from laitoxx.features.utilities.regex_tester import regex_tester_tool
+from laitoxx.features.utilities.text_transformer import text_transformer_tool
+from laitoxx.features.web_audit.cms_audit import cms_audit
+from laitoxx.features.web_audit.http_inspector import http_inspector
+from laitoxx.features.web_audit.tech_detector import tech_detector
+from laitoxx.features.web_audit.web_crawler import web_crawler
+from laitoxx.features.web_audit.web_security_tools import web_security_tools
+from laitoxx.features.web_audit.website_info import get_website_info
 
 
 @dataclass(frozen=True)
 class ToolSpec:
     func: Callable
-    input_type: Optional[str]
-    prompt: Optional[str]
+    input_type: str | None
+    prompt: str | None
     desc: str
     threaded: bool
     disabled: bool = False

@@ -26,8 +26,8 @@ from .models import CheckResult, SiteEntry
 
 try:
     from laitoxx.core.settings.network_manager import (
-        make_aiohttp_connector,
         aiohttp_proxy_url,
+        make_aiohttp_connector,
     )
 
     _HAS_NM = True

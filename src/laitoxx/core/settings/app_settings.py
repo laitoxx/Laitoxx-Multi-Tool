@@ -12,12 +12,12 @@ import json
 import os
 
 from .paths import (
+    _ROOT,
     APP_SETTINGS_FILE,
-    DEFAULT_THEME_FILE,
     DEFAULT_BG_FILE,
+    DEFAULT_THEME_FILE,
     LEGACY_BG_CONFIG,
     LEGACY_THEME_CONFIG,
-    _ROOT,
 )
 
 
@@ -91,9 +91,9 @@ class AppSettings:
         """Load from disk, migrating legacy files when needed."""
         if os.path.exists(APP_SETTINGS_FILE):
             try:
-                with open(APP_SETTINGS_FILE, "r", encoding="utf-8") as f:
+                with open(APP_SETTINGS_FILE, encoding="utf-8") as f:
                     on_disk = json.load(f)
-            except (json.JSONDecodeError, IOError):
+            except (OSError, json.JSONDecodeError):
                 on_disk = {}
         else:
             on_disk = self._migrate_from_legacy()
@@ -251,14 +251,14 @@ class AppSettings:
 
         # last_theme.txt
         if os.path.exists(LEGACY_THEME_CONFIG):
-            with open(LEGACY_THEME_CONFIG, "r", encoding="utf-8") as f:
+            with open(LEGACY_THEME_CONFIG, encoding="utf-8") as f:
                 p = f.read().strip()
             if p:
                 migrated["theme_path"] = p
 
         # background_config.txt
         if os.path.exists(LEGACY_BG_CONFIG):
-            with open(LEGACY_BG_CONFIG, "r", encoding="utf-8") as f:
+            with open(LEGACY_BG_CONFIG, encoding="utf-8") as f:
                 p = f.read().strip()
             if p:
                 migrated["background_path"] = p

@@ -4,10 +4,10 @@ avatar_downloader.py — Download and cache user avatars.
 
 from __future__ import annotations
 
-import os
 import hashlib
+import os
+
 import requests
-from typing import Optional
 
 # Директория для хранения кэшированных аватаров
 _CACHE_DIR = os.path.join(
@@ -25,7 +25,7 @@ _UA = (
 class AvatarDownloader:
     """Download avatars from site profile URLs and cache them locally."""
 
-    def __init__(self, cache_dir: Optional[str] = None, proxy: Optional[dict] = None):
+    def __init__(self, cache_dir: str | None = None, proxy: dict | None = None):
         self.cache_dir = cache_dir or _CACHE_DIR
         self.proxy = proxy
         os.makedirs(self.cache_dir, exist_ok=True)
@@ -40,12 +40,12 @@ class AvatarDownloader:
         key = self._cache_key(username, site_name)
         return os.path.join(self.cache_dir, f"{key}.jpg")
 
-    def get_cached(self, username: str, site_name: str) -> Optional[str]:
+    def get_cached(self, username: str, site_name: str) -> str | None:
         """Проверяет наличие аватара в локальном кэше."""
         path = self._cache_path(username, site_name)
         return path if os.path.exists(path) else None
 
-    def download(self, url: str, username: str, site_name: str) -> Optional[str]:
+    def download(self, url: str, username: str, site_name: str) -> str | None:
         """Download avatar from *url*, cache to disk, return local path or None."""
         cached = self.get_cached(username, site_name)
         if cached:

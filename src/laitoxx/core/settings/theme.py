@@ -5,8 +5,7 @@ from __future__ import annotations
 import json
 import os
 
-from .paths import THEMES_DIR, DEFAULT_THEME_FILE
-
+from .paths import DEFAULT_THEME_FILE, THEMES_DIR
 
 DEFAULT_THEME: dict = {
     "button_bg_color": "rgba(255, 0, 0, 0.1)",
@@ -47,9 +46,9 @@ def list_themes() -> list[tuple[str, str]]:
 def load_theme(filepath: str) -> dict | None:
     try:
         if os.path.exists(filepath):
-            with open(filepath, "r", encoding="utf-8") as f:
+            with open(filepath, encoding="utf-8") as f:
                 return json.load(f)
-    except (json.JSONDecodeError, IOError):
+    except (OSError, json.JSONDecodeError):
         pass
     return None
 

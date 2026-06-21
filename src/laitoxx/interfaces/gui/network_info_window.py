@@ -1,30 +1,31 @@
-import re
 import logging
+import re
+
+from PyQt6.QtCore import Qt, QThread, QUrl, pyqtSignal
 from PyQt6.QtWidgets import (
     QDialog,
-    QWidget,
-    QVBoxLayout,
     QHBoxLayout,
+    QLabel,
     QLineEdit,
+    QProgressBar,
     QPushButton,
+    QSplitter,
     QTabWidget,
     QTextEdit,
-    QLabel,
-    QSplitter,
-    QProgressBar,
+    QVBoxLayout,
+    QWidget,
 )
-from PyQt6.QtCore import Qt, QThread, pyqtSignal, QUrl
 
 try:
-    from PyQt6.QtWebEngineWidgets import QWebEngineView
     from PyQt6.QtWebEngineCore import QWebEngineSettings
+    from PyQt6.QtWebEngineWidgets import QWebEngineView
 except ImportError:
     QWebEngineView = None
     QWebEngineSettings = None
     logging.warning("PyQt6-WebEngine not installed. Maps will not be rendered.")
 
-from laitoxx.interfaces.gui.worker import Worker, stop_and_detach_thread
 from laitoxx.interfaces.gui.translator import translator
+from laitoxx.interfaces.gui.worker import Worker, stop_and_detach_thread
 
 
 class NetworkInfoWindow(QDialog):
@@ -192,8 +193,8 @@ class NetworkInfoWindow(QDialog):
         """)
         self.console_output.setStyleSheet(f"""
             QTextEdit {{
-                background-color: rgba(20, 20, 20, 0.3); 
-                color: #e0e0e0; 
+                background-color: rgba(20, 20, 20, 0.3);
+                color: #e0e0e0;
                 font-family: monospace;
                 font-size: 14px;
                 border: 1px solid {bdr};
@@ -252,10 +253,10 @@ class NetworkInfoWindow(QDialog):
                     zoomControl: false
                 }});
                 L.control.zoom({{ position: 'bottomright' }}).addTo(map);
-                
+
                 // Always add default Dark map first, to prevent white screen
                 var defaultTile = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/rastertiles/dark_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{ maxZoom: 19, attribution: '© OpenStreetMap © CARTO' }}).addTo(map);
-                
+
                 var marker = L.marker([{lat}, {lon}]).addTo(map);
                 marker.bindPopup("<b style='color: black;'>{marker_text}</b>").openPopup();
             </script>
@@ -280,13 +281,13 @@ class NetworkInfoWindow(QDialog):
         (function() {{
             var existing = document.getElementById('overlay');
             if (existing) existing.remove();
-            
+
             var tz_id = '{data.get("tz_id", "UTC")}';
             var localTime = "N/A";
             try {{
                 localTime = new Date().toLocaleTimeString([], {{timeZone: tz_id, hour: '2-digit', minute:'2-digit'}}) + " (" + tz_id + ")";
             }} catch(e) {{}}
-            
+
             var div = document.createElement('div');
             div.innerHTML = `
             <div id="overlay">
@@ -295,7 +296,7 @@ class NetworkInfoWindow(QDialog):
                 <div class="ov-row"><span class="ov-icon">💵</span><span id="ov-curr">{data.get("curr", "N/A")}</span></div>
                 <div class="ov-row"><span class="ov-icon">📞</span><span id="ov-phone">{data.get("phone", "N/A")}</span></div>
             </div>
-            
+
             <div id="legend">
                 <div class="lg-row"><span class="lg-color" style="background:#00ccff;"></span> {translator.get("ni_residential")}</div>
                 <div class="lg-row"><span class="lg-color" style="background:#ffaa00;"></span> {translator.get("ni_cafes")}</div>
@@ -304,13 +305,13 @@ class NetworkInfoWindow(QDialog):
             </div>
             `;
             document.body.appendChild(div);
-            
+
             if ({"true" if data.get("is_day") else "false"}) {{
                 if (typeof defaultTile !== 'undefined') {{
                     defaultTile.setUrl('https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}{{r}}.png');
                 }}
             }}
-            
+
             var geoJsonStr = {__import__("json").dumps(data.get("geojson"))};
             if (geoJsonStr && typeof L !== 'undefined') {{
                 L.geoJSON(geoJsonStr, {{
@@ -337,7 +338,7 @@ class NetworkInfoWindow(QDialog):
                     }}
                 }}).addTo(map);
             }}
-            
+
             // Plot WLOC WiFi Points if available
             var wlocData = {__import__("json").dumps(getattr(self, "wloc_data", []))};
             if (wlocData && wlocData.length > 0 && typeof L !== 'undefined') {{
@@ -353,7 +354,7 @@ class NetworkInfoWindow(QDialog):
                     circle.bindPopup("<b style='color:black;'>WiFi: " + item.mac + "</b>");
                 }});
             }}
-            
+
         }})();
         """
         self.map_view.page().runJavaScript(js_code)
@@ -363,7 +364,6 @@ class NetworkInfoWindow(QDialog):
             import requests
 
             tz_id = getattr(self, "timezone_id", "UTC")
-            cc = getattr(self, "country_code", "")
 
             data = {
                 "tz_id": tz_id,
@@ -410,8 +410,9 @@ class NetworkInfoWindow(QDialog):
 
             # Fetch Geo Data using osmnx
             try:
-                import osmnx as ox
                 import json
+
+                import osmnx as ox
 
                 tags = {
                     "building": True,
@@ -468,11 +469,13 @@ class NetworkInfoWindow(QDialog):
                                     pass
 
                         if bssid_pool:
+                            import os
+
+                            import urllib3
+
                             from laitoxx.features.network.mac_lookup import (
                                 query_apple_wloc,
                             )
-                            import urllib3
-                            import os
 
                             urllib3.disable_warnings()
                             os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = (

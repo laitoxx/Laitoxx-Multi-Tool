@@ -21,54 +21,51 @@ Design tokens reused from graph_editor.py for visual consistency.
 
 from __future__ import annotations
 
-import os
 import json
-from typing import Optional
+import os
 
-from PyQt6.QtWidgets import (
-    QDialog,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QPushButton,
-    QLineEdit,
-    QTextEdit,
-    QProgressBar,
-    QSplitter,
-    QScrollArea,
-    QCheckBox,
-    QFrame,
-    QRadioButton,
-    QButtonGroup,
-    QMessageBox,
-    QFileDialog,
-)
-from PyQt6.QtGui import QFont, QPixmap, QDesktopServices
 from PyQt6.QtCore import (
+    QObject,
     Qt,
     QThread,
+    QTimer,
+    QUrl,
     pyqtSignal,
     pyqtSlot,
-    QObject,
-    QUrl,
-    QTimer,
+)
+from PyQt6.QtGui import QDesktopServices, QFont, QPixmap
+from PyQt6.QtWidgets import (
+    QButtonGroup,
+    QCheckBox,
+    QDialog,
+    QFileDialog,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QProgressBar,
+    QPushButton,
+    QRadioButton,
+    QScrollArea,
+    QSplitter,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
 
-from laitoxx.interfaces.gui.translator import translator
-from laitoxx.interfaces.gui.worker import stop_and_detach_thread
-
-from laitoxx.features.osint.username_osint.models import (
-    CheckResult,
-    SITE_CATEGORIES,
-    CATEGORY_ICONS,
-)
-from laitoxx.features.osint.username_osint.site_db import SiteDB
+from laitoxx.features.osint.username_osint.avatar_downloader import AvatarDownloader
 from laitoxx.features.osint.username_osint.checker import UsernameChecker
+from laitoxx.features.osint.username_osint.models import (
+    CATEGORY_ICONS,
+    SITE_CATEGORIES,
+    CheckResult,
+)
 from laitoxx.features.osint.username_osint.nickname_generator import NicknameGenerator
 from laitoxx.features.osint.username_osint.portrait_generator import DigitalPortrait
-from laitoxx.features.osint.username_osint.avatar_downloader import AvatarDownloader
-
+from laitoxx.features.osint.username_osint.site_db import SiteDB
+from laitoxx.interfaces.gui.translator import translator
+from laitoxx.interfaces.gui.worker import stop_and_detach_thread
 
 # ═══════════════════════════════════════════════════════════════════════
 # Design tokens (shared language with graph_editor)
@@ -296,7 +293,7 @@ class _CheckWorker(QObject):
         self.username = username
         self.max_workers = max_workers
         self._cancelled = False
-        self._checker: Optional[UsernameChecker] = None
+        self._checker: UsernameChecker | None = None
 
     def cancel(self):
         self._cancelled = True
@@ -445,8 +442,8 @@ class UsernameOsintWindow(QDialog):
         self.lua_plugins = lua_plugins or []
         self._results: list[CheckResult] = []
         self._nickname_variants: list[str] = []
-        self._thread: Optional[QThread] = None
-        self._worker: Optional[_CheckWorker] = None
+        self._thread: QThread | None = None
+        self._worker: _CheckWorker | None = None
         self._avatar_downloader = AvatarDownloader()
         self._db = SiteDB()
         self._db.load()
@@ -865,8 +862,9 @@ class UsernameOsintWindow(QDialog):
             for btn in self._left_panel.findChildren(_QPushButton):
                 btn.setStyleSheet(mini_css)
 
-        from PyQt6.QtWidgets import QLabel as _QLabel
         import re as _re
+
+        from PyQt6.QtWidgets import QLabel as _QLabel
 
         _bg_re = _re.compile(
             r"background\s*:\s*rgba\(\s*192\s*,\s*132\s*,\s*252\s*,\s*[\d.]+\s*\)"
@@ -916,9 +914,6 @@ class UsernameOsintWindow(QDialog):
         btn_text = td.get("button_text_color", "white")
         accent = td.get("accent_color", _ACCENT)
         txt_sec = td.get("text_secondary_color", _TEXT_SEC)
-        sb_hand = td.get("scrollbar_handle_color", btn_border)
-        sb_hov = td.get("scrollbar_handle_hover_color", btn_hover)
-
         # Update module-level tokens so newly created widgets pick them up
         import laitoxx.interfaces.gui.username_osint_window as _self_mod
 
@@ -1287,7 +1282,7 @@ class UsernameOsintWindow(QDialog):
     # ══════════════════════════════════════════════════════════════
 
     def _send_to_graph(self):
-        from laitoxx.shared.graph.model import Graph, Node, Edge
+        from laitoxx.shared.graph.model import Edge, Graph, Node
 
         username = self._username_input.text().strip()
         found = [r for r in self._results if r.is_found]

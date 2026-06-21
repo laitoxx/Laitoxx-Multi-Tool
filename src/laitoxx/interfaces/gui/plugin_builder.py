@@ -4,41 +4,40 @@ syntax checking, and OS-dependent template generation.
 """
 
 import os
-import re
 import random
+import re
 
-from PyQt6.QtWidgets import (
-    QDialog,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QPushButton,
-    QLabel,
-    QLineEdit,
-    QTextEdit,
-    QComboBox,
-    QCheckBox,
-    QFormLayout,
-    QDialogButtonBox,
-    QStackedWidget,
-    QSplitter,
-    QFileDialog,
-    QMessageBox,
-    QMenu,
-    QPlainTextEdit,
-)
+from PyQt6.QtCore import QRect, QRegularExpression, Qt
 from PyQt6.QtGui import (
+    QColor,
     QFont,
+    QFontMetrics,
+    QKeyEvent,
+    QPainter,
     QSyntaxHighlighter,
     QTextCharFormat,
-    QColor,
-    QPainter,
     QTextFormat,
-    QKeyEvent,
-    QFontMetrics,
 )
-from PyQt6.QtCore import Qt, QRect, QRegularExpression
-
+from PyQt6.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QFileDialog,
+    QFormLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMenu,
+    QMessageBox,
+    QPlainTextEdit,
+    QPushButton,
+    QSplitter,
+    QStackedWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 # ============================================================================
 # Lua Syntax Highlighter
@@ -828,7 +827,6 @@ def generate_plugin_template(
         os_list = ", ".join(f'"{o}"' for o in target_os)
         os_comment = f"-- Target OS: {', '.join(target_os)}\n"
         if len(target_os) < 3:
-            os_names = " or ".join(f'"{o}"' for o in target_os)
             os_check = f"""
     -- OS check
     local platform = host:get_platform()
@@ -1214,7 +1212,7 @@ class PluginBuilderWindow(QDialog):
 
     def _load_file(self, filepath):
         try:
-            with open(filepath, "r", encoding="utf-8") as f:
+            with open(filepath, encoding="utf-8") as f:
                 self.editor.setPlainText(f.read())
             self._current_filename = os.path.basename(filepath)
             self.plugin_path = filepath

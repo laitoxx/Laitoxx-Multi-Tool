@@ -6,67 +6,66 @@ Glassmorphism UI, gradient buttons, real-time opacity slider.
 from __future__ import annotations
 
 import os
-from typing import Optional
 
-from PyQt6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QSplitter,
-    QLabel,
-    QPushButton,
-    QListWidget,
-    QListWidgetItem,
-    QLineEdit,
-    QComboBox,
-    QTextEdit,
-    QDialog,
-    QDialogButtonBox,
-    QFormLayout,
-    QTableWidget,
-    QTableWidgetItem,
-    QHeaderView,
-    QFileDialog,
-    QMessageBox,
-    QFrame,
-    QColorDialog,
-    QSizePolicy,
-    QAbstractItemView,
-    QSlider,
-    QScrollArea,
-    QDateEdit,
-)
-from PyQt6.QtGui import QFont, QColor
 from PyQt6.QtCore import (
+    QDate,
+    QObject,
+    QPoint,
     Qt,
     QUrl,
     pyqtSignal,
     pyqtSlot,
-    QObject,
-    QPoint,
-    QDate,
+)
+from PyQt6.QtGui import QColor, QFont
+from PyQt6.QtWidgets import (
+    QAbstractItemView,
+    QColorDialog,
+    QComboBox,
+    QDateEdit,
+    QDialog,
+    QDialogButtonBox,
+    QFileDialog,
+    QFormLayout,
+    QFrame,
+    QHBoxLayout,
+    QHeaderView,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QMessageBox,
+    QPushButton,
+    QScrollArea,
+    QSizePolicy,
+    QSlider,
+    QSplitter,
+    QTableWidget,
+    QTableWidgetItem,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
 
 try:
-    from PyQt6.QtWebEngineWidgets import QWebEngineView
     from PyQt6.QtWebChannel import QWebChannel
+    from PyQt6.QtWebEngineWidgets import QWebEngineView
 
     HAS_WEB = True
 except ImportError:
     HAS_WEB = False
 
+from laitoxx.interfaces.gui.translator import translator
+from laitoxx.shared.graph.mermaid import generate_html, generate_mermaid
 from laitoxx.shared.graph.model import (
+    EDGE_LINE_TYPES,
+    EDGE_TYPES,
+    NODE_SHAPES,
+    NODE_TYPE_DEFAULTS,
+    NODE_TYPES,
+    Edge,
     Graph,
     Node,
-    Edge,
-    NODE_TYPES,
-    NODE_TYPE_DEFAULTS,
-    NODE_SHAPES,
-    EDGE_TYPES,
-    EDGE_LINE_TYPES,
 )
-from laitoxx.shared.graph.mermaid import generate_html, generate_mermaid
-from laitoxx.interfaces.gui.translator import translator
 
 
 def _t(key: str, **kwargs) -> str:
@@ -596,7 +595,7 @@ def _field_label(text: str) -> QLabel:
 
 
 class NodeDialog(QDialog):
-    def __init__(self, parent=None, node: Optional[Node] = None, title="Add Node"):
+    def __init__(self, parent=None, node: Node | None = None, title="Add Node"):
         super().__init__(parent)
         self.setWindowTitle(title)
         self.setMinimumWidth(480)
@@ -645,7 +644,7 @@ class NodeDialog(QDialog):
             "ge_node_type_document",
             "ge_node_type_custom",
         ]
-        for key, internal in zip(_node_type_keys, NODE_TYPES):
+        for key, internal in zip(_node_type_keys, NODE_TYPES, strict=False):
             self.type_combo.addItem(_t(key), internal)
         if node:
             for i in range(self.type_combo.count()):
@@ -757,8 +756,8 @@ class EdgeDialog(QDialog):
     def __init__(
         self,
         parent=None,
-        edge: Optional[Edge] = None,
-        nodes: Optional[list[Node]] = None,
+        edge: Edge | None = None,
+        nodes: list[Node] | None = None,
         title="Add Edge",
     ):
         super().__init__(parent)
@@ -810,7 +809,7 @@ class EdgeDialog(QDialog):
             "ge_edge_type_custom",
         ]
         self.type_combo = QComboBox()
-        for key, internal in zip(_edge_type_keys, EDGE_TYPES):
+        for key, internal in zip(_edge_type_keys, EDGE_TYPES, strict=False):
             self.type_combo.addItem(_t(key), internal)
         if edge:
             for i in range(self.type_combo.count()):
@@ -828,7 +827,7 @@ class EdgeDialog(QDialog):
             "ge_line_double",
         ]
         self.line_combo = QComboBox()
-        for key, val in zip(_line_keys, EDGE_LINE_TYPES.values()):
+        for key, val in zip(_line_keys, EDGE_LINE_TYPES.values(), strict=False):
             self.line_combo.addItem(_t(key), val)
         if edge:
             for i in range(self.line_combo.count()):
@@ -874,7 +873,7 @@ class EdgeDialog(QDialog):
                 combo.setCurrentIndex(i)
                 return
 
-    def get_edge(self) -> Optional[Edge]:
+    def get_edge(self) -> Edge | None:
         src = self.source_combo.currentData()
         tgt = self.target_combo.currentData()
         if not src or not tgt:
@@ -939,7 +938,7 @@ class _PropPanel(GlassPanel):
 
         self._fields: dict[str, QLabel] = {}
         self._key_labels: list[QLabel] = []
-        self._current_id: Optional[str] = None
+        self._current_id: str | None = None
 
         for key in fields:
             row = QHBoxLayout()
@@ -1007,7 +1006,7 @@ class NodePropertiesPanel(_PropPanel):
             _t("ge_prop_meta"),
         ]
 
-    def load_node(self, node: Optional[Node]):
+    def load_node(self, node: Node | None):
         if not node:
             self.clear()
             return
@@ -1042,7 +1041,7 @@ class EdgePropertiesPanel(_PropPanel):
             parent,
         )
 
-    def load_edge(self, edge: Optional[Edge], graph: Optional[Graph] = None):
+    def load_edge(self, edge: Edge | None, graph: Graph | None = None):
         if not edge:
             self.clear()
             return
@@ -1172,6 +1171,7 @@ class MermaidView(QWidget):
     def add_node_dynamic(self, node: Node, theme: dict = None) -> None:
         if self._web:
             import json
+
             from laitoxx.shared.graph.mermaid import format_node_for_js
 
             node_js = format_node_for_js(node, theme)
@@ -1183,6 +1183,7 @@ class MermaidView(QWidget):
     def add_edge_dynamic(self, edge: Edge, theme: dict = None) -> None:
         if self._web:
             import json
+
             from laitoxx.shared.graph.mermaid import format_edge_for_js
 
             edge_js = format_edge_for_js(edge, theme)
@@ -1428,7 +1429,7 @@ class NodeActionDialog(QDialog):
     def __init__(
         self,
         parent=None,
-        node: Optional[Node] = None,
+        node: Node | None = None,
         builtin_actions: list[tuple[str, str]] | None = None,
         lua_plugins: list | None = None,
     ):
@@ -1588,14 +1589,14 @@ class GraphEditorWindow(QDialog):
     def __init__(
         self,
         parent=None,
-        theme_data: Optional[dict] = None,
+        theme_data: dict | None = None,
         lua_plugins: list | None = None,
     ):
         super().__init__(parent)
         self.setWindowTitle(_t("graph_editor_title"))
         self.setMinimumSize(1140, 720)
         self._graph = Graph(name=_t("ge_new_graph_name"))
-        self._current_filepath: Optional[str] = None
+        self._current_filepath: str | None = None
         self._theme = theme_data or {}
         self._panel_alpha = 0.55
         self._lua_plugins = lua_plugins or []
@@ -1974,7 +1975,8 @@ class GraphEditorWindow(QDialog):
             """)
 
         # All nested QSplitter handles
-        from PyQt6.QtWidgets import QSplitter as _QSplitter, QFrame as _QFrame
+        from PyQt6.QtWidgets import QFrame as _QFrame
+        from PyQt6.QtWidgets import QSplitter as _QSplitter
 
         for spl in self.findChildren(_QSplitter):
             spl.setStyleSheet(f"QSplitter::handle {{ background: {bdr}; }}")
@@ -2087,8 +2089,9 @@ class GraphEditorWindow(QDialog):
         _SEC_VALS = {"#a99fc0"}
         _DIM_VALS = {"#6b6580"}
         _PRI_VALS = {"#f1f0ff"}
-        from PyQt6.QtWidgets import QLabel as _QLabel
         import re as _re
+
+        from PyQt6.QtWidgets import QLabel as _QLabel
 
         _color_re = _re.compile(r"color\s*:\s*([^;\"']+)")
         _bg_re = _re.compile(
@@ -2814,6 +2817,7 @@ class GraphEditorWindow(QDialog):
 
     def dropEvent(self, event):
         import os
+
         from PyQt6.QtWidgets import QMessageBox
 
         urls = event.mimeData().urls()
@@ -2870,6 +2874,7 @@ class GraphEditorWindow(QDialog):
 
     def import_files(self, filepaths: list[str]):
         import os
+
         from laitoxx.features.utilities.metadata_viewer.engine import engine_instance
 
         imported_nodes = []

@@ -1,78 +1,78 @@
-import os
-import logging
 import contextlib
+import logging
+import os
 
-from PyQt6.QtWidgets import (
-    QMainWindow,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QPushButton,
-    QStackedWidget,
-    QPlainTextEdit,
-    QSplitter,
-    QSpacerItem,
-    QSizePolicy,
-    QLineEdit,
-    QFileDialog,
-    QInputDialog,
-    QApplication,
-    QMenu,
-    QMessageBox,
-)
-from PyQt6.QtGui import QMovie, QResizeEvent, QFont, QTextCursor
-from PyQt6.QtCore import Qt, QUrl, QThread, QTimer
-from laitoxx.interfaces.gui.worker import Worker, stop_and_detach_thread
+from PyQt6.QtCore import Qt, QThread, QTimer, QUrl
+from PyQt6.QtGui import QFont, QMovie, QResizeEvent, QTextCursor
 from PyQt6.QtMultimedia import QMediaPlayer
 from PyQt6.QtMultimediaWidgets import QVideoWidget
-from PyQt6.QtWidgets import QGraphicsBlurEffect
+from PyQt6.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QGraphicsBlurEffect,
+    QHBoxLayout,
+    QInputDialog,
+    QLabel,
+    QLineEdit,
+    QMainWindow,
+    QMenu,
+    QMessageBox,
+    QPlainTextEdit,
+    QPushButton,
+    QSizePolicy,
+    QSpacerItem,
+    QSplitter,
+    QStackedWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
-from laitoxx.interfaces.gui.translator import translator
+from laitoxx.app.tool_registry import CATEGORIES, TOOL_REGISTRY
 from laitoxx.core.settings.app_settings import settings
+from laitoxx.core.settings.background import default_background, import_background
+from laitoxx.core.settings.paths import DEFAULT_THEME_FILE, ensure_resource_dirs
+from laitoxx.core.settings.proxy import apply_proxy_settings
+from laitoxx.core.settings.settings_window import SettingsWindow
 from laitoxx.core.settings.theme import (
     DEFAULT_THEME,
+    load_default_theme,
     load_theme,
     save_theme_to_resources,
-    load_default_theme,
 )
-from laitoxx.core.settings.background import default_background, import_background
-from laitoxx.core.settings.paths import ensure_resource_dirs, DEFAULT_THEME_FILE
-from laitoxx.core.settings.settings_window import SettingsWindow
-from laitoxx.core.settings.proxy import apply_proxy_settings
-from laitoxx.interfaces.gui.worker import (
-    Worker,
-    SignalWriter,
-    remove_ansi_codes,
-    _InputOverride,
-)
-from laitoxx.interfaces.gui.terminal_window import TerminalWindow
 from laitoxx.interfaces.gui.dialogs import (
+    CidrCalculatorDialog,
     CustomInputDialog,
-    TelegramSearchDialog,
     HashToolsDialog,
     JwtAnalyzerDialog,
-    WebSecurityDialog,
-    TextTransformerDialog,
+    LuaPluginConfigDialog,
+    LuaPluginInputDialog,
     PasswordGeneratorDialog,
     RegexTesterDialog,
-    CidrCalculatorDialog,
-    LuaPluginInputDialog,
-    LuaPluginConfigDialog,
+    TelegramSearchDialog,
+    TextTransformerDialog,
+    WebSecurityDialog,
 )
-from laitoxx.interfaces.gui.theme_editor import ThemeEditorDialog
-from laitoxx.interfaces.gui.plugin_builder import PluginBuilderWindow
 from laitoxx.interfaces.gui.graph_editor import GraphEditorWindow
-from laitoxx.interfaces.gui.username_osint_window import UsernameOsintWindow
 from laitoxx.interfaces.gui.image_search_window import ImageSearchWindow
-from laitoxx.app.tool_registry import TOOL_REGISTRY, CATEGORIES
+from laitoxx.interfaces.gui.plugin_builder import PluginBuilderWindow
+from laitoxx.interfaces.gui.terminal_window import TerminalWindow
+from laitoxx.interfaces.gui.theme_editor import ThemeEditorDialog
+from laitoxx.interfaces.gui.translator import translator
+from laitoxx.interfaces.gui.username_osint_window import UsernameOsintWindow
+from laitoxx.interfaces.gui.worker import (
+    SignalWriter,
+    Worker,
+    _InputOverride,
+    remove_ansi_codes,
+    stop_and_detach_thread,
+)
 
 try:
     from laitoxx.app.plugins.engine import (
+        apply_settings_to_plugins,
         discover_lua_plugins,
         load_lua_plugin_settings,
         save_lua_plugin_settings,
-        apply_settings_to_plugins,
     )
 
     HAS_LUA = True

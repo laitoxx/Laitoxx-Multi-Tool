@@ -305,10 +305,10 @@ class NicknameGenerator:
 
         results = set()
         f = first_name.lower().strip()
-        l = last_name.lower().strip()
+        last = last_name.lower().strip()
         m = middle_name.lower().strip()
         fi = f[0] if f else ""  # first initial
-        li = l[0] if l else ""  # last initial
+        li = last[0] if last else ""  # last initial
         mi = m[0] if m else ""  # middle initial
 
         # --- 24 format plugins ---
@@ -318,60 +318,60 @@ class NicknameGenerator:
             results.add(f)
 
         # 2. firstlast
-        if f and l:
-            results.add(f + l)
+        if f and last:
+            results.add(f + last)
 
         # 3. first.last
-        if f and l:
-            results.add(f + "." + l)
+        if f and last:
+            results.add(f + "." + last)
 
         # 4. firstlast[8] — truncated to 8 chars
-        if f and l:
-            results.add((f + l)[:8])
+        if f and last:
+            results.add((f + last)[:8])
 
         # 5. first[4]last[4] — 4 chars of each
-        if f and l:
-            results.add(f[:4] + l[:4])
+        if f and last:
+            results.add(f[:4] + last[:4])
 
         # 6. firstl — first name + last initial
         if f and li:
             results.add(f + li)
 
         # 7. f.last — first initial + dot + last
-        if fi and l:
-            results.add(fi + "." + l)
+        if fi and last:
+            results.add(fi + "." + last)
 
         # 8. flast — first initial + last
-        if fi and l:
-            results.add(fi + l)
+        if fi and last:
+            results.add(fi + last)
 
         # 9. lfirst — last + first (reversed)
-        if l and f:
-            results.add(l + f)
+        if last and f:
+            results.add(last + f)
 
-        # 10. l.first — last + dot + first
-        if l and f:
-            results.add(l + "." + f)
+        # 10. last.first — last + dot + first
+        if last and f:
+            results.add(last + "." + f)
 
         # 11. lastf — last + first initial
-        if l and fi:
-            results.add(l + fi)
+        if last and fi:
+            results.add(last + fi)
 
         # 12. last
-        if l:
-            results.add(l)
+        if last:
+            results.add(last)
 
         # 13. last.f — last + dot + first initial
-        if l and fi:
-            results.add(l + "." + fi)
+        if last and fi:
+            results.add(last + "." + fi)
 
         # 14. last.first
-        if l and f:
-            results.add(l + "." + f)
+        if last and f:
+            results.add(last + "." + f)
 
         # 15. FLast — capitalized first initial + last
-        if fi and l:
-            results.add(fi.upper() + l.capitalize())
+        if fi and last:
+            results.add(fi.upper() + last.capitalize())
 
         # 16. first1 — first + single digit (0–9)
         if f:
@@ -383,12 +383,12 @@ class NicknameGenerator:
             results.add(fi + li)
 
         # 18. fmlast — first initial + middle initial + last
-        if fi and mi and l:
-            results.add(fi + mi + l)
+        if fi and mi and last:
+            results.add(fi + mi + last)
 
         # 19. firstmiddlelast — all three concatenated
-        if f and m and l:
-            results.add(f + m + l)
+        if f and m and last:
+            results.add(f + m + last)
 
         # 20. fml — first + middle + last initials
         if fi and mi and li:
@@ -399,20 +399,20 @@ class NicknameGenerator:
             results.add(fi.upper() + li.upper())
 
         # 22. FirstLast — capitalized each
-        if f and l:
-            results.add(f.capitalize() + l.capitalize())
+        if f and last:
+            results.add(f.capitalize() + last.capitalize())
 
         # 23. First.Last — capitalized with dot
-        if f and l:
-            results.add(f.capitalize() + "." + l.capitalize())
+        if f and last:
+            results.add(f.capitalize() + "." + last.capitalize())
 
         # 24. Last — just capitalized last
-        if l:
-            results.add(l.capitalize())
+        if last:
+            results.add(last.capitalize())
 
         # --- Extra: digit range patterns (%D, %DD) ---
-        if f and l:
-            base_fl = f + l
+        if f and last:
+            base_fl = f + last
             # Single digit: 0-9
             for d in range(10):
                 results.add(base_fl + str(d))
@@ -421,12 +421,12 @@ class NicknameGenerator:
                 results.add(base_fl + f"{dd:02d}")
 
         # --- Extra: separator variants for key patterns ---
-        if f and l:
+        if f and last:
             for sep in [".", "-", "_"]:
-                results.add(f + sep + l)
-                results.add(l + sep + f)
-                results.add(fi + sep + l)
-                results.add(l + sep + fi)
+                results.add(f + sep + last)
+                results.add(last + sep + f)
+                results.add(fi + sep + last)
+                results.add(last + sep + fi)
 
         return list(results)
 
@@ -490,31 +490,31 @@ class NicknameGenerator:
 
         # Original basic permutations
         f = first_name.lower().strip()
-        l = last_name.lower().strip()
+        last = last_name.lower().strip()
         fi = f[0] if f else ""
-        li = l[0] if l else ""
+        li = last[0] if last else ""
 
         for sep in self.SEPARATORS:
-            if f and l:
-                results.add(f + sep + l)
-                results.add(l + sep + f)
-                results.add(fi + sep + l)
+            if f and last:
+                results.add(f + sep + last)
+                results.add(last + sep + f)
+                results.add(fi + sep + last)
                 results.add(f + sep + li)
                 results.add(fi + sep + li)
-                results.add(l + sep + fi)
+                results.add(last + sep + fi)
                 results.add(li + sep + f)
                 for num in self.BIRTH_YEARS_SHORT[:10] + self.COMMON_NUMBERS[:10]:
-                    results.add(f + sep + l + num)
-                    results.add(l + sep + f + num)
-                    results.add(fi + l + num)
+                    results.add(f + sep + last + num)
+                    results.add(last + sep + f + num)
+                    results.add(fi + last + num)
             elif f:
                 results.add(f)
                 for num in self.BIRTH_YEARS_SHORT[:10] + self.COMMON_NUMBERS[:10]:
                     results.add(f + num)
-            elif l:
-                results.add(l)
+            elif last:
+                results.add(last)
                 for num in self.BIRTH_YEARS_SHORT[:10] + self.COMMON_NUMBERS[:10]:
-                    results.add(l + num)
+                    results.add(last + num)
 
         # Username-Anarchy formats
         results.update(self.anarchy_formats(first_name, last_name, middle_name))
@@ -745,8 +745,8 @@ class NicknameGenerator:
         # String decomposition → auto-detect name parts → generate more
         if not first_name and not last_name:
             pairs = self.decompose_username()
-            for f, l in pairs[:5]:  # limit to top 5 decompositions
-                all_variants.update(self.anarchy_formats(f, l))
+            for f, last in pairs[:5]:  # limit to top 5 decompositions
+                all_variants.update(self.anarchy_formats(f, last))
 
         # Remove empty and original
         all_variants.discard("")

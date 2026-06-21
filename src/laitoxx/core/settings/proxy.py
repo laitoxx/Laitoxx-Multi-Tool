@@ -8,6 +8,7 @@ create a configured requests.Session.
 from __future__ import annotations
 
 import os
+
 import requests
 
 

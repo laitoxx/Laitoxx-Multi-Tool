@@ -18,7 +18,7 @@ CHECK_URLS = [
 def _read_proxy_settings() -> dict:
     settings_file = _ROOT / "settings" / "app_settings.json"
     try:
-        with open(settings_file, "r", encoding="utf-8") as f:
+        with open(settings_file, encoding="utf-8") as f:
             data = json.load(f)
         return data.get("proxy", {})
     except Exception:

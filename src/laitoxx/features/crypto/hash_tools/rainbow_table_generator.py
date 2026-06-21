@@ -1,5 +1,5 @@
-import hashlib
 import csv
+import hashlib
 import secrets
 
 
@@ -76,7 +76,7 @@ def generate_rainbow_table(
                     print(f"  ...generated {i + 1}/{num_chains} chains.")
         print(f"Rainbow table successfully saved to '{output_file}'")
         return True
-    except IOError as e:
+    except OSError as e:
         print(f"Error saving table to file: {e}")
         return False
 

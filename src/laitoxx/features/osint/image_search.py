@@ -7,13 +7,12 @@ image_search.py — Бэкенд для обратного поиска изоб
 
 from __future__ import annotations
 
-import os
 import base64
+import os
 import urllib.parse
 
 try:
-    import requests as _requests
-
+    import requests  # noqa: F401 — availability check
     HAS_REQUESTS = True
 except ImportError:
     HAS_REQUESTS = False

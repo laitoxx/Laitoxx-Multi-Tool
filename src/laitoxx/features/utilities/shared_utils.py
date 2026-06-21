@@ -1,5 +1,5 @@
 from colorama import Fore, init
-from pystyle import Anime, Colors, Colorate, Center
+from pystyle import Anime, Center, Colorate, Colors
 
 init(autoreset=True)
 
@@ -30,20 +30,20 @@ current_color_scheme = "red"
 
 
 banner_text = """
-        S.       .S_SSSs     .S  sdSS_SSSSSSbs    sSSs_sSSs     .S S.    .S S.   
-        SS.     .SS~SSSSS   .SS  YSSS~S%SSSSSP   d%%SP~YS%%b   .SS SS.  .SS SS.  
-        S%S     S%S   SSSS  S%S       S%S       d%S'     `S%b  S%S S%S  S%S S%S  
-        S%S     S%S    S%S  S%S       S%S       S%S       S%S  S%S S%S  S%S S%S  
-        S&S     S%S SSSS%S  S&S       S&S       S&S       S&S  S%S S%S  S%S S%S  
-        S&S     S&S  SSS%S  S&S       S&S       S&S       S&S   SS SS    SS SS   
-        S&S     S&S    S&S  S&S       S&S       S&S       S&S    S_S      S_S    
-        S&S     S&S    S&S  S&S       S&S       S&S       S&S   SS~SS    SS~SS   
-        S*b     S*S    S&S  S*S       S*S       S*b       d*S  S*S S*S  S*S S*S  
-        S*S.    S*S    S*S  S*S       S*S       S*S.     .S*S  S*S S*S  S*S S*S  
-         SSSbs  S*S    S*S  S*S       S*S        SSSbs_sdSSS   S*S S*S  S*S S*S  
-          YSSP  SSS    S*S  S*S       S*S         YSSP~YSSY    S*S S*S  S*S S*S  
-                       SP   SP        SP                       SP       SP       
-                       Y    Y         Y                        Y        Y        
+        S.       .S_SSSs     .S  sdSS_SSSSSSbs    sSSs_sSSs     .S S.    .S S.
+        SS.     .SS~SSSSS   .SS  YSSS~S%SSSSSP   d%%SP~YS%%b   .SS SS.  .SS SS.
+        S%S     S%S   SSSS  S%S       S%S       d%S'     `S%b  S%S S%S  S%S S%S
+        S%S     S%S    S%S  S%S       S%S       S%S       S%S  S%S S%S  S%S S%S
+        S&S     S%S SSSS%S  S&S       S&S       S&S       S&S  S%S S%S  S%S S%S
+        S&S     S&S  SSS%S  S&S       S&S       S&S       S&S   SS SS    SS SS
+        S&S     S&S    S&S  S&S       S&S       S&S       S&S    S_S      S_S
+        S&S     S&S    S&S  S&S       S&S       S&S       S&S   SS~SS    SS~SS
+        S*b     S*S    S&S  S*S       S*S       S*b       d*S  S*S S*S  S*S S*S
+        S*S.    S*S    S*S  S*S       S*S       S*S.     .S*S  S*S S*S  S*S S*S
+         SSSbs  S*S    S*S  S*S       S*S        SSSbs_sdSSS   S*S S*S  S*S S*S
+          YSSP  SSS    S*S  S*S       S*S         YSSP~YSSY    S*S S*S  S*S S*S
+                       SP   SP        SP                       SP       SP
+                       Y    Y         Y                        Y        Y
 """
 
 intro = """

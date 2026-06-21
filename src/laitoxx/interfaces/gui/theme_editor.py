@@ -12,44 +12,43 @@ from __future__ import annotations
 import colorsys
 import math
 import re
-from typing import Optional
 
-from PyQt6.QtWidgets import (
-    QApplication,
-    QDialog,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QPushButton,
-    QLineEdit,
-    QFrame,
-    QListWidget,
-    QListWidgetItem,
-    QTabWidget,
-    QSlider,
-    QComboBox,
-    QScrollArea,
-    QMessageBox,
-)
-from PyQt6.QtGui import (
-    QColor,
-    QPainter,
-    QPen,
-    QBrush,
-    QLinearGradient,
-    QPixmap,
-)
 from PyQt6.QtCore import (
-    Qt,
-    pyqtSignal,
     QPointF,
     QRectF,
     QSize,
+    Qt,
+    pyqtSignal,
+)
+from PyQt6.QtGui import (
+    QBrush,
+    QColor,
+    QLinearGradient,
+    QPainter,
+    QPen,
+    QPixmap,
+)
+from PyQt6.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QDialog,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QMessageBox,
+    QPushButton,
+    QScrollArea,
+    QSlider,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
 )
 
-from laitoxx.interfaces.gui.translator import translator
 from laitoxx.core.settings.theme import DEFAULT_THEME, save_theme_to_resources
+from laitoxx.interfaces.gui.translator import translator
 
 # ─── Design tokens ────────────────────────────────────────────────────────────
 _BG = "rgba(10, 7, 22, 0.97)"
@@ -380,7 +379,7 @@ class _HueSatWheel(QWidget):
         self._alpha = 1.0
         self._dragging_ring = False
         self._dragging_sq = False
-        self._cache: Optional[QPixmap] = None
+        self._cache: QPixmap | None = None
 
     # ── public API ──────────────────────────────────────────────────────────
 
@@ -663,7 +662,6 @@ def _build_dialog_ss(theme: dict) -> str:
     bdr = theme.get("border_color", theme.get("button_border_color", _BORDER))
     txt = theme.get("text_area_text_color", _TEXT)
     bg_win = theme.get("window_bg_color", theme.get("text_area_bg_color", _PANEL))
-    panel_bg = theme.get("panel_bg_color", _PANEL2)
     btn_bg = theme.get("button_bg_color", "rgba(192,132,252,0.12)")
     btn_hov = theme.get("button_hover_bg_color", "rgba(192,132,252,0.28)")
     sb_hand = theme.get("scrollbar_handle_color", bdr)
@@ -806,7 +804,8 @@ class _PreviewPane(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        from PyQt6.QtWidgets import QPlainTextEdit, QLineEdit as _LE
+        from PyQt6.QtWidgets import QLineEdit as _LE
+        from PyQt6.QtWidgets import QPlainTextEdit
         lay = QVBoxLayout(self)
         lay.setContentsMargins(12, 12, 12, 12)
         lay.setSpacing(8)
@@ -914,12 +913,12 @@ class ThemeEditorDialog(QDialog):
 
         self.theme_data = current_theme.copy()
         self.original_theme = current_theme.copy()
-        self._current_key: Optional[str] = None
+        self._current_key: str | None = None
         self._updating_hex = False
         self._last_palette: list[QColor] = []
         self._colorblind_mode: str = "none"
         self._preview_dark: bool = True
-        self._eyedropper: Optional[_EyedropperOverlay] = None
+        self._eyedropper: _EyedropperOverlay | None = None
 
         # build flat ordered list  key → display label
         theme_map_raw = translator.get("theme_map")
@@ -1815,8 +1814,8 @@ class ThemeEditorDialog(QDialog):
     # ══════════════════════════════════════════════════════════════════════
 
     def _populate_library(self, search: str = ""):
-        from laitoxx.core.settings.theme import list_themes
         from laitoxx.core.settings.app_settings import settings
+        from laitoxx.core.settings.theme import list_themes
 
         self._lib_list.clear()
         search = search.lower()

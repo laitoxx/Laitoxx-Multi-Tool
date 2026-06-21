@@ -6,18 +6,18 @@ Styled with glassmorphism to match the app theme.
 
 from __future__ import annotations
 
+from PyQt6.QtCore import QPoint, Qt, pyqtSignal
+from PyQt6.QtGui import QTextCursor
 from PyQt6.QtWidgets import (
     QDialog,
-    QVBoxLayout,
     QHBoxLayout,
+    QLabel,
     QPlainTextEdit,
     QPushButton,
-    QLabel,
-    QWidget,
     QSizeGrip,
+    QVBoxLayout,
+    QWidget,
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QPoint
-from PyQt6.QtGui import QTextCursor
 
 
 class TerminalWindow(QDialog):

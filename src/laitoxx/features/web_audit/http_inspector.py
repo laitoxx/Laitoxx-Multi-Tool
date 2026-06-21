@@ -1,7 +1,7 @@
-import ssl
 import socket
+import ssl
 import time
-from urllib.parse import urlparse, ParseResult
+from urllib.parse import ParseResult, urlparse
 
 import requests
 

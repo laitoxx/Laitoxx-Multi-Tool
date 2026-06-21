@@ -1,29 +1,29 @@
-import os
 import hashlib
 import logging
+import os
 
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QHBoxLayout,
-    QFormLayout,
-    QLabel,
-    QLineEdit,
-    QTextEdit,
-    QComboBox,
     QCheckBox,
-    QPushButton,
+    QColorDialog,
+    QComboBox,
+    QDialog,
     QDialogButtonBox,
     QFileDialog,
+    QFormLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
     QMessageBox,
-    QColorDialog,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
     QWidget,
 )
-from PyQt6.QtGui import QColor
 
-from laitoxx.interfaces.gui.translator import translator
 from laitoxx.core.settings.tos import mark_accepted
 from laitoxx.interfaces.gui.plugin_builder import PluginBuilderWindow
+from laitoxx.interfaces.gui.translator import translator
 
 
 def _build_ok_cancel_buttons(parent: QDialog) -> QDialogButtonBox:
@@ -701,7 +701,7 @@ class UserAgreementDialog(QDialog):
         self.agreement_text = QTextEdit()
         self.agreement_text.setReadOnly(True)
         try:
-            with open("User Agreement.txt", "r", encoding="utf-8") as f:
+            with open("User Agreement.txt", encoding="utf-8") as f:
                 self.agreement_text.setText(f.read())
         except Exception as e:
             self.agreement_text.setText(f"Error loading agreement: {e}")

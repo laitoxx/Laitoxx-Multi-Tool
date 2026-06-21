@@ -144,7 +144,7 @@ class MetadataForensics:
                         anomalies.append(
                             "Anomaly: File size is unusually large for its dimensions. Check for hidden data/steganography."
                         )
-                except:
+                except Exception:
                     pass
 
         # 4. Binwalk embedded files

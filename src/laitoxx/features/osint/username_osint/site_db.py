@@ -6,11 +6,10 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Optional
-
-from .models import SiteEntry
 
 from laitoxx.core.settings.paths import _ROOT
+
+from .models import SiteEntry
 
 _DEFAULT_DB_PATH = os.path.join(_ROOT, "bd", "sites_db.json")
 
@@ -18,13 +17,13 @@ _DEFAULT_DB_PATH = os.path.join(_ROOT, "bd", "sites_db.json")
 class SiteDB:
     """Loads, validates and queries the site database."""
 
-    def __init__(self, path: Optional[str] = None):
+    def __init__(self, path: str | None = None):
         self.path = os.path.abspath(path or _DEFAULT_DB_PATH)
         self.sites: list[SiteEntry] = []
         self.meta: dict = {}
 
     def load(self) -> list[SiteEntry]:
-        with open(self.path, "r", encoding="utf-8") as f:
+        with open(self.path, encoding="utf-8") as f:
             raw = json.load(f)
 
         self.meta = raw.get("meta", {})

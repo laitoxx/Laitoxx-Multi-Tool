@@ -1,0 +1,67 @@
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+exclude = [
+    ".git",
+    "venv",
+    "__pycache__",
+    "*.egg-info",
+    "tests",
+]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B"]
+ignore = [
+    "E501",   # line too long — handled by formatter, not enforced
+    "E402",   # module-level import not at top (GUI entrypoints need sys.path first)
+    "UP007",  # use X | Y for Optional (kept for Python 3.9 compat)
+    "B008",   # default arg function call
+    "B006",   # mutable default arg (many Qt widgets)
+    "UP006",  # use builtin collection types in annotations
+    "UP035",  # deprecated typing imports
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/laitoxx/core/settings/network_manager.py" = ["F401"]   # saved originals look unused
+"src/laitoxx/core/localization/i18n.py"         = ["E501"]  # translation strings are long
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+# ── mypy ─────────────────────────────────────────────────────────────────────
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_return_any = false
+warn_unused_configs = true
+no_implicit_optional = true
+strict_optional = true
+check_untyped_defs = false
+files = [
+    "src/laitoxx/core/netcheck.py",
+    "src/laitoxx/core/settings/theme.py",
+    "src/laitoxx/core/settings/app_settings.py",
+    "src/laitoxx/features/utilities/text_transformer.py",
+    "src/laitoxx/features/crypto/jwt_analyzer.py",
+]
+exclude = ["venv/", "tests/", "build/"]
+
+# ── pytest ───────────────────────────────────────────────────────────────────
+
+[tool.pytest.ini_options]
+testpaths  = ["tests"]
+addopts    = "-v --tb=short -p no:warnings"
+pythonpath = ["src"]
+
+# ── coverage ─────────────────────────────────────────────────────────────────
+
+[tool.coverage.run]
+source = ["src/laitoxx"]
+omit   = ["*/venv/*", "*/tests/*", "*/interfaces/gui/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false

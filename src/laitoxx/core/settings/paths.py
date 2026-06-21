@@ -1,7 +1,6 @@
 """Central path definitions for all settings and resource files."""
 
 import os
-
 from pathlib import Path
 
 _ROOT = str(Path(__file__).resolve().parent.parent.parent.parent.parent)

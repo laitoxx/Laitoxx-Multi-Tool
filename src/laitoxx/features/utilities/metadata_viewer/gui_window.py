@@ -1,26 +1,27 @@
 import os
-from PyQt6.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QHBoxLayout,
-    QWidget,
-    QSplitter,
-    QListWidget,
-    QTableWidget,
-    QTableWidgetItem,
-    QLabel,
-    QPushButton,
-    QTabWidget,
-    QHeaderView,
-    QMessageBox,
-    QLineEdit,
-    QFileDialog,
-)
+
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent
+from PyQt6.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QHBoxLayout,
+    QHeaderView,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QMessageBox,
+    QPushButton,
+    QSplitter,
+    QTableWidget,
+    QTableWidgetItem,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
-from laitoxx.interfaces.gui.translator import translator
 from laitoxx.core.settings.theme import load_default_theme
+from laitoxx.interfaces.gui.translator import translator
 
 
 class GlassButton(QPushButton):
@@ -186,7 +187,6 @@ class MetadataViewerWindow(QDialog):
             if self.file_list.item(i).data(Qt.ItemDataRole.UserRole) == filepath:
                 return
 
-        item = QTableWidgetItem(os.path.basename(filepath))
         # We'll use QListWidgetItem
         from PyQt6.QtWidgets import QListWidgetItem
 
@@ -360,8 +360,9 @@ class MetadataViewerWindow(QDialog):
             if "error" in data:
                 continue
 
-            from laitoxx.shared.graph.model import Node, Edge
             import uuid
+
+            from laitoxx.shared.graph.model import Edge, Node
 
             # File Node
             file_node = Node(

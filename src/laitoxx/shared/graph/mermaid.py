@@ -7,8 +7,9 @@ mermaid_generator.py
 from __future__ import annotations
 
 import json as _json
-from laitoxx.shared.graph.model import Graph, Node, SHAPE_ID_TO_TOKENS, SHAPE_ID_TO_D3
+
 from laitoxx.interfaces.gui.translator import translator as _translator
+from laitoxx.shared.graph.model import SHAPE_ID_TO_D3, SHAPE_ID_TO_TOKENS, Edge, Graph, Node
 
 _SAFE_LABEL_CHARS = set(
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-."
@@ -118,7 +119,7 @@ def generate_html(graph: Graph, lang: str = None, theme: dict = None) -> str:
     )
     js_path = os.path.join(resources_dir, "js", "vis-network.min.js")
     try:
-        with open(js_path, "r", encoding="utf-8") as f:
+        with open(js_path, encoding="utf-8") as f:
             vis_js_content = f.read()
     except Exception:
         vis_js_content = "/* vis-network.min.js load failed */"
@@ -265,7 +266,7 @@ function makeSvgDataUrl(n) {{
   const stroke = "{_h_accent}";
   const icon = n.icon || '●';
   const shape = n.shape || 'circle';
-  
+
   let svg = '';
   if (shape === 'rect') {{
     svg = `<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60">` +
@@ -598,7 +599,7 @@ def format_node_for_js(node: Node, theme: dict = None) -> dict:
     }
 
 
-def format_edge_for_js(edge: Edge, theme: dict = None) -> dict:
+def format_edge_for_js(edge: Edge, theme: dict | None = None) -> dict:
     _td = theme or {}
     _h_accent = _td.get("accent_color", "#c084fc")
     stroke = _parse_style_color(edge.mermaid_style, "stroke", _h_accent)

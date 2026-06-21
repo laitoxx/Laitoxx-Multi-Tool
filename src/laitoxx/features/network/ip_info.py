@@ -1,14 +1,14 @@
-import socket
 import ipaddress
 import re
+import socket
 
 import requests
 
 from laitoxx.features.utilities.shared_utils import Color
 
 try:
-    from laitoxx.core.settings.proxy import make_session
     from laitoxx.core.settings.app_settings import settings as _app_settings
+    from laitoxx.core.settings.proxy import make_session
 
     _SESSION = make_session(_app_settings.proxy)
 except Exception:
@@ -242,7 +242,7 @@ def _layer_asn(ip: str, geo_info: dict):
         asn_num = str(asn_raw).replace("AS", "").strip()
         r2, err2 = _safe_get(f"https://api.hackertarget.com/aslookup/?q=AS{asn_num}")
         if r2 and "error" not in r2.text.lower():
-            prefixes = [l.strip() for l in r2.text.strip().splitlines() if l.strip()]
+            prefixes = [line.strip() for line in r2.text.strip().splitlines() if line.strip()]
             total = len(prefixes)
             if total:
                 _row("Total prefixes in AS", total)
@@ -396,7 +396,7 @@ def _layer_passive_dns(ip: str):
         _end()
         return set()
 
-    domains = {l.strip() for l in text.splitlines() if l.strip()}
+    domains = {line.strip() for line in text.splitlines() if line.strip()}
     _row("Hosted domains on this IP", len(domains))
     for d in sorted(domains)[:30]:
         print(f"{Color.DARK_RED}│   {Color.WHITE}{d}{Color.RESET}")

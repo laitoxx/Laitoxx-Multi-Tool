@@ -41,14 +41,15 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from laitoxx.core.settings.theme import DEFAULT_THEME, load_default_theme
 from laitoxx.interfaces.gui.translator import translator
 from laitoxx.interfaces.gui.worker import stop_and_detach_thread
-from laitoxx.core.settings.theme import DEFAULT_THEME, load_default_theme
+
 from ._image_workers import (
-    ForensicsWorker,
-    HashWorker,
     HAS_PIL,
     HAS_REQUESTS,
+    ForensicsWorker,
+    HashWorker,
     SearchWorker,
     pil_to_qpixmap,
 )
@@ -75,7 +76,7 @@ from ._style_provider import (
 )
 
 try:
-    from PIL import Image, ImageChops, ImageEnhance, ImageFilter
+    from PIL import Image, ImageEnhance, ImageFilter
 except ImportError:
     pass
 
@@ -260,8 +261,8 @@ class ImageSearchWindow(QDialog):
 
         # State
         self._file_path: str | None = None
-        self._pil_original: "Image.Image | None" = None
-        self._pil_edited: "Image.Image | None" = None
+        self._pil_original: Image.Image | None = None
+        self._pil_edited: Image.Image | None = None
         self._current_tool: str = "search"
         self._hashes: dict[str, str] = {}
         self._search_urls: dict[str, str] = {}
@@ -1060,7 +1061,7 @@ class ImageSearchWindow(QDialog):
             return f"{sz / 1024:.1f} КБ"
         return f"{sz / 1024 / 1024:.2f} МБ"
 
-    def _update_preview(self, pil_img: "Image.Image | None" = None) -> None:
+    def _update_preview(self, pil_img: Image.Image | None = None) -> None:
         if pil_img is None:
             pil_img = self._pil_edited
         if pil_img is None:

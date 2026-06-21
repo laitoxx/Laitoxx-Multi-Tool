@@ -14,12 +14,12 @@ _pkg_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", 
 if _pkg_root not in sys.path:
     sys.path.insert(0, _pkg_root)
 
-from .models import CheckResult, SiteEntry, SITE_CATEGORIES, CATEGORY_ICONS
-from .site_db import SiteDB
+from .avatar_downloader import AvatarDownloader
 from .checker import UsernameChecker
+from .models import CATEGORY_ICONS, SITE_CATEGORIES, CheckResult, SiteEntry
 from .nickname_generator import NicknameGenerator
 from .portrait_generator import DigitalPortrait
-from .avatar_downloader import AvatarDownloader
+from .site_db import SiteDB
 
 
 def username_osint_tool(data=None):

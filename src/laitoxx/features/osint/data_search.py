@@ -2,7 +2,7 @@ import csv
 import hashlib
 import json
 import re
-from typing import Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Callable, Dict, List, Sequence, Tuple
 
 import requests
 from bs4 import BeautifulSoup
@@ -149,7 +149,7 @@ def google_search(
 
 def check_login(
     login_data: str, log: Callable[[str], None] = print
-) -> Optional[Dict[str, Optional[str]]]:
+) -> Dict[str, str | None] | None:
     session = requests.Session()
     try:
         session.get(
@@ -221,7 +221,7 @@ def check_login(
 
 
 def console_output(
-    parsed_response: Optional[Dict[str, Optional[str]]],
+    parsed_response: Dict[str, str | None] | None,
     log: Callable[[str], None] = print,
 ) -> None:
     if not parsed_response:
@@ -558,7 +558,7 @@ def _telegram_search_flow(username: str, log: Callable[[str], None]) -> None:
 
 def _interactive_prompt(
     log: Callable[[str], None],
-) -> Tuple[Optional[str], Optional[str]]:
+) -> Tuple[str | None, str | None]:
     _render_banner(log)
     log("")
     log(f"1) {Color.GREEN}Search by phone{Color.RESET}")
@@ -581,7 +581,7 @@ def _interactive_prompt(
     return mode, value
 
 
-def data_search_tool(input_data: Optional[Dict[str, str]] = None) -> None:
+def data_search_tool(input_data: Dict[str, str] | None = None) -> None:
     log = print
     if isinstance(input_data, dict):
         mode = input_data.get("mode")

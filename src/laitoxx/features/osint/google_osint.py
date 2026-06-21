@@ -1,26 +1,23 @@
 import webbrowser
 from urllib.parse import quote_plus
+
 from laitoxx.features.utilities.shared_utils import Color
 
 IS_GUI = False
 try:
     from PyQt6.QtWidgets import (
-        QDialog,
-        QVBoxLayout,
-        QHBoxLayout,
         QCheckBox,
-        QLabel,
-        QLineEdit,
-        QPushButton,
-        QScrollArea,
-        QWidget,
-        QGridLayout,
-        QTextEdit,
-        QGroupBox,
+        QDialog,
         QDialogButtonBox,
+        QGridLayout,
+        QGroupBox,
+        QHBoxLayout,
+        QLineEdit,
+        QScrollArea,
+        QTextEdit,
+        QVBoxLayout,
+        QWidget,
     )
-    from PyQt6.QtCore import Qt
-    from PyQt6.QtGui import QFont
 
     IS_GUI = True
 except ImportError:

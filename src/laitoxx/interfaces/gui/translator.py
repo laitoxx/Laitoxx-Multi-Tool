@@ -14,7 +14,7 @@ def _load_json_translations() -> dict:
         if not os.path.exists(path):
             continue
         try:
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 out[lang] = json.load(f)
         except (OSError, json.JSONDecodeError):
             continue

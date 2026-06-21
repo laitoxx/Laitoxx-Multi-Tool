@@ -1,4 +1,5 @@
 import subprocess
+
 from laitoxx.features.utilities.shared_utils import Color
 
 

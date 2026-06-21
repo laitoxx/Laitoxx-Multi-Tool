@@ -1,11 +1,10 @@
 import re
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
 
 from laitoxx.features.utilities.shared_utils import Color
-
 
 _SENSITIVE_PATHS = [
     ".git/HEAD",

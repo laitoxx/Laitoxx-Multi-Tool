@@ -1,16 +1,16 @@
-import io
-import re
-import os
-import sys
-import time
 import builtins
-import logging
-import platform
 import contextlib
+import io
+import logging
+import os
+import platform
+import re
 import subprocess
+import sys
 import threading
+import time
 
-from PyQt6.QtCore import QObject, pyqtSignal, QThread
+from PyQt6.QtCore import QObject, QThread, pyqtSignal
 
 # Global registry to keep references to stopped threads until they finish
 # naturally, preventing "QThread: Destroyed while thread is still running" crashes.
@@ -25,7 +25,7 @@ def stop_and_detach_thread(thread: QThread, worker=None):
         thread.quit()
         thread.setParent(None)
         _zombie_threads.append(thread)
-        
+
     # Clean up finished zombies
     _zombie_threads = [t for t in _zombie_threads if t.isRunning()]
 

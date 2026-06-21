@@ -1,13 +1,15 @@
-import requests
 import re
+
 import httpx
-from laitoxx.features.utilities.shared_utils import Color
+import requests
+
 from laitoxx.features.network import AppleWLoc_pb2
+from laitoxx.features.utilities.shared_utils import Color
 
 # Shared session (respects proxy settings if available)
 try:
-    from laitoxx.core.settings.proxy import make_session
     from laitoxx.core.settings.app_settings import settings as _app_settings
+    from laitoxx.core.settings.proxy import make_session
 
     _SESSION = make_session(_app_settings.proxy)
 except Exception:

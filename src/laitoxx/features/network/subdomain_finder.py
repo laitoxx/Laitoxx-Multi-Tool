@@ -1,6 +1,8 @@
-import requests
 import json
 from urllib.parse import urlparse
+
+import requests
+
 from laitoxx.features.utilities.shared_utils import Color
 
 try:

@@ -8,8 +8,6 @@ from __future__ import annotations
 import json
 import uuid
 from dataclasses import dataclass, field
-from typing import Optional
-
 
 # ---------------------------------------------------------------------------
 # Default styles per node type
@@ -139,11 +137,11 @@ class Node:
     # Internal
     id: str = field(default_factory=lambda: f"N{uuid.uuid4().hex[:6].upper()}")
     # Temporal fields
-    valid_from: Optional[str] = None
-    valid_to: Optional[str] = None
+    valid_from: str | None = None
+    valid_to: str | None = None
 
     @classmethod
-    def from_type(cls, label: str, node_type: str = "Custom") -> "Node":
+    def from_type(cls, label: str, node_type: str = "Custom") -> Node:
         defaults = NODE_TYPE_DEFAULTS.get(node_type, NODE_TYPE_DEFAULTS["Custom"])
         return cls(
             label=label,
@@ -166,7 +164,7 @@ class Node:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Node":
+    def from_dict(cls, d: dict) -> Node:
         n = cls(
             label=d.get("label", ""),
             node_type=d.get("node_type", "Custom"),
@@ -194,8 +192,8 @@ class Edge:
     # Internal
     id: str = field(default_factory=lambda: f"E{uuid.uuid4().hex[:6].upper()}")
     # Temporal fields
-    valid_from: Optional[str] = None
-    valid_to: Optional[str] = None
+    valid_from: str | None = None
+    valid_to: str | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -212,7 +210,7 @@ class Edge:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Edge":
+    def from_dict(cls, d: dict) -> Edge:
         e = cls(
             source_id=d.get("source_id", ""),
             target_id=d.get("target_id", ""),
@@ -250,7 +248,7 @@ class Graph:
             e for e in self.edges if e.source_id != node_id and e.target_id != node_id
         ]
 
-    def get_node(self, node_id: str) -> Optional[Node]:
+    def get_node(self, node_id: str) -> Node | None:
         return next((n for n in self.nodes if n.id == node_id), None)
 
     # ------------------------------------------------------------------
@@ -267,7 +265,7 @@ class Graph:
     def remove_edge(self, edge_id: str) -> None:
         self.edges = [e for e in self.edges if e.id != edge_id]
 
-    def get_edge(self, edge_id: str) -> Optional[Edge]:
+    def get_edge(self, edge_id: str) -> Edge | None:
         return next((e for e in self.edges if e.id == edge_id), None)
 
     def merge_nodes(self, primary_id: str, duplicate_ids: list[str]) -> None:
@@ -291,8 +289,8 @@ class Graph:
         descriptions = [primary_node.description] if primary_node.description else []
 
         def merge_dates(
-            d1: Optional[str], d2: Optional[str], op_type: str
-        ) -> Optional[str]:
+            d1: str | None, d2: str | None, op_type: str
+        ) -> str | None:
             if not d1:
                 return d2
             if not d2:
@@ -370,7 +368,7 @@ class Graph:
 
         # Re-build the edges list by merging duplicate groups
         processed_connected_edges: list[Edge] = []
-        for key, group in edge_groups.items():
+        for _key, group in edge_groups.items():
             representative = group[0]
             # Merge duplicate edges metadata and dates
             for other in group[1:]:
@@ -416,7 +414,7 @@ class Graph:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Graph":
+    def from_dict(cls, d: dict) -> Graph:
         g = cls(name=d.get("name", "Untitled"), direction=d.get("direction", "TD"))
         for nd in d.get("nodes", []):
             g.nodes.append(Node.from_dict(nd))
@@ -429,6 +427,6 @@ class Graph:
             json.dump(self.to_dict(), f, ensure_ascii=False, indent=4)
 
     @classmethod
-    def load_json(cls, filepath: str) -> "Graph":
-        with open(filepath, "r", encoding="utf-8") as f:
+    def load_json(cls, filepath: str) -> Graph:
+        with open(filepath, encoding="utf-8") as f:
             return cls.from_dict(json.load(f))

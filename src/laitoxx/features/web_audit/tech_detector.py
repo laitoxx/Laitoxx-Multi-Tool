@@ -1,9 +1,9 @@
 import re
+
 import requests
 from bs4 import BeautifulSoup
 
 from laitoxx.features.utilities.shared_utils import Color
-
 
 USER_AGENT = "Mozilla/5.0 (OSINT TechDetector)"
 REQUEST_TIMEOUT = 15

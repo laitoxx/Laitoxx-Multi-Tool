@@ -1,13 +1,15 @@
 import phonenumbers
-from phonenumbers import geocoder, carrier, timezone
 import requests
-from .data_search import _phone_search_flow
+from phonenumbers import carrier, geocoder, timezone
+
 from laitoxx.features.utilities.shared_utils import Color
+
+from .data_search import _phone_search_flow
 
 # Shared session (respects proxy settings if available)
 try:
-    from laitoxx.core.settings.proxy import make_session
     from laitoxx.core.settings.app_settings import settings as _app_settings
+    from laitoxx.core.settings.proxy import make_session
 
     _SESSION = make_session(_app_settings.proxy)
 except Exception:

@@ -22,10 +22,10 @@ Network: all HTTP requests go through aiohttp + NetworkManager proxy.
 """
 
 import asyncio
-import ssl
 import socket
-from datetime import datetime, timezone
-from urllib.parse import urlparse, urlencode
+import ssl
+from datetime import UTC, datetime
+from urllib.parse import urlencode, urlparse
 
 import aiohttp
 
@@ -36,8 +36,8 @@ _UA = "Mozilla/5.0 (Web-Security-Checker)"
 
 try:
     from laitoxx.core.settings.network_manager import (
-        make_aiohttp_connector,
         aiohttp_proxy_url,
+        make_aiohttp_connector,
     )
 
     _HAS_NM = True
@@ -165,9 +165,9 @@ def check_ssl_tls(url: str):
     if not_after:
         try:
             exp = datetime.strptime(not_after, "%b %d %H:%M:%S %Y %Z").replace(
-                tzinfo=timezone.utc
+                tzinfo=UTC
             )
-            days_left = (exp - datetime.now(timezone.utc)).days
+            days_left = (exp - datetime.now(UTC)).days
             if days_left < 0:
                 _fail(f"Certificate EXPIRED {abs(days_left)} day(s) ago!")
             elif days_left < 30:
@@ -301,7 +301,6 @@ async def _check_redirect_async(url: str):
     proxy = aiohttp_proxy_url()
 
     async with _make_session() as session:
-        tasks = []
 
         async def _probe(param: str):
             test_url = f"{base}?{urlencode({param: _SENTINEL})}"

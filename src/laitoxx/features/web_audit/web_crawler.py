@@ -1,15 +1,18 @@
+from collections import deque
+from urllib.parse import urljoin, urlparse
+
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+
 from laitoxx.features.utilities.shared_utils import Color
-from collections import deque
 
 # Shared session (respects proxy settings if available)
 try:
-    from laitoxx.core.settings.proxy import make_session
     from laitoxx.core.settings.app_settings import settings as _app_settings
+    from laitoxx.core.settings.proxy import make_session
 
-    _MAKE_SESSION = lambda: make_session(_app_settings.proxy)
+    def _MAKE_SESSION():
+        return make_session(_app_settings.proxy)
 except Exception:
     _MAKE_SESSION = requests.Session
 

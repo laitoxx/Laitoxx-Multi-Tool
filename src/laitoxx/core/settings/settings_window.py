@@ -7,29 +7,29 @@
 
 from __future__ import annotations
 
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QDialog,
-    QHBoxLayout,
-    QVBoxLayout,
-    QLabel,
-    QPushButton,
-    QListWidget,
-    QListWidgetItem,
-    QStackedWidget,
-    QWidget,
     QCheckBox,
     QComboBox,
-    QLineEdit,
+    QDialog,
     QFileDialog,
-    QMessageBox,
     QFormLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QMessageBox,
+    QPushButton,
     QSpinBox,
+    QStackedWidget,
+    QVBoxLayout,
+    QWidget,
 )
-from PyQt6.QtCore import Qt, pyqtSignal
 
 from .app_settings import settings
-from .theme import list_themes, load_theme, save_theme_to_resources, DEFAULT_THEME
-from .background import list_backgrounds, import_background, SUPPORTED_EXT
+from .background import SUPPORTED_EXT, import_background, list_backgrounds
+from .theme import DEFAULT_THEME, list_themes, load_theme, save_theme_to_resources
 
 
 class SettingsWindow(QDialog):
@@ -373,8 +373,8 @@ class SettingsWindow(QDialog):
         return page
 
     def _on_save_proxy(self):
-        from .proxy import apply_proxy_settings
         from .network_manager import NetworkManager
+        from .proxy import apply_proxy_settings
 
         proxy_cfg = {
             "enabled": self._chk_proxy.isChecked(),

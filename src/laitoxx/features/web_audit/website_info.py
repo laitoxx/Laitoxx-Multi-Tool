@@ -1,6 +1,8 @@
-import whois
-import requests
 import time
+
+import requests
+import whois
+
 from laitoxx.features.utilities.shared_utils import Color
 
 

@@ -22,7 +22,7 @@ def _migrate_if_needed():
     """Upgrade a bare 'agreed' file to a machine-bound token."""
     if not os.path.exists(TOS_FILE):
         return
-    with open(TOS_FILE, "r", encoding="utf-8") as f:
+    with open(TOS_FILE, encoding="utf-8") as f:
         stored = f.read().strip()
     if stored == "agreed":
         # Old format — rewrite as machine-bound token so future checks work.
@@ -34,13 +34,13 @@ def is_accepted() -> bool:
     _migrate_if_needed()
     token = _machine_token()
     if os.path.exists(TOS_FILE):
-        with open(TOS_FILE, "r", encoding="utf-8") as f:
+        with open(TOS_FILE, encoding="utf-8") as f:
             return f.read().strip() == token
     # Legacy file: treat as accepted only if it matches this machine's token.
     # A bare "agreed" from an old install is intentionally rejected here so
     # users who received a pre-agreed archive still see the ToS dialog.
     if os.path.exists(LEGACY_AGREEMENT):
-        with open(LEGACY_AGREEMENT, "r", encoding="utf-8") as f:
+        with open(LEGACY_AGREEMENT, encoding="utf-8") as f:
             return f.read().strip() == token
     return False
 

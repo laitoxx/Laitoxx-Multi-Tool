@@ -1,15 +1,15 @@
-import sys
-import os
-import logging
 import datetime
+import logging
+import os
+import sys
 import webbrowser
 
-from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication
 
-from laitoxx.core.settings.tos import is_accepted as check_user_agreement
 from laitoxx.core.settings.app_settings import settings
 from laitoxx.core.settings.paths import ICONS_DIR
+from laitoxx.core.settings.tos import is_accepted as check_user_agreement
 from laitoxx.interfaces.gui.dialogs import UserAgreementDialog
 from laitoxx.interfaces.gui.main_window import MainWindow
 
@@ -41,6 +41,7 @@ def _open_project_site():
         import urllib3
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         import requests
+
         from laitoxx.core.netcheck import build_proxies
         proxies = build_proxies(settings.proxy)
         requests.head(PROJECT_SITE, proxies=proxies, timeout=5,

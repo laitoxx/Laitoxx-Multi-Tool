@@ -1,7 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-from .data_search import _email_search_flow
+
 from laitoxx.features.utilities.shared_utils import Color
+
+from .data_search import _email_search_flow
 
 
 def gmail_osint():

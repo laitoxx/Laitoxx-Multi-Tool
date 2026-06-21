@@ -5,22 +5,22 @@ Uses `lupa` (LuaJIT/Lua runtime for Python) to execute Lua plugins
 inside a sandboxed environment with a rich host API.
 """
 
-import os
-import json
-import time
-import hashlib
 import base64
+import hashlib
+import json
 import logging
+import os
+import time
 import urllib.parse
 import uuid
-from typing import Optional, Callable
+from typing import Callable
 
 import requests
 
-from laitoxx.shared.graph.model import Graph, Node, Edge, NODE_TYPE_DEFAULTS
+from laitoxx.shared.graph.model import NODE_TYPE_DEFAULTS, Edge, Graph, Node
 
 try:
-    from lupa import LuaRuntime, LuaError
+    from lupa import LuaError, LuaRuntime
 except ImportError:
     LuaRuntime = None
     LuaError = Exception
@@ -74,7 +74,7 @@ class HostAPI:
         self,
         plugin_meta: LuaPluginMeta,
         lua: "LuaRuntime",
-        output_callback: Optional[Callable[[str], None]] = None,
+        output_callback: Callable[[str], None] | None = None,
     ):
         self._meta = plugin_meta
         self._lua = lua
@@ -82,8 +82,8 @@ class HostAPI:
         self._plugin_dir = os.path.dirname(plugin_meta.filepath)
         self._cache: dict = {}
         try:
-            from laitoxx.core.settings.proxy import make_session
             from laitoxx.core.settings.app_settings import settings as _app_settings
+            from laitoxx.core.settings.proxy import make_session
 
             self._session = make_session(_app_settings.proxy)
         except Exception:
@@ -171,7 +171,7 @@ class HostAPI:
         """Read a file relative to the plugin directory."""
         try:
             full = self._safe_path(str(path))
-            with open(full, "r", encoding="utf-8") as f:
+            with open(full, encoding="utf-8") as f:
                 return f.read()
         except Exception as e:
             return None, str(e)
@@ -420,7 +420,7 @@ class HostAPI:
         """Return available node types and their default styles as a Lua table."""
         return _python_to_lua(self._lua, NODE_TYPE_DEFAULTS)
 
-    def _get_graph(self, graph_id) -> Optional[Graph]:
+    def _get_graph(self, graph_id) -> Graph | None:
         if not hasattr(self, "_graphs"):
             return None
         return self._graphs.get(_lua_str(graph_id))
@@ -436,8 +436,8 @@ class HostAPI:
             -- or with category filter:
             local results = host:username_search("johndoe", {"social", "gaming"})
         """
-        from laitoxx.features.osint.username_osint.site_db import SiteDB
         from laitoxx.features.osint.username_osint.checker import UsernameChecker
+        from laitoxx.features.osint.username_osint.site_db import SiteDB
 
         db = SiteDB()
         sites = db.load()
@@ -509,9 +509,9 @@ class HostAPI:
             local gid = host:graph_create("OSINT Graph")
             host:username_search_to_graph(gid, "johndoe")
         """
-        from laitoxx.features.osint.username_osint.site_db import SiteDB
         from laitoxx.features.osint.username_osint.checker import UsernameChecker
         from laitoxx.features.osint.username_osint.models import CATEGORY_ICONS
+        from laitoxx.features.osint.username_osint.site_db import SiteDB
 
         g = self._get_graph(graph_id)
         if g is None:
@@ -693,7 +693,7 @@ def _create_sandbox_env(lua: "LuaRuntime", host: HostAPI):
 # ---------------------------------------------------------------------------
 
 
-def _load_plugin_meta(filepath: str) -> Optional[LuaPluginMeta]:
+def _load_plugin_meta(filepath: str) -> LuaPluginMeta | None:
     """
     Read only the ``plugin`` metadata table from a Lua file
     without executing arbitrary code.
@@ -707,7 +707,7 @@ def _load_plugin_meta(filepath: str) -> Optional[LuaPluginMeta]:
 
     try:
         lua = LuaRuntime(unpack_returned_tuples=True)
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             source = f.read()
 
         # Run in a restricted env that only allows table construction
@@ -769,7 +769,7 @@ def load_lua_plugin_settings() -> dict:
     """Load saved plugin enable/disable state and config values."""
     if os.path.exists(LUA_PLUGIN_CONFIG_FILE):
         try:
-            with open(LUA_PLUGIN_CONFIG_FILE, "r", encoding="utf-8") as f:
+            with open(LUA_PLUGIN_CONFIG_FILE, encoding="utf-8") as f:
                 return json.load(f)
         except Exception:
             pass
@@ -801,7 +801,7 @@ def run_lua_plugin(
     options: dict = None,
     output_callback: Callable[[str], None] = None,
     graph_callback: Callable[[str], None] = None,
-) -> Optional[str]:
+) -> str | None:
     """
     Execute a function inside a Lua plugin.
 
@@ -834,20 +834,18 @@ def run_lua_plugin(
     env = _create_sandbox_env(lua, host)
 
     try:
-        with open(plugin.filepath, "r", encoding="utf-8") as f:
+        with open(plugin.filepath, encoding="utf-8") as f:
             source = f.read()
 
         # Load and execute the plugin source inside the sandbox
-        loader = lua.eval(
-            """
+        _lua_chunk = f"""
         function(source, env)
-            local fn, err = load(source, "%s", "t", env)
+            local fn, err = load(source, "{plugin.id}", "t", env)
             if not fn then error(err) end
             return fn()
         end
         """
-            % plugin.id
-        )
+        loader = lua.eval(_lua_chunk)
 
         plugin_table = loader(source, env)
 

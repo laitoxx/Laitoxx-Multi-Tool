@@ -36,7 +36,6 @@ from typing import Optional
 import requests
 import requests.adapters
 
-
 # ── Internal state ─────────────────────────────────────────────────────────────
 
 _lock = threading.Lock()
@@ -80,7 +79,7 @@ class NetworkManager:
     """Static controller — no instantiation needed."""
 
     @staticmethod
-    def apply(proxy_cfg: Optional[dict] = None) -> None:
+    def apply(proxy_cfg: dict | None = None) -> None:
         """(Re-)apply proxy settings and install/remove OS-level guards.
 
         ``proxy_cfg`` mirrors AppSettings.proxy:
@@ -157,7 +156,7 @@ def _apply_default_timeout_to_session(sess: requests.Session) -> None:
     sess.request = _bounded  # type: ignore[method-assign]
 
 
-def _rebuild_session(proxy_url: Optional[str]) -> None:
+def _rebuild_session(proxy_url: str | None) -> None:
     global _shared_session
     # Always use the stdlib requests.Session.__init__ — not our patched version —
     # to avoid infinite recursion when _patch_requests_session_class is already set.
@@ -171,7 +170,7 @@ def _rebuild_session(proxy_url: Optional[str]) -> None:
     _patch_requests_module(proxy_url)
 
 
-def _patch_requests_session_class(proxy_url: Optional[str]) -> None:
+def _patch_requests_session_class(proxy_url: str | None) -> None:
     """Monkey-patch requests.Session.__init__ so any session created by
     third-party libraries also inherits the proxy settings and default timeout."""
     def _patched_init(self, *args, **kwargs):
@@ -183,7 +182,7 @@ def _patch_requests_session_class(proxy_url: Optional[str]) -> None:
     requests.Session.__init__ = _patched_init  # type: ignore[method-assign]
 
 
-def _patch_requests_module(proxy_url: Optional[str]) -> None:
+def _patch_requests_module(proxy_url: str | None) -> None:
     """Route requests.* through the shared session and enforce a default timeout.
 
     Always active (proxy or not) so bare ``requests.get(url)`` calls never
@@ -355,7 +354,7 @@ def _build_proxy_url(cfg: dict) -> str:
     return f"{scheme}://{creds}{host}:{port}"
 
 
-def _load_settings_proxy() -> Optional[dict]:
+def _load_settings_proxy() -> dict | None:
     try:
         from .app_settings import settings
 
@@ -394,7 +393,7 @@ def make_aiohttp_connector():
     return aiohttp.TCPConnector()
 
 
-def aiohttp_proxy_url() -> Optional[str]:
+def aiohttp_proxy_url() -> str | None:
     """Return the proxy URL suitable for aiohttp's ``proxy=`` kwarg.
 
     For SOCKS5 the proxy is handled by the connector (see make_aiohttp_connector),

@@ -5,7 +5,6 @@ models.py — Data models for the Username OSINT engine.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -19,7 +18,7 @@ class TokenActivation:
     dst: str = ""  # header field to inject token into
 
     @classmethod
-    def from_dict(cls, d: dict) -> "TokenActivation":
+    def from_dict(cls, d: dict) -> TokenActivation:
         if not d:
             return cls()
         return cls(
@@ -41,7 +40,7 @@ class SiteEntry:
     check_type: str = "status_code"  # status_code | message | redirect | json_api
     valid_status: list[int] = field(default_factory=lambda: [200])
     invalid_indicators: list[str] = field(default_factory=list)
-    avatar_url: Optional[str] = None
+    avatar_url: str | None = None
     tags: list[str] = field(default_factory=list)
     headers: dict[str, str] = field(default_factory=dict)
     request_method: str = "GET"
@@ -55,18 +54,18 @@ class SiteEntry:
     absence_strs: list[str] = field(
         default_factory=list
     )  # strings proving account absent
-    url_probe: Optional[str] = None  # alternative API endpoint for checking
-    regex_check: Optional[str] = None  # regex to validate username before HTTP request
-    engine: Optional[str] = None  # CMS engine: "XenForo", "vBulletin", "uCoz"
-    url_main: Optional[str] = None  # main site URL (for display)
+    url_probe: str | None = None  # alternative API endpoint for checking
+    regex_check: str | None = None  # regex to validate username before HTTP request
+    engine: str | None = None  # CMS engine: "XenForo", "vBulletin", "uCoz"
+    url_main: str | None = None  # main site URL (for display)
     disabled: bool = False  # skip this site
-    activation: Optional[TokenActivation] = None  # dynamic token refresh config
+    activation: TokenActivation | None = None  # dynamic token refresh config
     errors: dict[str, str] = field(default_factory=dict)  # error msg → explanation
     # --- Social-Analyzer-style fields ---
     confidence_threshold: float = 0.0  # minimum confidence to report as found
 
     @classmethod
-    def from_dict(cls, name: str, d: dict) -> "SiteEntry":
+    def from_dict(cls, name: str, d: dict) -> SiteEntry:
         activation_data = d.get("activation")
         return cls(
             name=name,
@@ -106,17 +105,17 @@ class CheckResult:
     status: str = (
         "not_found"  # found | not_found | error | timeout | rate_limited | waf_blocked
     )
-    http_code: Optional[int] = None
+    http_code: int | None = None
     response_time_ms: float = 0.0
-    avatar_url: Optional[str] = None
+    avatar_url: str | None = None
     category: str = "other"
-    error_message: Optional[str] = None
+    error_message: str | None = None
     # --- Upgraded fields ---
     confidence: float = 0.0  # 0.0–1.0 confidence score
     retry_count: int = 0  # how many retries were needed
     waf_detected: bool = False  # Cloudflare/Incapsula/etc detected
-    profile_url: Optional[str] = None  # resolved URL (after redirects)
-    engine: Optional[str] = None  # detected CMS engine
+    profile_url: str | None = None  # resolved URL (after redirects)
+    engine: str | None = None  # detected CMS engine
 
     @property
     def is_found(self) -> bool:

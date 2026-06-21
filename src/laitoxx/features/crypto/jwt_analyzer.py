@@ -18,7 +18,7 @@ CLI  → jwt_analyzer_tool()
 import base64
 import hmac
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from laitoxx.features.utilities.shared_utils import Color
 
@@ -77,13 +77,13 @@ def _print_payload(payload: dict):
     print(
         f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Payload {Color.DARK_RED}]" + "─" * 30
     )
-    now = datetime.now(timezone.utc).timestamp()
+    now = datetime.now(UTC).timestamp()
 
     for k, v in payload.items():
         display = v
         if k in ("exp", "iat", "nbf") and isinstance(v, (int, float)):
             try:
-                dt = datetime.fromtimestamp(v, tz=timezone.utc).strftime(
+                dt = datetime.fromtimestamp(v, tz=UTC).strftime(
                     "%Y-%m-%d %H:%M:%S UTC"
                 )
                 display = f"{v}  ({dt})"
@@ -173,8 +173,8 @@ def _crack(token: str, wordlist_path: str):
 
     def _count_lines(path: str):
         try:
-            with open(path, "r", encoding="utf-8", errors="ignore") as fh:
-                for idx, _ in enumerate(fh, start=1):
+            with open(path, encoding="utf-8", errors="ignore") as fh:
+                for idx, _ in enumerate(fh, start=1):  # noqa: B007
                     pass
             return idx if "idx" in locals() else 0
         except OSError:
@@ -201,7 +201,7 @@ def _crack(token: str, wordlist_path: str):
     found = None
 
     try:
-        fh = open(wordlist_path, "r", encoding="utf-8", errors="ignore")
+        fh = open(wordlist_path, encoding="utf-8", errors="ignore")
     except FileNotFoundError:
         print(
             f"{Color.DARK_GRAY}[{Color.RED}x{Color.DARK_GRAY}]{Color.RED}"

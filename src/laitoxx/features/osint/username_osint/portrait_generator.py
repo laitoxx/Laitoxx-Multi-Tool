@@ -7,9 +7,8 @@ Aggregates OSINT results into a structured forensic profile.
 from __future__ import annotations
 
 from collections import Counter
-from typing import Optional
 
-from .models import CheckResult, CATEGORY_ICONS
+from .models import CATEGORY_ICONS, CheckResult
 
 
 class DigitalPortrait:
@@ -28,7 +27,7 @@ class DigitalPortrait:
         self,
         username: str,
         results: list[CheckResult],
-        alt_results: Optional[dict[str, list[CheckResult]]] = None,
+        alt_results: dict[str, list[CheckResult]] | None = None,
     ):
         self.username = username
         self.results = results

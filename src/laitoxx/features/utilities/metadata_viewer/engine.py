@@ -1,9 +1,9 @@
-import os
-import logging
-import hashlib
-from datetime import datetime
-import platform
 import asyncio
+import hashlib
+import logging
+import os
+import platform
+from datetime import datetime
 
 # MIME detection
 try:
@@ -38,8 +38,7 @@ except ImportError:
     HAS_TINYTAG = False
 
 try:
-    import mutagen
-
+    import mutagen  # noqa: F401 — availability check
     HAS_MUTAGEN = True
 except ImportError:
     HAS_MUTAGEN = False
@@ -62,8 +61,8 @@ except ImportError:
 
 # Binwalk / Hachoir for structure anomaly
 try:
-    from hachoir.parser import createParser
     from hachoir.metadata import extractMetadata
+    from hachoir.parser import createParser
 
     HAS_HACHOIR = True
 except ImportError:
@@ -324,7 +323,7 @@ class MetadataEngine:
             try:
                 zone_file = filepath + ":Zone.Identifier"
                 if os.path.exists(zone_file):
-                    with open(zone_file, "r") as f:
+                    with open(zone_file) as f:
                         data["ADS:Zone.Identifier"] = f.read().strip()
                         data["ExtractedWith"].append("ADS")
             except Exception:

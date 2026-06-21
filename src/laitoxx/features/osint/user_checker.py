@@ -1,6 +1,8 @@
-import requests
 import concurrent.futures
 import threading
+
+import requests
+
 from laitoxx.features.utilities.shared_utils import Color
 
 _NEGATIVE_PATTERNS = [
@@ -20,8 +22,8 @@ _TLS = threading.local()
 
 def _make_session():
     try:
-        from laitoxx.core.settings.proxy import make_session
         from laitoxx.core.settings.app_settings import settings as _app_settings
+        from laitoxx.core.settings.proxy import make_session
 
         return make_session(_app_settings.proxy)
     except Exception:
