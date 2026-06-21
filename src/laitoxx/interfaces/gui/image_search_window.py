@@ -87,9 +87,7 @@ except ImportError:
 
 
 def _t(key: str, fallback: str = "", **kwargs) -> str:
-    raw = (
-        translator.translations.get(translator.lang, {}).get(key, "") or fallback or key
-    )
+    raw = translator.translations.get(translator.lang, {}).get(key, "") or fallback or key
     if kwargs:
         try:
             return raw.format(**kwargs)
@@ -395,9 +393,7 @@ class ImageSearchWindow(QDialog):
                 btn.setStyleSheet(self._engine_pill_style(btn.isChecked()))
 
         if hasattr(self, "_hashes_placeholder"):
-            self._hashes_placeholder.setStyleSheet(
-                f"color: {td}; font-size: 12px; padding: 20px;"
-            )
+            self._hashes_placeholder.setStyleSheet(f"color: {td}; font-size: 12px; padding: 20px;")
 
         if hasattr(self, "_hash_row_widgets"):
             for edit in self._hash_row_widgets.values():
@@ -415,19 +411,13 @@ class ImageSearchWindow(QDialog):
 
         if hasattr(self, "_slider_labels"):
             for lbl in self._slider_labels.values():
-                lbl.setStyleSheet(
-                    f"color: {ac}; font-size: 11px; font-family: monospace;"
-                )
+                lbl.setStyleSheet(f"color: {ac}; font-size: 11px; font-family: monospace;")
 
         if hasattr(self, "_editor_btn_area"):
-            self._editor_btn_area.setStyleSheet(
-                f"background: {c['bg_panel']}; border-top: 1px solid {bd};"
-            )
+            self._editor_btn_area.setStyleSheet(f"background: {c['bg_panel']}; border-top: 1px solid {bd};")
 
         if hasattr(self, "_hashes_btn_area"):
-            self._hashes_btn_area.setStyleSheet(
-                f"background: {c['bg_panel']}; border-top: 1px solid {bd};"
-            )
+            self._hashes_btn_area.setStyleSheet(f"background: {c['bg_panel']}; border-top: 1px solid {bd};")
 
     # =========================================================================
     # UI build
@@ -460,9 +450,7 @@ class ImageSearchWindow(QDialog):
 
         self._h_splitter = QSplitter(Qt.Orientation.Horizontal)
         self._h_splitter.setHandleWidth(1)
-        self._h_splitter.setStyleSheet(
-            f"QSplitter::handle {{ background: {c['border']}; }}"
-        )
+        self._h_splitter.setStyleSheet(f"QSplitter::handle {{ background: {c['border']}; }}")
 
         self._center_widget = self._build_center()
         self._h_splitter.addWidget(self._center_widget)
@@ -544,9 +532,7 @@ class ImageSearchWindow(QDialog):
 
         sep = QFrame()
         sep.setFrameShape(QFrame.Shape.HLine)
-        sep.setStyleSheet(
-            f"background: {c['border']}; max-height: 1px; margin: 6px 4px;"
-        )
+        sep.setStyleSheet(f"background: {c['border']}; max-height: 1px; margin: 6px 4px;")
         lay.addWidget(sep)
 
         open_btn = QPushButton("📂")
@@ -581,9 +567,7 @@ class ImageSearchWindow(QDialog):
 
         self._v_splitter = QSplitter(Qt.Orientation.Vertical)
         self._v_splitter.setHandleWidth(4)
-        self._v_splitter.setStyleSheet(
-            f"QSplitter::handle {{ background: {c['border']}; }}"
-        )
+        self._v_splitter.setStyleSheet(f"QSplitter::handle {{ background: {c['border']}; }}")
 
         # Preview block
         preview_widget = QWidget()
@@ -607,9 +591,7 @@ class ImageSearchWindow(QDialog):
         )
         self._toggle_preview_btn.setVisible(False)
         self._toggle_preview_btn.clicked.connect(self._toggle_original)
-        preview_lay.addWidget(
-            self._toggle_preview_btn, alignment=Qt.AlignmentFlag.AlignRight
-        )
+        preview_lay.addWidget(self._toggle_preview_btn, alignment=Qt.AlignmentFlag.AlignRight)
 
         # Results block
         self._results_scroll = QScrollArea()
@@ -686,9 +668,7 @@ class ImageSearchWindow(QDialog):
         lay.setContentsMargins(12, 12, 12, 8)
         lay.setSpacing(4)
 
-        lay.addWidget(
-            _section_label(_t("is_engines_section", "Search Engines"), c["text_dim"])
-        )
+        lay.addWidget(_section_label(_t("is_engines_section", "Search Engines"), c["text_dim"]))
 
         self._engine_buttons: dict[str, QPushButton] = {}
         for key, engines in _ENGINE_GROUPS:
@@ -709,9 +689,7 @@ class ImageSearchWindow(QDialog):
                 btn.setChecked(checked)
                 btn.setCursor(Qt.CursorShape.PointingHandCursor)
                 btn.setStyleSheet(self._engine_pill_style(checked))
-                btn.toggled.connect(
-                    lambda ch, b=btn: b.setStyleSheet(self._engine_pill_style(ch))
-                )
+                btn.toggled.connect(lambda ch, b=btn: b.setStyleSheet(self._engine_pill_style(ch)))
                 lay.addWidget(btn)
                 self._engine_buttons[eng] = btn
 
@@ -722,9 +700,7 @@ class ImageSearchWindow(QDialog):
 
     def _engine_pill_style(self, checked: bool) -> str:
         c = self._tc()
-        return engine_pill_style(
-            checked, c["accent"], c["text_sec"], c["border"], c["text_pri"]
-        )
+        return engine_pill_style(checked, c["accent"], c["text_sec"], c["border"], c["text_pri"])
 
     # ── Context: Editor ───────────────────────────────────────────────────────
 
@@ -748,9 +724,7 @@ class ImageSearchWindow(QDialog):
         lay.setContentsMargins(12, 12, 12, 12)
         lay.setSpacing(6)
 
-        lay.addWidget(
-            _section_label(_t("is_editor_section", "Image Settings"), c["text_dim"])
-        )
+        lay.addWidget(_section_label(_t("is_editor_section", "Image Settings"), c["text_dim"]))
 
         self._sliders: dict[str, QSlider] = {}
         self._slider_labels: dict[str, QLabel] = {}
@@ -773,17 +747,11 @@ class ImageSearchWindow(QDialog):
 
             lbl_val = QLabel("+0")
             lbl_val.setFixedWidth(36)
-            lbl_val.setAlignment(
-                Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter
-            )
-            lbl_val.setStyleSheet(
-                f"color: {c['accent']}; font-size: 11px; font-family: monospace;"
-            )
+            lbl_val.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            lbl_val.setStyleSheet(f"color: {c['accent']}; font-size: 11px; font-family: monospace;")
             row.addWidget(lbl_val)
 
-            sl.valueChanged.connect(
-                lambda v, lv=lbl_val, k=key: self._on_slider_changed(k, v, lv)
-            )
+            sl.valueChanged.connect(lambda v, lv=lbl_val, k=key: self._on_slider_changed(k, v, lv))
             self._sliders[key] = sl
             self._slider_labels[key] = lbl_val
             lay.addLayout(row)
@@ -793,9 +761,7 @@ class ImageSearchWindow(QDialog):
         vlay.addWidget(scroll, stretch=1)
 
         self._editor_btn_area = QWidget()
-        self._editor_btn_area.setStyleSheet(
-            f"background: {c['bg_panel']}; border-top: 1px solid {c['border']};"
-        )
+        self._editor_btn_area.setStyleSheet(f"background: {c['bg_panel']}; border-top: 1px solid {c['border']};")
         btn_lay = QVBoxLayout(self._editor_btn_area)
         btn_lay.setContentsMargins(12, 8, 12, 12)
         btn_lay.setSpacing(6)
@@ -847,17 +813,11 @@ class ImageSearchWindow(QDialog):
         self._hashes_vlay.setContentsMargins(12, 12, 12, 12)
         self._hashes_vlay.setSpacing(8)
 
-        self._hashes_vlay.addWidget(
-            _section_label(_t("is_hashes_section", "File Hashes"), c["text_dim"])
-        )
+        self._hashes_vlay.addWidget(_section_label(_t("is_hashes_section", "File Hashes"), c["text_dim"]))
 
-        self._hashes_placeholder = QLabel(
-            _t("is_hashes_placeholder", "Load an image\nto compute hashes")
-        )
+        self._hashes_placeholder = QLabel(_t("is_hashes_placeholder", "Load an image\nto compute hashes"))
         self._hashes_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._hashes_placeholder.setStyleSheet(
-            f"color: {c['text_dim']}; font-size: 12px; padding: 20px;"
-        )
+        self._hashes_placeholder.setStyleSheet(f"color: {c['text_dim']}; font-size: 12px; padding: 20px;")
         self._hashes_vlay.addWidget(self._hashes_placeholder)
         self._hashes_vlay.addStretch()
 
@@ -867,9 +827,7 @@ class ImageSearchWindow(QDialog):
         vlay.addWidget(scroll, stretch=1)
 
         self._hashes_btn_area = QWidget()
-        self._hashes_btn_area.setStyleSheet(
-            f"background: {c['bg_panel']}; border-top: 1px solid {c['border']};"
-        )
+        self._hashes_btn_area.setStyleSheet(f"background: {c['bg_panel']}; border-top: 1px solid {c['border']};")
         btn_lay = QVBoxLayout(self._hashes_btn_area)
         btn_lay.setContentsMargins(12, 8, 12, 12)
 
@@ -899,9 +857,7 @@ class ImageSearchWindow(QDialog):
         lay.setContentsMargins(12, 12, 12, 12)
         lay.setSpacing(8)
 
-        lay.addWidget(
-            _section_label(_t("is_forensics_section", "Analysis"), c["text_dim"])
-        )
+        lay.addWidget(_section_label(_t("is_forensics_section", "Analysis"), c["text_dim"]))
 
         self._forensics_checks: dict[str, QCheckBox] = {}
         for key, t_key in _FORENSICS_CHECKS:
@@ -965,9 +921,7 @@ class ImageSearchWindow(QDialog):
         for key, panel in panels.items():
             panel.setVisible(key == tool)
 
-        self._toggle_preview_btn.setVisible(
-            tool == "editor" and self._pil_original is not None
-        )
+        self._toggle_preview_btn.setVisible(tool == "editor" and self._pil_original is not None)
         self._clear_results()
 
         placeholder_map = {
@@ -1017,9 +971,7 @@ class ImageSearchWindow(QDialog):
     def _load_file(self, path: str) -> None:
         self._cleanup_threads()
         if not HAS_PIL:
-            QMessageBox.critical(
-                self, _t("error", "Error"), _t("is_no_pil", "Pillow not installed.")
-            )
+            QMessageBox.critical(self, _t("error", "Error"), _t("is_no_pil", "Pillow not installed."))
             return
         if not os.path.isfile(path):
             QMessageBox.warning(
@@ -1157,9 +1109,7 @@ class ImageSearchWindow(QDialog):
         if self._search_btn:
             self._search_btn.setEnabled(True)
             self._search_btn.setText(_t("is_search_btn", "Upload & Search"))
-        self._hdr_status.setText(
-            _t("is_search_done", "Engines found: {count}").format(count=len(urls))
-        )
+        self._hdr_status.setText(_t("is_search_done", "Engines found: {count}").format(count=len(urls)))
         self._clear_results()
 
         if not urls:
@@ -1200,9 +1150,7 @@ class ImageSearchWindow(QDialog):
         lay.setSpacing(8)
 
         name_lbl = QLabel(engine)
-        name_lbl.setStyleSheet(
-            f"color: {c['text_pri']}; font-size: 12px; background: transparent; border: none;"
-        )
+        name_lbl.setStyleSheet(f"color: {c['text_pri']}; font-size: 12px; background: transparent; border: none;")
         lay.addWidget(name_lbl, stretch=1)
 
         open_btn = make_button(
@@ -1213,9 +1161,7 @@ class ImageSearchWindow(QDialog):
             acd=c["accent_dim"],
         )
         open_btn.setFixedHeight(28)
-        open_btn.setStyleSheet(
-            open_btn.styleSheet() + "padding: 2px 10px; font-size: 11px;"
-        )
+        open_btn.setStyleSheet(open_btn.styleSheet() + "padding: 2px 10px; font-size: 11px;")
         open_btn.clicked.connect(lambda _, u=url: QDesktopServices.openUrl(QUrl(u)))
         lay.addWidget(open_btn)
 
@@ -1247,9 +1193,7 @@ class ImageSearchWindow(QDialog):
     def _show_editor_status(self) -> None:
         c = self._tc()
         self._editor_status_lbl = QLabel(_t("is_editor_hint", "Use sliders to edit"))
-        self._editor_status_lbl.setStyleSheet(
-            f"color: {c['text_dim']}; font-size: 12px; padding: 8px;"
-        )
+        self._editor_status_lbl.setStyleSheet(f"color: {c['text_dim']}; font-size: 12px; padding: 8px;")
         self._editor_status_lbl.setWordWrap(True)
         self._add_result_widget(self._editor_status_lbl)
 
@@ -1285,14 +1229,10 @@ class ImageSearchWindow(QDialog):
             img = img.convert("RGB").point(lambda x: min(255, max(0, x + delta)))
         v = vals["shadows"]
         if v != 0:
-            img = img.convert("RGB").point(
-                lambda x, _v=v: min(255, max(0, x + int(_v * 0.8))) if x < 128 else x
-            )
+            img = img.convert("RGB").point(lambda x, _v=v: min(255, max(0, x + int(_v * 0.8))) if x < 128 else x)
         v = vals["highlights"]
         if v != 0:
-            img = img.convert("RGB").point(
-                lambda x, _v=v: min(255, max(0, x + int(_v * 0.8))) if x >= 128 else x
-            )
+            img = img.convert("RGB").point(lambda x, _v=v: min(255, max(0, x + int(_v * 0.8))) if x >= 128 else x)
         v = vals["warmth"]
         if v != 0:
             r, g, b = img.convert("RGB").split()
@@ -1313,19 +1253,11 @@ class ImageSearchWindow(QDialog):
             noise_layer = Image.frombytes(
                 "L",
                 img.size,
-                bytes(
-                    [
-                        min(255, max(0, 128 + random.randint(-v, v)))
-                        for _ in range(img.size[0] * img.size[1])
-                    ]
-                ),
+                bytes([min(255, max(0, 128 + random.randint(-v, v))) for _ in range(img.size[0] * img.size[1])]),
             )
             img = Image.merge(
                 "RGB",
-                [
-                    Image.blend(ch, noise_layer, alpha=v / 300)
-                    for ch in img.convert("RGB").split()
-                ],
+                [Image.blend(ch, noise_layer, alpha=v / 300) for ch in img.convert("RGB").split()],
             )
         v = vals["noise"]
         if v > 0:
@@ -1358,9 +1290,7 @@ class ImageSearchWindow(QDialog):
             self._toggle_preview_btn.setText(_t("is_toggle_show_result", "Show Result"))
             self._update_preview(self._pil_original)
         else:
-            self._toggle_preview_btn.setText(
-                _t("is_toggle_before_after", "Before / After")
-            )
+            self._toggle_preview_btn.setText(_t("is_toggle_before_after", "Before / After"))
             self._update_preview(self._pil_edited)
 
     def _reset_sliders(self) -> None:
@@ -1453,9 +1383,7 @@ class ImageSearchWindow(QDialog):
         lay.setSpacing(2)
 
         lbl = QLabel(name)
-        lbl.setStyleSheet(
-            f"color: {c['text_dim']}; font-size: 10px; font-weight: 700; letter-spacing: 0.8px;"
-        )
+        lbl.setStyleSheet(f"color: {c['text_dim']}; font-size: 10px; font-weight: 700; letter-spacing: 0.8px;")
         lay.addWidget(lbl)
 
         row = QHBoxLayout()
@@ -1506,9 +1434,7 @@ class ImageSearchWindow(QDialog):
 
     def _compare_images(self) -> None:
         if not HAS_PIL:
-            QMessageBox.information(
-                self, _t("error", "Error"), _t("is_no_pil", "Pillow not installed.")
-            )
+            QMessageBox.information(self, _t("error", "Error"), _t("is_no_pil", "Pillow not installed."))
             return
         path, _ = QFileDialog.getOpenFileName(
             self,
@@ -1537,19 +1463,13 @@ class ImageSearchWindow(QDialog):
         for k in ("MD5", "SHA-1", "SHA-256"):
             mine = self._hashes.get(k, "")
             other = other_hashes.get(k, "")
-            match = (
-                _t("is_hash_match", "✅ match")
-                if mine == other
-                else _t("is_hash_differ", "❌ differ")
-            )
+            match = _t("is_hash_match", "✅ match") if mine == other else _t("is_hash_differ", "❌ differ")
             lines.append(f"{k}: {match}")
 
         QMessageBox.information(
             self,
             _t("is_compare_title", "Hash Comparison"),
-            _t("is_compare_with", "Compared with: {name}").format(
-                name=os.path.basename(path)
-            )
+            _t("is_compare_with", "Compared with: {name}").format(name=os.path.basename(path))
             + "\n\n"
             + "\n".join(lines),
         )
@@ -1560,9 +1480,7 @@ class ImageSearchWindow(QDialog):
 
     def _show_forensics_placeholder(self) -> None:
         c = self._tc()
-        lbl = QLabel(
-            _t("is_forensics_placeholder", "Click «Run Analysis»\nto start forensics")
-        )
+        lbl = QLabel(_t("is_forensics_placeholder", "Click «Run Analysis»\nto start forensics"))
         lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         lbl.setStyleSheet(f"color: {c['text_dim']}; font-size: 13px; padding: 20px;")
         lbl.setWordWrap(True)
@@ -1593,9 +1511,7 @@ class ImageSearchWindow(QDialog):
         self._clear_results()
 
         self._forensics_thread = QThread()
-        self._forensics_worker = ForensicsWorker(
-            self._pil_original, self._file_path or "", checks
-        )
+        self._forensics_worker = ForensicsWorker(self._pil_original, self._file_path or "", checks)
         self._forensics_worker.moveToThread(self._forensics_thread)
         self._forensics_thread.started.connect(self._forensics_worker.run)
         self._forensics_worker.progress.connect(self._forensics_progress.setValue)
@@ -1643,9 +1559,7 @@ class ImageSearchWindow(QDialog):
                     f'<p><span style="color:{ORANGE}">⚠ EXIF: {_t("error", "Error")} - {exif["error"]}</span></p>'
                 )
             else:
-                html_parts.append(
-                    f'<p><b style="color:{ac}">{_t("is_exif_section", "📋 EXIF / Metadata")}</b></p>'
-                )
+                html_parts.append(f'<p><b style="color:{ac}">{_t("is_exif_section", "📋 EXIF / Metadata")}</b></p>')
                 raw = exif.get("raw", {})
                 for k, v in list(raw.items())[:20]:
                     html_parts.append(
@@ -1675,16 +1589,13 @@ class ImageSearchWindow(QDialog):
                 is_susp = ela.get("verdict", "") == "подозрительно"
                 color = RED if is_susp else GREEN
                 verdict_str = (
-                    _t("is_ela_verdict_suspicious", "suspicious")
-                    if is_susp
-                    else _t("is_ela_verdict_ok", "normal")
+                    _t("is_ela_verdict_suspicious", "suspicious") if is_susp else _t("is_ela_verdict_ok", "normal")
                 )
                 html_parts.append(
                     f'<p><b style="color:{ac}">{_t("is_ela_section", "🔎 ELA (Error Level Analysis)")}</b></p>'
                 )
                 html_parts.append(
-                    f'<p><b style="color:{color}">{mean_v}</b> - '
-                    f'<span style="color:{color}">{verdict_str}</span></p>'
+                    f'<p><b style="color:{color}">{mean_v}</b> - <span style="color:{color}">{verdict_str}</span></p>'
                 )
                 if is_susp:
                     suspicious_count += 1
@@ -1702,17 +1613,10 @@ class ImageSearchWindow(QDialog):
                 dupes = cl.get("duplicate_blocks", 0)
                 susp = cl.get("suspicious", False)
                 color = RED if susp else GREEN
+                html_parts.append(f'<p><b style="color:{ac}">{_t("is_clone_section", "🔁 Clone Detection")}</b></p>')
+                susp_str = _t("is_clone_suspicious", "⚠ possible clones") if susp else _t("is_clone_ok", "✓ normal")
                 html_parts.append(
-                    f'<p><b style="color:{ac}">{_t("is_clone_section", "🔁 Clone Detection")}</b></p>'
-                )
-                susp_str = (
-                    _t("is_clone_suspicious", "⚠ possible clones")
-                    if susp
-                    else _t("is_clone_ok", "✓ normal")
-                )
-                html_parts.append(
-                    f'<p><b style="color:{color}">{dupes}</b>'
-                    f' - <span style="color:{color}">{susp_str}</span></p>'
+                    f'<p><b style="color:{color}">{dupes}</b> - <span style="color:{color}">{susp_str}</span></p>'
                 )
                 if susp:
                     suspicious_count += 1
@@ -1730,17 +1634,10 @@ class ImageSearchWindow(QDialog):
                 susp = ns.get("suspicious", False)
                 ratio = ns.get("ratio", 0)
                 color = RED if susp else GREEN
+                html_parts.append(f'<p><b style="color:{ac}">{_t("is_noise_section", "〰 Noise Analysis")}</b></p>')
+                susp_str = _t("is_noise_suspicious", "⚠ uneven noise") if susp else _t("is_noise_ok", "✓ even")
                 html_parts.append(
-                    f'<p><b style="color:{ac}">{_t("is_noise_section", "〰 Noise Analysis")}</b></p>'
-                )
-                susp_str = (
-                    _t("is_noise_suspicious", "⚠ uneven noise")
-                    if susp
-                    else _t("is_noise_ok", "✓ even")
-                )
-                html_parts.append(
-                    f'<p><b style="color:{color}">{ratio}</b>'
-                    f' - <span style="color:{color}">{susp_str}</span></p>'
+                    f'<p><b style="color:{color}">{ratio}</b> - <span style="color:{color}">{susp_str}</span></p>'
                 )
                 if susp:
                     suspicious_count += 1
@@ -1760,9 +1657,7 @@ class ImageSearchWindow(QDialog):
                     "холодный": _t("is_wb_cool", "cool"),
                     "нейтральный": _t("is_wb_neutral", "neutral"),
                 }
-                wb = wb_map.get(
-                    col.get("white_balance", ""), col.get("white_balance", "-")
-                )
+                wb = wb_map.get(col.get("white_balance", ""), col.get("white_balance", "-"))
                 r, g, b = (
                     col.get("r_mean", 0),
                     col.get("g_mean", 0),
@@ -1777,9 +1672,7 @@ class ImageSearchWindow(QDialog):
                     f'<span style="color:{GREEN}">{g}</span> / '
                     f'<span style="color:#74b9ff">{b}</span></p>'
                 )
-                html_parts.append(
-                    f"<p>{_t('is_color_wb', 'White balance: {wb}').format(wb=wb)}</p>"
-                )
+                html_parts.append(f"<p>{_t('is_color_wb', 'White balance: {wb}').format(wb=wb)}</p>")
 
         te.setHtml("<html><body>" + "".join(html_parts) + "</body></html>")
         self._add_result_widget(te)
@@ -1787,9 +1680,7 @@ class ImageSearchWindow(QDialog):
         # ELA image
         if ela_image is not None:
             ela_lbl_hdr = QLabel(_t("is_ela_image_label", "ELA image:"))
-            ela_lbl_hdr.setStyleSheet(
-                f"color: {c['text_sec']}; font-size: 12px; padding: 4px 0 2px 0;"
-            )
+            ela_lbl_hdr.setStyleSheet(f"color: {c['text_sec']}; font-size: 12px; padding: 4px 0 2px 0;")
             self._add_result_widget(ela_lbl_hdr)
 
             ela_px = pil_to_qpixmap(ela_image)
@@ -1800,9 +1691,7 @@ class ImageSearchWindow(QDialog):
             ela_lbl = QLabel()
             ela_lbl.setPixmap(ela_scaled)
             ela_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            ela_lbl.setStyleSheet(
-                f"border: 1px solid {c['border']}; border-radius: 6px;"
-            )
+            ela_lbl.setStyleSheet(f"border: 1px solid {c['border']}; border-radius: 6px;")
             self._add_result_widget(ela_lbl)
 
         # Verdict banner
@@ -1811,14 +1700,12 @@ class ImageSearchWindow(QDialog):
             verdict_text = _t("is_verdict_clean", "✅  No manipulation signs detected")
         elif suspicious_count == 1:
             verdict_color = ORANGE
-            verdict_text = _t(
-                "is_verdict_warn", "⚠  {count} suspicious sign detected"
-            ).format(count=suspicious_count)
+            verdict_text = _t("is_verdict_warn", "⚠  {count} suspicious sign detected").format(count=suspicious_count)
         else:
             verdict_color = RED
-            verdict_text = _t(
-                "is_verdict_danger", "🚨  {count} suspicious signs detected"
-            ).format(count=suspicious_count)
+            verdict_text = _t("is_verdict_danger", "🚨  {count} suspicious signs detected").format(
+                count=suspicious_count
+            )
 
         if verdict_notes:
             verdict_text += "\n• " + "\n• ".join(verdict_notes)

@@ -48,9 +48,7 @@ def cms_audit(data=None):
         ).strip()
 
     if not url:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No URL provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No URL provided.")
         return
 
     if not url.startswith(("http://", "https://")):
@@ -67,10 +65,7 @@ def cms_audit(data=None):
     session = requests.Session()
     session.headers["User-Agent"] = "Mozilla/5.0 (OSINT CMS Auditor)"
 
-    print(
-        f"{Color.DARK_RED}┌─[ {Color.LIGHT_RED}CMS Version Detection"
-        f" {Color.DARK_RED}]" + "─" * 17
-    )
+    print(f"{Color.DARK_RED}┌─[ {Color.LIGHT_RED}CMS Version Detection {Color.DARK_RED}]" + "─" * 17)
 
     any_cms = False
     any_cms |= _detect_wordpress(session, base_url)
@@ -78,36 +73,20 @@ def cms_audit(data=None):
     any_cms |= _detect_drupal(session, base_url)
 
     if not any_cms:
-        print(
-            f"{Color.DARK_GRAY}  - {Color.WHITE}No common CMS detected via version probes"
-        )
+        print(f"{Color.DARK_GRAY}  - {Color.WHITE}No common CMS detected via version probes")
 
-    print(
-        f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}robots.txt"
-        f" {Color.DARK_RED}]" + "─" * 28
-    )
+    print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}robots.txt {Color.DARK_RED}]" + "─" * 28)
     _fetch_text(session, urljoin(base_url, "/robots.txt"), max_lines=40)
 
-    print(
-        f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}security.txt"
-        f" {Color.DARK_RED}]" + "─" * 26
-    )
-    found = _fetch_text(
-        session, urljoin(base_url, "/.well-known/security.txt"), max_lines=30
-    )
+    print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}security.txt {Color.DARK_RED}]" + "─" * 26)
+    found = _fetch_text(session, urljoin(base_url, "/.well-known/security.txt"), max_lines=30)
     if not found:
         _fetch_text(session, urljoin(base_url, "/security.txt"), max_lines=30)
 
-    print(
-        f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}sitemap.xml"
-        f" {Color.DARK_RED}]" + "─" * 27
-    )
+    print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}sitemap.xml {Color.DARK_RED}]" + "─" * 27)
     _fetch_sitemap(session, base_url)
 
-    print(
-        f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Exposed Sensitive Files"
-        f" {Color.DARK_RED}]" + "─" * 15
-    )
+    print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Exposed Sensitive Files {Color.DARK_RED}]" + "─" * 15)
     exposed = []
     total = len(_SENSITIVE_PATHS)
     for i, path in enumerate(_SENSITIVE_PATHS):
@@ -129,10 +108,7 @@ def cms_audit(data=None):
                 f"{Color.RED} EXPOSED: {Color.WHITE}{target}"
                 f" {Color.DARK_GRAY}({size} bytes)"
             )
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.RED}!{Color.DARK_GRAY}]{Color.RED}"
-            f" {len(exposed)} exposed file(s) found."
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.RED}!{Color.DARK_GRAY}]{Color.RED} {len(exposed)} exposed file(s) found.")
     else:
         print(
             f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN}"
@@ -140,10 +116,7 @@ def cms_audit(data=None):
         )
 
     print(f"\n{Color.DARK_RED}└" + "─" * 45)
-    print(
-        f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN}"
-        f" CMS audit complete."
-    )
+    print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} CMS audit complete.")
 
 
 def _get(session, url: str, timeout: int = 10):
@@ -200,9 +173,7 @@ def _detect_wordpress(session, base_url: str) -> bool:
 
 
 def _detect_joomla(session, base_url: str) -> bool:
-    r = _get(
-        session, base_url.rstrip("/") + "/administrator/manifests/files/joomla.xml"
-    )
+    r = _get(session, base_url.rstrip("/") + "/administrator/manifests/files/joomla.xml")
     if r:
         m = re.search(r"<version>([\d.]+)</version>", r.text)
         version = m.group(1) if m else "unknown"
@@ -249,16 +220,11 @@ def _fetch_text(session, url: str, max_lines: int = 30) -> bool:
         print(f"{Color.DARK_GRAY}  - {Color.DARK_GRAY}Not found: {url}")
         return False
     lines = [ln for ln in r.text.strip().splitlines() if ln.strip()]
-    print(
-        f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]"
-        f"{Color.LIGHT_GREEN} Found: {Color.WHITE}{url}"
-    )
+    print(f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Found: {Color.WHITE}{url}")
     for line in lines[:max_lines]:
         print(f"{Color.DARK_GRAY}    {Color.WHITE}{line}")
     if len(lines) > max_lines:
-        print(
-            f"{Color.DARK_GRAY}    {Color.DARK_GRAY}... ({len(lines) - max_lines} more lines)"
-        )
+        print(f"{Color.DARK_GRAY}    {Color.DARK_GRAY}... ({len(lines) - max_lines} more lines)")
     return True
 
 
@@ -271,15 +237,10 @@ def _fetch_sitemap(session, base_url: str):
         soup = BeautifulSoup(r.text, "html.parser")
         locs = [tag.get_text(strip=True) for tag in soup.find_all("loc")]
     except Exception:
-        print(
-            f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}"
-            f" Could not parse sitemap.xml"
-        )
+        print(f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Could not parse sitemap.xml")
         return
     if not locs:
-        print(
-            f"{Color.DARK_GRAY}  - {Color.DARK_GRAY}sitemap.xml is empty or unsupported format."
-        )
+        print(f"{Color.DARK_GRAY}  - {Color.DARK_GRAY}sitemap.xml is empty or unsupported format.")
         return
     print(
         f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN}"

@@ -29,10 +29,7 @@ def cidr_calculator_tool(data=None):
         check_ip = data.get("check_ip", "").strip()
         subnet_count = int(data.get("subnet_count", 0))
     else:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" CIDR Calculator\n"
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} CIDR Calculator\n")
         cidr_str = input(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
             f" Enter CIDR (e.g. 192.168.1.0/24): {Color.RESET}"
@@ -53,27 +50,19 @@ def cidr_calculator_tool(data=None):
             subnet_count = 0
 
     if not cidr_str:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No CIDR provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No CIDR provided.")
         return
 
     try:
         net = ipaddress.ip_network(cidr_str, strict=False)
     except ValueError as e:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}"
-            f" Invalid CIDR notation: {e}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid CIDR notation: {e}")
         return
 
     is_v6 = isinstance(net, ipaddress.IPv6Network)
     version = 6 if is_v6 else 4
 
-    print(
-        f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Network Info · IPv{version} {Color.DARK_RED}]"
-        + "─" * 18
-    )
+    print(f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Network Info · IPv{version} {Color.DARK_RED}]" + "─" * 18)
     _row("CIDR", str(net))
     _row("Network address", str(net.network_address))
     _row("Prefix length", f"/{net.prefixlen}")
@@ -101,10 +90,7 @@ def cidr_calculator_tool(data=None):
             pass
 
     if check_ip:
-        print(
-            f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}IP Check {Color.DARK_RED}]"
-            + "─" * 29
-        )
+        print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}IP Check {Color.DARK_RED}]" + "─" * 29)
         try:
             ip_obj = ipaddress.ip_address(check_ip)
             if ip_obj in net:
@@ -113,21 +99,12 @@ def cidr_calculator_tool(data=None):
                     f"{Color.LIGHT_GREEN} {check_ip} is IN {net}"
                 )
             else:
-                print(
-                    f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]"
-                    f"{Color.RED} {check_ip} is NOT in {net}"
-                )
+                print(f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} {check_ip} is NOT in {net}")
         except ValueError as e:
-            print(
-                f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}"
-                f" Invalid IP: {e}"
-            )
+            print(f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid IP: {e}")
 
     if subnet_count and subnet_count > 1:
-        print(
-            f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Subnets ({subnet_count}) {Color.DARK_RED}]"
-            + "─" * 24
-        )
+        print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Subnets ({subnet_count}) {Color.DARK_RED}]" + "─" * 24)
 
         bits_needed = (subnet_count - 1).bit_length()
         new_prefix = net.prefixlen + bits_needed
@@ -154,11 +131,7 @@ def cidr_calculator_tool(data=None):
             for i, sn in enumerate(subnets[:display_limit]):
                 if not is_v6 and sn.prefixlen < 31:
                     hs = list(sn.hosts())
-                    detail = (
-                        f"  {Color.DARK_GRAY}hosts: {Color.WHITE}{hs[0]} – {hs[-1]}"
-                        if hs
-                        else ""
-                    )
+                    detail = f"  {Color.DARK_GRAY}hosts: {Color.WHITE}{hs[0]} – {hs[-1]}" if hs else ""
                 else:
                     detail = ""
                 print(
@@ -167,12 +140,7 @@ def cidr_calculator_tool(data=None):
                 )
 
             if len(subnets) > display_limit:
-                print(
-                    f"{Color.DARK_GRAY}  ... ({len(subnets) - display_limit} more subnets)"
-                )
+                print(f"{Color.DARK_GRAY}  ... ({len(subnets) - display_limit} more subnets)")
 
     print(f"\n{Color.DARK_RED}└" + "─" * 45)
-    print(
-        f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN}"
-        f" CIDR calculation complete."
-    )
+    print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} CIDR calculation complete.")

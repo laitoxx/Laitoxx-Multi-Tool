@@ -10,16 +10,10 @@ import os
 import requests
 
 # Директория для хранения кэшированных аватаров
-_CACHE_DIR = os.path.join(
-    os.path.dirname(__file__), "..", "..", "..", "resources", "avatar_cache"
-)
+_CACHE_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "..", "resources", "avatar_cache")
 
 # User-Agent для выполнения HTTP-запросов
-_UA = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/124.0.0.0 Safari/537.36"
-)
+_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 
 
 class AvatarDownloader:
@@ -81,9 +75,7 @@ class AvatarDownloader:
         except Exception:
             return None
 
-    def download_all(
-        self, avatar_urls: dict[str, str], username: str
-    ) -> dict[str, str]:
+    def download_all(self, avatar_urls: dict[str, str], username: str) -> dict[str, str]:
         """
         Download multiple avatars.
 

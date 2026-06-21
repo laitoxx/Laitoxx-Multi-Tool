@@ -27,9 +27,7 @@ from laitoxx.interfaces.gui.translator import translator
 
 
 def _build_ok_cancel_buttons(parent: QDialog) -> QDialogButtonBox:
-    buttons = QDialogButtonBox(
-        QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-    )
+    buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
     buttons.accepted.connect(parent.accept)
     buttons.rejected.connect(parent.reject)
     return buttons
@@ -76,17 +74,13 @@ class TelegramSearchDialog(QDialog):
         }
 
         self.input_text = QLineEdit()
-        self.input_text.setPlaceholderText(
-            "Enter query (e.g., @username or numeric ID)"
-        )
+        self.input_text.setPlaceholderText("Enter query (e.g., @username or numeric ID)")
         layout.addWidget(self.input_text)
 
         button_row = QHBoxLayout()
         for display_text, method_name in self._search_map.items():
             btn = QPushButton(display_text)
-            btn.clicked.connect(
-                lambda _, m=method_name, d=display_text: self._set_result(m, d)
-            )
+            btn.clicked.connect(lambda _, m=method_name, d=display_text: self._set_result(m, d))
             button_row.addWidget(btn)
         layout.addLayout(button_row)
 
@@ -206,27 +200,19 @@ class HashToolsDialog(QDialog):
             fl.addRow("Output File:", row)
 
     def _browse_wordlist(self):
-        filepath = _open_file(
-            self, "Select Wordlist", "Text Files (*.txt);;All Files (*)"
-        )
+        filepath = _open_file(self, "Select Wordlist", "Text Files (*.txt);;All Files (*)")
         if filepath:
             self.wordlist_input.setText(filepath)
 
     def _browse_output(self):
-        filepath = _save_file(
-            self, "Save Rainbow Table", "CSV Files (*.csv);;All Files (*)"
-        )
+        filepath = _save_file(self, "Save Rainbow Table", "CSV Files (*.csv);;All Files (*)")
         if filepath:
             self.output_file_input.setText(filepath)
 
     def get_values(self):
         if self.tool_name == "Text Hasher":
             text = self.text_input.toPlainText().strip()
-            return (
-                {"text": text, "algorithm": self.algorithm_combo.currentText()}
-                if text
-                else None
-            )
+            return {"text": text, "algorithm": self.algorithm_combo.currentText()} if text else None
 
         if self.tool_name == "Hash Identifier":
             h = self.hash_input.text().strip()
@@ -236,11 +222,7 @@ class HashToolsDialog(QDialog):
             h = self.hash_input.text().strip()
             alg = self.algorithm_combo.currentText()
             wl = self.wordlist_input.text().strip()
-            return (
-                {"hash": h, "algorithm": alg, "wordlist": wl}
-                if all([h, alg, wl])
-                else None
-            )
+            return {"hash": h, "algorithm": alg, "wordlist": wl} if all([h, alg, wl]) else None
 
         if self.tool_name == "Rainbow Table Gen":
             charset = self.charset_input.text().strip()
@@ -348,8 +330,7 @@ class WebSecurityDialog(QDialog):
         layout = QVBoxLayout(self)
 
         info = QLabel(
-            "Passive web security checks - no payloads injected.\n"
-            "Enter the target URL and select which check to run."
+            "Passive web security checks - no payloads injected.\nEnter the target URL and select which check to run."
         )
         info.setWordWrap(True)
         layout.addWidget(info)
@@ -467,9 +448,7 @@ class PasswordGeneratorDialog(QDialog):
         form.addRow("Custom charset (only these):", self.custom_input)
 
         self.exclude_input = QLineEdit()
-        self.exclude_input.setPlaceholderText(
-            "e.g. O0lI1  (applied after pool is built)"
-        )
+        self.exclude_input.setPlaceholderText("e.g. O0lI1  (applied after pool is built)")
         form.addRow("Exclude chars:", self.exclude_input)
 
         self._preset_widgets = []
@@ -519,9 +498,7 @@ class RegexTesterDialog(QDialog):
 
         form = QFormLayout()
         self.pattern_input = QLineEdit()
-        self.pattern_input.setPlaceholderText(
-            r"e.g.  \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
-        )
+        self.pattern_input.setPlaceholderText(r"e.g.  \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
         form.addRow("Pattern:", self.pattern_input)
 
         flags_widget = QWidget()
@@ -566,9 +543,7 @@ class CidrCalculatorDialog(QDialog):
         form.addRow("CIDR notation:", self.cidr_input)
 
         self.check_ip_input = QLineEdit()
-        self.check_ip_input.setPlaceholderText(
-            "Optional - check if this IP is in range"
-        )
+        self.check_ip_input.setPlaceholderText("Optional - check if this IP is in range")
         form.addRow("Check IP:", self.check_ip_input)
 
         self.subnet_input = QLineEdit("0")
@@ -619,15 +594,13 @@ class ThemeEditorDialog(QDialog):
         layout.addWidget(self.color_preview)
 
         buttons = QDialogButtonBox()
-        buttons.addButton(
-            translator.get("reset_theme"), QDialogButtonBox.ButtonRole.ResetRole
-        ).clicked.connect(self._reset)
-        buttons.addButton(
-            translator.get("save_theme"), QDialogButtonBox.ButtonRole.AcceptRole
-        ).clicked.connect(self.accept)
-        buttons.addButton(
-            translator.get("close"), QDialogButtonBox.ButtonRole.RejectRole
-        ).clicked.connect(self.reject)
+        buttons.addButton(translator.get("reset_theme"), QDialogButtonBox.ButtonRole.ResetRole).clicked.connect(
+            self._reset
+        )
+        buttons.addButton(translator.get("save_theme"), QDialogButtonBox.ButtonRole.AcceptRole).clicked.connect(
+            self.accept
+        )
+        buttons.addButton(translator.get("close"), QDialogButtonBox.ButtonRole.RejectRole).clicked.connect(self.reject)
         layout.addWidget(buttons)
 
         self._update_preview()
@@ -650,19 +623,13 @@ class ThemeEditorDialog(QDialog):
         current_str = self.theme_data.get(key, "#ffffff")
         dialog = QColorDialog(self)
         dialog.setCurrentColor(QColor(current_str))
-        dialog.setWindowTitle(
-            translator.get(
-                "edit_color_title", element=self.element_selector.currentText()
-            )
-        )
+        dialog.setWindowTitle(translator.get("edit_color_title", element=self.element_selector.currentText()))
         if dialog.exec():
             color = dialog.currentColor()
             if color.isValid():
                 if "rgba" in current_str:
                     alpha = float(current_str.split(",")[-1].strip()[:-1])
-                    self.theme_data[key] = (
-                        f"rgba({color.red()}, {color.green()}, {color.blue()}, {alpha})"
-                    )
+                    self.theme_data[key] = f"rgba({color.red()}, {color.green()}, {color.blue()}, {alpha})"
                 else:
                     self.theme_data[key] = color.name()
                 self._update_preview()
@@ -707,24 +674,16 @@ class UserAgreementDialog(QDialog):
             self.agreement_text.setText(f"Error loading agreement: {e}")
         layout.addWidget(self.agreement_text)
 
-        self.checkbox = QCheckBox(
-            "I have read and agree to comply with the User Agreement"
-        )
+        self.checkbox = QCheckBox("I have read and agree to comply with the User Agreement")
         self.checkbox.setStyleSheet("font-weight: bold; margin-top: 10px;")
         layout.addWidget(self.checkbox)
 
         buttons = QDialogButtonBox()
-        self.agree_button = buttons.addButton(
-            "I Agree", QDialogButtonBox.ButtonRole.AcceptRole
-        )
+        self.agree_button = buttons.addButton("I Agree", QDialogButtonBox.ButtonRole.AcceptRole)
         self.agree_button.setEnabled(False)
-        buttons.addButton(
-            "I Disagree", QDialogButtonBox.ButtonRole.RejectRole
-        ).clicked.connect(self._on_disagree)
+        buttons.addButton("I Disagree", QDialogButtonBox.ButtonRole.RejectRole).clicked.connect(self._on_disagree)
         self.agree_button.clicked.connect(self._on_agree)
-        self.checkbox.stateChanged.connect(
-            lambda: self.agree_button.setEnabled(self.checkbox.isChecked())
-        )
+        self.checkbox.stateChanged.connect(lambda: self.agree_button.setEnabled(self.checkbox.isChecked()))
         layout.addWidget(buttons)
 
     def _on_agree(self):
@@ -733,9 +692,7 @@ class UserAgreementDialog(QDialog):
             mark_accepted()
             self.accept()
         else:
-            QMessageBox.warning(
-                self, "Agreement Required", "Please check the checkbox to continue."
-            )
+            QMessageBox.warning(self, "Agreement Required", "Please check the checkbox to continue.")
 
     def _on_disagree(self):
         reply = QMessageBox.question(
@@ -762,9 +719,7 @@ class LuaPluginInputDialog(QDialog):
 
         if plugin_meta:
             info = QLabel(
-                f"{plugin_meta.name} v{plugin_meta.version}\n"
-                f"by {plugin_meta.author}\n\n"
-                f"{plugin_meta.description}"
+                f"{plugin_meta.name} v{plugin_meta.version}\nby {plugin_meta.author}\n\n{plugin_meta.description}"
             )
             info.setWordWrap(True)
             layout.addWidget(info)
@@ -813,11 +768,7 @@ class LuaPluginConfigDialog(QDialog):
             if hasattr(raw, "values"):
                 # Lua table (1-based array)
                 try:
-                    schema = [
-                        _lua_config_entry(raw[i])
-                        for i in range(1, 100)
-                        if raw[i] is not None
-                    ]
+                    schema = [_lua_config_entry(raw[i]) for i in range(1, 100) if raw[i] is not None]
                 except (KeyError, IndexError, TypeError):
                     try:
                         from laitoxx.app.plugins.engine import _lua_table_to_python
@@ -837,9 +788,7 @@ class LuaPluginConfigDialog(QDialog):
             label = entry.get("label", key)
             field_type = entry.get("type", "string")
             default = entry.get("default", "")
-            current = (
-                plugin_meta.config_values.get(key, default) if plugin_meta else default
-            )
+            current = plugin_meta.config_values.get(key, default) if plugin_meta else default
 
             if field_type == "boolean":
                 widget = QCheckBox()
@@ -881,9 +830,7 @@ def _lua_config_entry(tbl) -> dict:
             "key": tbl.get("key", "") if hasattr(tbl, "get") else tbl["key"],
             "label": tbl.get("label", "") if hasattr(tbl, "get") else tbl["label"],
             "type": tbl.get("type", "string") if hasattr(tbl, "get") else tbl["type"],
-            "default": tbl.get("default", "")
-            if hasattr(tbl, "get")
-            else tbl.get("default", ""),
+            "default": tbl.get("default", "") if hasattr(tbl, "get") else tbl.get("default", ""),
         }
     return {}
 
@@ -893,9 +840,7 @@ class PluginExecutionWindow(QDialog):
         super().__init__(parent)
         self.plugin_data = plugin_data
         self.parent_window = parent
-        self.setWindowTitle(
-            translator.get("running_plugin", name=plugin_data.get("name"))
-        )
+        self.setWindowTitle(translator.get("running_plugin", name=plugin_data.get("name")))
         self.setMinimumSize(700, 500)
 
         layout = QVBoxLayout(self)
@@ -907,20 +852,18 @@ class PluginExecutionWindow(QDialog):
         self.button_box.addButton(
             translator.get("edit_plugin"), QDialogButtonBox.ButtonRole.ActionRole
         ).clicked.connect(self._edit_plugin)
-        self.button_box.addButton(
-            translator.get("save_log"), QDialogButtonBox.ButtonRole.ActionRole
-        ).clicked.connect(self._save_log)
-        self.button_box.addButton(
-            translator.get("close"), QDialogButtonBox.ButtonRole.RejectRole
-        ).clicked.connect(self.accept)
+        self.button_box.addButton(translator.get("save_log"), QDialogButtonBox.ButtonRole.ActionRole).clicked.connect(
+            self._save_log
+        )
+        self.button_box.addButton(translator.get("close"), QDialogButtonBox.ButtonRole.RejectRole).clicked.connect(
+            self.accept
+        )
         self.button_box.setVisible(False)
         layout.addWidget(self.button_box)
 
     def append_log(self, text):
         self.log_area.append(text)
-        self.log_area.verticalScrollBar().setValue(
-            self.log_area.verticalScrollBar().maximum()
-        )
+        self.log_area.verticalScrollBar().setValue(self.log_area.verticalScrollBar().maximum())
 
     def execution_finished(self):
         self.append_log(translator.get("execution_finished"))
@@ -929,21 +872,15 @@ class PluginExecutionWindow(QDialog):
     def _edit_plugin(self):
         plugin_path = self.plugin_data.get("plugin_path")
         if plugin_path and os.path.isdir(plugin_path):
-            builder = PluginBuilderWindow(
-                self.parent_window, plugin_path=plugin_path, translator=translator
-            )
+            builder = PluginBuilderWindow(self.parent_window, plugin_path=plugin_path, translator=translator)
             if builder.exec():
                 self.parent_window.reload_plugins_and_ui()
         else:
-            logging.error(
-                translator.get("plugin_path_error", name=self.plugin_data.get("name"))
-            )
+            logging.error(translator.get("plugin_path_error", name=self.plugin_data.get("name")))
 
     def _save_log(self):
         content = self.log_area.toPlainText()
-        filepath = _save_file(
-            self, translator.get("save_log"), "Text Files (*.txt);;All Files (*)"
-        )
+        filepath = _save_file(self, translator.get("save_log"), "Text Files (*.txt);;All Files (*)")
         if filepath:
             try:
                 with open(filepath, "w", encoding="utf-8") as f:

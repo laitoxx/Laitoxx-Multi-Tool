@@ -236,9 +236,7 @@ def tool_btn_style(active: bool, accent: str, text_pri: str, text_dim: str) -> s
     """
 
 
-def engine_pill_style(
-    checked: bool, accent: str, text_sec: str, border: str, text_pri: str
-) -> str:
+def engine_pill_style(checked: bool, accent: str, text_sec: str, border: str, text_pri: str) -> str:
     if checked:
         return f"""
             QPushButton {{

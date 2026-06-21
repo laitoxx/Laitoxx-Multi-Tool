@@ -27,9 +27,7 @@ def nmap_scanner_tool():
                 raise FileNotFoundError
     except FileNotFoundError:
         print("Zenmap Error: Zenmap not found at the specified path.")
-        print(
-            "Note: Zenmap is not a pip package. You can download it from: https://nmap.org/download"
-        )
+        print("Note: Zenmap is not a pip package. You can download it from: https://nmap.org/download")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 

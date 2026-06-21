@@ -37,14 +37,11 @@ def username_osint_tool(data=None):
         username = data.strip()
     else:
         username = input(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}\u26e7{Color.DARK_GRAY}]"
-            f"{Color.DARK_RED} Enter username: {Color.RESET}"
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}\u26e7{Color.DARK_GRAY}]{Color.DARK_RED} Enter username: {Color.RESET}"
         ).strip()
 
     if not username:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}\u2716{Color.DARK_GRAY}]{Color.RED} Username cannot be empty."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}\u2716{Color.DARK_GRAY}]{Color.RED} Username cannot be empty.")
         return
 
     # Load site database
@@ -61,10 +58,7 @@ def username_osint_tool(data=None):
         nonlocal found_count
         if result.is_found:
             found_count += 1
-            print(
-                f"  {Color.LIGHT_GREEN}\u2714{Color.WHITE} {result.site_name:<25}"
-                f"{Color.LIGHT_BLUE}{result.url}"
-            )
+            print(f"  {Color.LIGHT_GREEN}\u2714{Color.WHITE} {result.site_name:<25}{Color.LIGHT_BLUE}{result.url}")
         print(
             f"\r{Color.DARK_GRAY}  Progress: {checked}/{total}  Found: {found_count}",
             end="",
@@ -77,10 +71,7 @@ def username_osint_tool(data=None):
     print(f"\n\n{Color.DARK_GRAY}{'─' * 50}")
 
     if not found:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}\u2716{Color.DARK_GRAY}]{Color.RED}"
-            f" No accounts found for '{username}'."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}\u2716{Color.DARK_GRAY}]{Color.RED} No accounts found for '{username}'.")
         return
 
     # Generate portrait

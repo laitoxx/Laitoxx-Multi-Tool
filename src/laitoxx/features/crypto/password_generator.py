@@ -33,9 +33,7 @@ _DIGITS = _string.digits
 _SYMBOLS = "!@#$%^&*()-_=+[]{}|;:',.<>?/`~"
 
 
-def _build_pool(
-    use_upper, use_lower, use_digits, use_symbols, custom_chars, exclude_chars
-) -> str:
+def _build_pool(use_upper, use_lower, use_digits, use_symbols, custom_chars, exclude_chars) -> str:
     if custom_chars:
         pool = custom_chars
     else:
@@ -77,10 +75,7 @@ def password_generator_tool(data=None):
         custom_chars = data.get("custom_chars", "").strip()
         exclude_chars = data.get("exclude_chars", "").strip()
     else:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" Password Generator\n"
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Password Generator\n")
         try:
             length = int(
                 input(
@@ -128,9 +123,7 @@ def password_generator_tool(data=None):
             f" Exclude chars (e.g. O0lI1, leave empty for none): {Color.RESET}"
         ).strip()
 
-    pool = _build_pool(
-        use_upper, use_lower, use_digits, use_symbols, custom_chars, exclude_chars
-    )
+    pool = _build_pool(use_upper, use_lower, use_digits, use_symbols, custom_chars, exclude_chars)
 
     if not pool:
         print(
@@ -140,18 +133,12 @@ def password_generator_tool(data=None):
         return
 
     if length < 1:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}"
-            f" Length must be at least 1."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Length must be at least 1.")
         return
 
     count = max(1, min(count, 100))
 
-    print(
-        f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Password Generator {Color.DARK_RED}]"
-        + "─" * 20
-    )
+    print(f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Password Generator {Color.DARK_RED}]" + "─" * 20)
     print(
         f"{Color.DARK_GRAY}  Pool size: {Color.WHITE}{len(pool)} chars"
         f"  {Color.DARK_GRAY}Length: {Color.WHITE}{length}"
@@ -166,7 +153,4 @@ def password_generator_tool(data=None):
         print(f"{Color.DARK_GRAY}  {Color.WHITE}{pw}")
 
     print(f"{Color.DARK_RED}└" + "─" * 45)
-    print(
-        f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN}"
-        f" {count} password(s) generated."
-    )
+    print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {count} password(s) generated.")

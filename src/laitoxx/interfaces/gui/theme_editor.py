@@ -224,10 +224,7 @@ def _parse_color(s: str) -> QColor:
 def _to_css(color: QColor, original_str: str) -> str:
     """Serialise QColor back to CSS, preserving rgba format if original was rgba."""
     if "rgba" in original_str:
-        return (
-            f"rgba({color.red()}, {color.green()}, {color.blue()}, "
-            f"{color.alphaF():.3f})"
-        )
+        return f"rgba({color.red()}, {color.green()}, {color.blue()}, {color.alphaF():.3f})"
     return color.name()
 
 
@@ -271,18 +268,18 @@ def _generate_palette(base: QColor) -> dict[str, list[QColor]]:
 _CB_MATRICES: dict[str, list[list[float]]] = {
     "deuteranopia": [
         [0.367, 0.861, -0.228],
-        [0.280, 0.673,  0.047],
+        [0.280, 0.673, 0.047],
         [-0.012, 0.043, 0.969],
     ],
     "protanopia": [
         [0.152, 1.053, -0.205],
-        [0.115, 0.786,  0.099],
+        [0.115, 0.786, 0.099],
         [-0.004, -0.048, 1.052],
     ],
     "tritanopia": [
         [1.256, -0.077, -0.179],
-        [-0.078, 0.931,  0.148],
-        [0.005,  0.691,  0.304],
+        [-0.078, 0.931, 0.148],
+        [0.005, 0.691, 0.304],
     ],
 }
 
@@ -326,7 +323,7 @@ def _palette_to_theme(colors: list[QColor], base: dict) -> dict:
     def mk(h2, s2, v2, a=1.0) -> str:
         r2, g2, b2 = colorsys.hsv_to_rgb(h2 % 1.0, max(0.0, min(1.0, s2)), max(0.0, min(1.0, v2)))
         if a < 1.0:
-            return f"rgba({int(r2*255)}, {int(g2*255)}, {int(b2*255)}, {a:.2f})"
+            return f"rgba({int(r2 * 255)}, {int(g2 * 255)}, {int(b2 * 255)}, {a:.2f})"
         return QColor.fromRgbF(r2, g2, b2).name()
 
     cl = colors[-1]
@@ -612,9 +609,7 @@ class _ColorHistory(QWidget):
             for dx in range(0, size, 6):
                 for dy in range(0, size, 6):
                     light = (dx // 6 + dy // 6) % 2 == 0
-                    p.fillRect(
-                        x + dx, 2 + dy, 6, 6, QColor("#aaa" if light else "#777")
-                    )
+                    p.fillRect(x + dx, 2 + dy, 6, 6, QColor("#aaa" if light else "#777"))
             p.fillRect(x, 2, size, size, QBrush(c))
             p.setPen(QPen(QColor(100, 100, 100), 1))
             p.drawRoundedRect(x, 2, size, size, 3, 3)
@@ -646,9 +641,7 @@ class _ContrastBadge(QLabel):
         else:
             level, color = translator.get("te_low_contrast"), "#e63946"
         self.setText(f"Contrast {ratio:.1f}:1  [{level}]")
-        self.setStyleSheet(
-            f"color: {color}; font-size: 11px; font-weight: 600; background: transparent;"
-        )
+        self.setStyleSheet(f"color: {color}; font-size: 11px; font-weight: 600; background: transparent;")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -743,11 +736,7 @@ class _EyedropperOverlay(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.setWindowFlags(
-            Qt.WindowType.FramelessWindowHint
-            | Qt.WindowType.WindowStaysOnTopHint
-            | Qt.WindowType.Tool
-        )
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.Tool)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         screen = QApplication.primaryScreen().geometry()
         self.setGeometry(screen)
@@ -806,6 +795,7 @@ class _PreviewPane(QWidget):
         super().__init__(parent)
         from PyQt6.QtWidgets import QLineEdit as _LE
         from PyQt6.QtWidgets import QPlainTextEdit
+
         lay = QVBoxLayout(self)
         lay.setContentsMargins(12, 12, 12, 12)
         lay.setSpacing(8)
@@ -852,6 +842,7 @@ class _PreviewPane(QWidget):
 
     def apply_theme(self, td: dict, colorblind_mode: str = "none", dark_bg: bool = True):
         """Restyle all preview widgets from theme data."""
+
         def col(key: str, fallback: str = "#888") -> str:
             css = td.get(key, fallback)
             c = _parse_color(css)
@@ -922,9 +913,7 @@ class ThemeEditorDialog(QDialog):
 
         # build flat ordered list  key → display label
         theme_map_raw = translator.get("theme_map")
-        self._theme_map: dict[str, str] = (
-            theme_map_raw if isinstance(theme_map_raw, dict) else {}
-        )
+        self._theme_map: dict[str, str] = theme_map_raw if isinstance(theme_map_raw, dict) else {}
 
         # Update module tokens so _populate_list uses correct accent colour
         import laitoxx.interfaces.gui.theme_editor as _self_mod
@@ -932,9 +921,7 @@ class ThemeEditorDialog(QDialog):
         _self_mod._ACCENT = current_theme.get("accent_color", _ACCENT)
         _self_mod._TEXT = current_theme.get("text_area_text_color", _TEXT)
         _self_mod._TEXT_DIM = current_theme.get("text_secondary_color", _TEXT_DIM)
-        _self_mod._BORDER = current_theme.get(
-            "border_color", current_theme.get("button_border_color", _BORDER)
-        )
+        _self_mod._BORDER = current_theme.get("border_color", current_theme.get("button_border_color", _BORDER))
 
         self._build_ui()
         self.setStyleSheet(_build_dialog_ss(current_theme))
@@ -964,9 +951,7 @@ class ThemeEditorDialog(QDialog):
         left_layout.setSpacing(8)
 
         self._search_lbl = QLabel(translator.get("te_search_elements"))
-        self._search_lbl.setStyleSheet(
-            f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;"
-        )
+        self._search_lbl.setStyleSheet(f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;")
         left_layout.addWidget(self._search_lbl)
 
         self._search = QLineEdit()
@@ -998,7 +983,9 @@ class ThemeEditorDialog(QDialog):
 
         # Tabs
         self._center_tabs = QTabWidget()
-        self._center_tabs.addTab(self._build_picker_tab(), translator.get("te_presets").split()[0] if False else "Color Picker")
+        self._center_tabs.addTab(
+            self._build_picker_tab(), translator.get("te_presets").split()[0] if False else "Color Picker"
+        )
         self._center_tabs.addTab(self._build_palettes_tab(), translator.get("te_tab_palettes"))
         self._center_tabs.addTab(self._build_preview_tab(), translator.get("te_tab_preview"))
         center_layout.addWidget(self._center_tabs, 1)
@@ -1085,9 +1072,7 @@ class ThemeEditorDialog(QDialog):
         self._hex_input.textEdited.connect(self._on_hex_edited)
         self._swatch = QLabel()
         self._swatch.setFixedSize(36, 24)
-        self._swatch.setStyleSheet(
-            "border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);"
-        )
+        self._swatch.setStyleSheet("border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);")
         hex_row.addWidget(hex_lbl)
         hex_row.addWidget(self._hex_input, 1)
         hex_row.addWidget(self._swatch)
@@ -1099,9 +1084,7 @@ class ThemeEditorDialog(QDialog):
 
         # Color history
         hist_lbl = QLabel(translator.get("te_history"))
-        hist_lbl.setStyleSheet(
-            f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;"
-        )
+        hist_lbl.setStyleSheet(f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;")
         lay.addWidget(hist_lbl)
         self._history = _ColorHistory()
         self._history.color_picked.connect(self._apply_css_string)
@@ -1118,9 +1101,7 @@ class ThemeEditorDialog(QDialog):
         lay.setSpacing(8)
 
         self._palette_base_lbl = QLabel("")
-        self._palette_base_lbl.setStyleSheet(
-            f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;"
-        )
+        self._palette_base_lbl.setStyleSheet(f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;")
         lay.addWidget(self._palette_base_lbl)
 
         # Harmony type buttons
@@ -1210,9 +1191,7 @@ class ThemeEditorDialog(QDialog):
 
         def section(key: str):
             lbl = QLabel(translator.get(key))
-            lbl.setStyleSheet(
-                f"color: {_ACCENT}; font-size: 11px; font-weight: 700; background: transparent;"
-            )
+            lbl.setStyleSheet(f"color: {_ACCENT}; font-size: 11px; font-weight: 700; background: transparent;")
             lay.addWidget(lbl)
 
         section("te_copy_color")
@@ -1297,9 +1276,7 @@ class ThemeEditorDialog(QDialog):
         lay.addWidget(sep3)
 
         self._export_lbl = QLabel(translator.get("te_export"))
-        self._export_lbl.setStyleSheet(
-            f"color: {_ACCENT}; font-size: 11px; font-weight: 700; background: transparent;"
-        )
+        self._export_lbl.setStyleSheet(f"color: {_ACCENT}; font-size: 11px; font-weight: 700; background: transparent;")
         lay.addWidget(self._export_lbl)
 
         btn_export = QPushButton(translator.get("te_export_json"))
@@ -1353,19 +1330,13 @@ class ThemeEditorDialog(QDialog):
         btn_hov = theme.get("button_hover_bg_color", "rgba(192,132,252,0.28)")
 
         if hasattr(self, "_left_pane"):
-            self._left_pane.setStyleSheet(
-                f"background: {panel_bg}; border-right: 1px solid {bdr};"
-            )
+            self._left_pane.setStyleSheet(f"background: {panel_bg}; border-right: 1px solid {bdr};")
         if hasattr(self, "_center_pane"):
             self._center_pane.setStyleSheet(f"background: {bg_win};")
         if hasattr(self, "_right_pane"):
-            self._right_pane.setStyleSheet(
-                f"background: {panel_bg}; border-left: 1px solid {bdr};"
-            )
+            self._right_pane.setStyleSheet(f"background: {panel_bg}; border-left: 1px solid {bdr};")
         if hasattr(self, "_search_lbl"):
-            self._search_lbl.setStyleSheet(
-                f"color: {txt_dim}; font-size: 11px; background: transparent;"
-            )
+            self._search_lbl.setStyleSheet(f"color: {txt_dim}; font-size: 11px; background: transparent;")
         if hasattr(self, "_element_lbl"):
             self._element_lbl.setStyleSheet(
                 f"color: {accent}; font-size: 14px; font-weight: 700; background: transparent;"
@@ -1641,9 +1612,7 @@ class ThemeEditorDialog(QDialog):
     def _import_json(self):
         from PyQt6.QtWidgets import QFileDialog
 
-        path, _ = QFileDialog.getOpenFileName(
-            self, translator.get("te_import_json"), "", "JSON (*.json)"
-        )
+        path, _ = QFileDialog.getOpenFileName(self, translator.get("te_import_json"), "", "JSON (*.json)")
         if path:
             from laitoxx.core.settings.theme import load_theme
 
@@ -1700,6 +1669,7 @@ class ThemeEditorDialog(QDialog):
             QMessageBox.warning(self, "Error", "Pillow not installed.")
             return
         from PyQt6.QtWidgets import QFileDialog
+
         path, _ = QFileDialog.getOpenFileName(
             self, translator.get("te_extract_image"), "", "Images (*.png *.jpg *.jpeg *.bmp *.webp)"
         )
@@ -1860,6 +1830,7 @@ class ThemeEditorDialog(QDialog):
         if not path:
             return
         from laitoxx.core.settings.theme import load_theme
+
         data = load_theme(path)
         if data:
             self.theme_data.update(data)
@@ -1876,6 +1847,7 @@ class ThemeEditorDialog(QDialog):
 
     def _toggle_favorite(self, path: str):
         from laitoxx.core.settings.app_settings import settings
+
         favs = list(settings.favorite_themes)
         if path in favs:
             favs.remove(path)

@@ -32,17 +32,11 @@ def regex_tester_tool(data=None):
         text = data.get("text", "")
         flag_names = data.get("flags", [])
     else:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" Regex Tester\n"
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Regex Tester\n")
         pattern = input(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" Regex pattern: {Color.RESET}"
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Regex pattern: {Color.RESET}"
         )
-        print(
-            f"{Color.DARK_GRAY}  Flags (comma-separated): IGNORECASE, MULTILINE, DOTALL, VERBOSE, ASCII"
-        )
+        print(f"{Color.DARK_GRAY}  Flags (comma-separated): IGNORECASE, MULTILINE, DOTALL, VERBOSE, ASCII")
         flag_input = input(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
             f" Flags (leave empty for none): {Color.RESET}"
@@ -59,14 +53,10 @@ def regex_tester_tool(data=None):
         text = "\n".join(lines)
 
     if not pattern:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No pattern provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No pattern provided.")
         return
     if not text:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No text provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No text provided.")
         return
 
     flags = re.RegexFlag(0)
@@ -79,10 +69,7 @@ def regex_tester_tool(data=None):
     try:
         compiled = re.compile(pattern, flags)
     except re.error as e:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}"
-            f" Invalid regex: {e}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid regex: {e}")
         return
 
     lines_list = text.splitlines()
@@ -104,18 +91,10 @@ def regex_tester_tool(data=None):
 
     matches = list(compiled.finditer(text))
 
-    print(
-        f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Regex Tester {Color.DARK_RED}]"
-        + "─" * 26
-    )
+    print(f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Regex Tester {Color.DARK_RED}]" + "─" * 26)
     print(f"{Color.DARK_GRAY}  Pattern:  {Color.WHITE}{pattern}")
-    print(
-        f"{Color.DARK_GRAY}  Flags:    {Color.WHITE}{', '.join(valid_flags) if valid_flags else 'none'}"
-    )
-    print(
-        f"{Color.DARK_RED}├─[ {Color.LIGHT_RED}Matches ({len(matches)}) {Color.DARK_RED}]"
-        + "─" * 26
-    )
+    print(f"{Color.DARK_GRAY}  Flags:    {Color.WHITE}{', '.join(valid_flags) if valid_flags else 'none'}")
+    print(f"{Color.DARK_RED}├─[ {Color.LIGHT_RED}Matches ({len(matches)}) {Color.DARK_RED}]" + "─" * 26)
 
     if not matches:
         print(f"{Color.DARK_GRAY}  - {Color.YELLOW}No matches found.")
@@ -132,9 +111,7 @@ def regex_tester_tool(data=None):
             if m.lastindex:
                 for gi in range(1, m.lastindex + 1):
                     gval = m.group(gi)
-                    print(
-                        f"{Color.DARK_GRAY}      group {gi}: {Color.LIGHT_BLUE}{repr(gval)}"
-                    )
+                    print(f"{Color.DARK_GRAY}      group {gi}: {Color.LIGHT_BLUE}{repr(gval)}")
 
             if m.groupdict():
                 for gname, gval in m.groupdict().items():
@@ -144,6 +121,5 @@ def regex_tester_tool(data=None):
 
     print(f"\n{Color.DARK_RED}└" + "─" * 45)
     print(
-        f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN}"
-        f" {len(matches)} match(es) found."
+        f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {len(matches)} match(es) found."
     )

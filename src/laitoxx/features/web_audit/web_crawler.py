@@ -32,16 +32,12 @@ def get_all_links(session, url):
             links.add(clean_link)
         return links
     except requests.RequestException as e:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Error fetching {url}: {e}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Error fetching {url}: {e}")
         return set()
 
 
 def web_crawler():
-    print(
-        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Simple Web Crawler"
-    )
+    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Simple Web Crawler")
 
     seed_url = input(
         f"{Color.DARK_GRAY}  - {Color.WHITE}Enter the seed URL to start crawling from: {Color.RESET}"
@@ -51,16 +47,12 @@ def web_crawler():
 
     try:
         max_pages_str = (
-            input(
-                f"{Color.DARK_GRAY}  - {Color.WHITE}Enter max number of pages to crawl [20]: {Color.RESET}"
-            ).strip()
+            input(f"{Color.DARK_GRAY}  - {Color.WHITE}Enter max number of pages to crawl [20]: {Color.RESET}").strip()
             or "20"
         )
         max_pages = int(max_pages_str)
     except ValueError:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid number. Using default of 20."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid number. Using default of 20.")
         max_pages = 20
 
     to_crawl = deque([seed_url])
@@ -76,18 +68,13 @@ def web_crawler():
             if url in crawled:
                 continue
 
-            print(
-                f"{Color.DARK_GRAY}[{len(crawled) + 1:02d}]{Color.WHITE} Crawling: {Color.LIGHT_BLUE}{url}"
-            )
+            print(f"{Color.DARK_GRAY}[{len(crawled) + 1:02d}]{Color.WHITE} Crawling: {Color.LIGHT_BLUE}{url}")
             crawled.add(url)
 
             new_links = get_all_links(session, url)
 
             for link in new_links:
-                if (
-                    urlparse(link).netloc == urlparse(seed_url).netloc
-                    and link not in crawled
-                ):
+                if urlparse(link).netloc == urlparse(seed_url).netloc and link not in crawled:
                     to_crawl.append(link)
 
     print(

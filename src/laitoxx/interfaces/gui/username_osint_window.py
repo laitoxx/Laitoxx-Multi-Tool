@@ -236,9 +236,7 @@ class _SectionLabel(QLabel):
 class _StatCard(QFrame):
     """Small stat card: icon + value + label."""
 
-    def __init__(
-        self, icon: str, value: str, label: str, color: str = _ACCENT, parent=None
-    ):
+    def __init__(self, icon: str, value: str, label: str, color: str = _ACCENT, parent=None):
         super().__init__(parent)
         self.setFixedHeight(56)
         self.setStyleSheet(f"""
@@ -255,22 +253,16 @@ class _StatCard(QFrame):
         top = QHBoxLayout()
         top.setSpacing(4)
         icon_lbl = QLabel(icon)
-        icon_lbl.setStyleSheet(
-            f"font-size: 14px; color: {color}; background: transparent;"
-        )
+        icon_lbl.setStyleSheet(f"font-size: 14px; color: {color}; background: transparent;")
         top.addWidget(icon_lbl)
         self._value = QLabel(value)
-        self._value.setStyleSheet(
-            f"font-size: 16px; font-weight: 700; color: {color}; background: transparent;"
-        )
+        self._value.setStyleSheet(f"font-size: 16px; font-weight: 700; color: {color}; background: transparent;")
         top.addWidget(self._value)
         top.addStretch()
         layout.addLayout(top)
 
         self._label = QLabel(label)
-        self._label.setStyleSheet(
-            f"font-size: 10px; color: {_TEXT_DIM}; background: transparent;"
-        )
+        self._label.setStyleSheet(f"font-size: 10px; color: {_TEXT_DIM}; background: transparent;")
         layout.addWidget(self._label)
 
     def set_value(self, v: str):
@@ -330,11 +322,7 @@ class _ResultRow(QFrame):
         super().__init__(parent)
         self.result = result
         self.setFixedHeight(36)
-        self.setCursor(
-            Qt.CursorShape.PointingHandCursor
-            if result.is_found
-            else Qt.CursorShape.ArrowCursor
-        )
+        self.setCursor(Qt.CursorShape.PointingHandCursor if result.is_found else Qt.CursorShape.ArrowCursor)
         color = _STATUS_COLORS.get(result.status, _ORANGE)
 
         self.setStyleSheet(f"""
@@ -361,9 +349,7 @@ class _ResultRow(QFrame):
 
         # Site name (bold)
         name = QLabel(result.site_name)
-        name.setStyleSheet(
-            f"color: {_TEXT_PRI}; font-size: 12px; font-weight: 600; background: transparent;"
-        )
+        name.setStyleSheet(f"color: {_TEXT_PRI}; font-size: 12px; font-weight: 600; background: transparent;")
         name.setFixedWidth(130)
         layout.addWidget(name)
 
@@ -384,18 +370,14 @@ class _ResultRow(QFrame):
                 f"color: {_BLUE}; font-size: 11px; background: transparent;"
                 f" border: none; text-align: left; padding: 0; text-decoration: none;"
             )
-            url_btn.clicked.connect(
-                lambda _, u=result.url: QDesktopServices.openUrl(QUrl(u))
-            )
+            url_btn.clicked.connect(lambda _, u=result.url: QDesktopServices.openUrl(QUrl(u)))
             layout.addWidget(url_btn, 1)
         else:
             msg = result.status.replace("_", " ")
             if result.error_message:
                 msg += f" · {result.error_message[:30]}"
             s_lbl = QLabel(msg)
-            s_lbl.setStyleSheet(
-                f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;"
-            )
+            s_lbl.setStyleSheet(f"color: {_TEXT_DIM}; font-size: 11px; background: transparent;")
             layout.addWidget(s_lbl, 1)
 
         # Confidence
@@ -471,16 +453,12 @@ class UsernameOsintWindow(QDialog):
         hero.setSpacing(8)
 
         self._at_label = QLabel("@")
-        self._at_label.setStyleSheet(
-            f"color: {_ACCENT}; font-size: 22px; font-weight: 700; background: transparent;"
-        )
+        self._at_label.setStyleSheet(f"color: {_ACCENT}; font-size: 22px; font-weight: 700; background: transparent;")
         self._at_label.setFixedWidth(20)
         hero.addWidget(self._at_label)
 
         self._username_input = QLineEdit()
-        self._username_input.setPlaceholderText(
-            _t("uo_enter_username", "Enter username...")
-        )
+        self._username_input.setPlaceholderText(_t("uo_enter_username", "Enter username..."))
         self._username_input.setMinimumHeight(40)
         self._username_input.setStyleSheet(f"""
             QLineEdit {{
@@ -556,9 +534,7 @@ class UsernameOsintWindow(QDialog):
         self._stat_found = _StatCard("\u2714", "0", _t("uo_found", "Found"), _GREEN)
         self._stat_total = _StatCard("\u2630", "0", _t("uo_total", "Checked"), _ACCENT)
         self._stat_errors = _StatCard("\u26a0", "0", _t("uo_errors", "Errors"), _ORANGE)
-        self._stat_conf = _StatCard(
-            "\u272a", "-", _t("uo_confidence", "Confidence"), _BLUE
-        )
+        self._stat_conf = _StatCard("\u272a", "-", _t("uo_confidence", "Confidence"), _BLUE)
         for card in (
             self._stat_found,
             self._stat_total,
@@ -605,9 +581,7 @@ class UsernameOsintWindow(QDialog):
         cat_scroll = QScrollArea()
         cat_scroll.setWidgetResizable(True)
         cat_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        cat_scroll.setStyleSheet(
-            "QScrollArea { background: transparent; border: none; }"
-        )
+        cat_scroll.setStyleSheet("QScrollArea { background: transparent; border: none; }")
         cat_inner = QWidget()
         cat_inner.setStyleSheet("background: transparent;")
         cat_inner_layout = QVBoxLayout(cat_inner)
@@ -647,9 +621,7 @@ class UsernameOsintWindow(QDialog):
         self._status_group.buttonClicked.connect(self._filter_results)
 
         # Nickname variants
-        left_layout.addWidget(
-            _SectionLabel(_t("uo_nickname_variants", "VARIANTS").upper())
-        )
+        left_layout.addWidget(_SectionLabel(_t("uo_nickname_variants", "VARIANTS").upper()))
         self._nick_list = QTextEdit()
         self._nick_list.setReadOnly(True)
         self._nick_list.setMaximumHeight(120)
@@ -668,9 +640,7 @@ class UsernameOsintWindow(QDialog):
         # Phonetic
         self._phonetic_text = QLabel("")
         self._phonetic_text.setWordWrap(True)
-        self._phonetic_text.setStyleSheet(
-            f"color: {_TEXT_DIM}; font-size: 9px; background: transparent;"
-        )
+        self._phonetic_text.setStyleSheet(f"color: {_TEXT_DIM}; font-size: 9px; background: transparent;")
         left_layout.addWidget(self._phonetic_text)
 
         splitter.addWidget(left)
@@ -686,9 +656,7 @@ class UsernameOsintWindow(QDialog):
         self._scroll = QScrollArea()
         self._scroll.setWidgetResizable(True)
         self._scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self._scroll.setStyleSheet(
-            "QScrollArea { background: transparent; border: none; }"
-        )
+        self._scroll.setStyleSheet("QScrollArea { background: transparent; border: none; }")
         self._results_container = QWidget()
         self._results_container.setStyleSheet("background: transparent;")
         self._results_layout = QVBoxLayout(self._results_container)
@@ -837,9 +805,7 @@ class UsernameOsintWindow(QDialog):
                 }}
             """)
         if hasattr(self, "_phonetic_text"):
-            self._phonetic_text.setStyleSheet(
-                f"color: {txt_sec}; font-size: 9px; background: transparent;"
-            )
+            self._phonetic_text.setStyleSheet(f"color: {txt_sec}; font-size: 9px; background: transparent;")
 
         # Nick list widget (QTextEdit)
         if hasattr(self, "_nick_list"):
@@ -866,9 +832,7 @@ class UsernameOsintWindow(QDialog):
 
         from PyQt6.QtWidgets import QLabel as _QLabel
 
-        _bg_re = _re.compile(
-            r"background\s*:\s*rgba\(\s*192\s*,\s*132\s*,\s*252\s*,\s*[\d.]+\s*\)"
-        )
+        _bg_re = _re.compile(r"background\s*:\s*rgba\(\s*192\s*,\s*132\s*,\s*252\s*,\s*[\d.]+\s*\)")
 
         # Re-colour all QLabel children that have hardcoded purple token colours.
         _ACCENT_VALS = {"#c084fc", "#f472b6", "#7c3aed"}
@@ -1057,11 +1021,7 @@ class UsernameOsintWindow(QDialog):
         self._btn_search.setText(_t("uo_stop", "STOP"))
 
         selected_cats = [c for c, cb in self._category_checks.items() if cb.isChecked()]
-        sites = (
-            self._db.filter_by_category(selected_cats)
-            if selected_cats
-            else self._db.sites
-        )
+        sites = self._db.filter_by_category(selected_cats) if selected_cats else self._db.sites
 
         self._progress.setMaximum(len(sites))
         self._progress.setValue(0)
@@ -1099,9 +1059,7 @@ class UsernameOsintWindow(QDialog):
         self._results.append(result)
         self._progress.setValue(checked)
         found_count = sum(1 for r in self._results if r.is_found)
-        self._progress.setFormat(
-            f"{checked}/{total}  ·  {_t('uo_found', 'Found')}: {found_count}"
-        )
+        self._progress.setFormat(f"{checked}/{total}  ·  {_t('uo_found', 'Found')}: {found_count}")
 
         if self._should_show(result):
             self._add_result_card(result)
@@ -1112,9 +1070,7 @@ class UsernameOsintWindow(QDialog):
         self._finish_ui()
 
         found = [r for r in results if r.is_found]
-        self._progress.setFormat(
-            f"{_t('uo_done', 'Done')}  ·  {_t('uo_found', 'Found')}: {len(found)}/{len(results)}"
-        )
+        self._progress.setFormat(f"{_t('uo_done', 'Done')}  ·  {_t('uo_found', 'Found')}: {len(found)}/{len(results)}")
 
         # Portrait
         username = self._username_input.text().strip()
@@ -1191,9 +1147,7 @@ class UsernameOsintWindow(QDialog):
         for r in results:
             if r.avatar_url:
                 username = self._username_input.text().strip()
-                path = self._avatar_downloader.download(
-                    r.avatar_url, username, r.site_name
-                )
+                path = self._avatar_downloader.download(r.avatar_url, username, r.site_name)
                 if path and os.path.exists(path):
                     pixmap = QPixmap(path)
                     if not pixmap.isNull():
@@ -1287,9 +1241,7 @@ class UsernameOsintWindow(QDialog):
         username = self._username_input.text().strip()
         found = [r for r in self._results if r.is_found]
         if not found:
-            QMessageBox.information(
-                self, "Info", _t("uo_no_found", "No accounts found to graph.")
-            )
+            QMessageBox.information(self, "Info", _t("uo_no_found", "No accounts found to graph."))
             return
 
         graph = Graph(name=f"OSINT: @{username}", direction="LR")
@@ -1301,9 +1253,7 @@ class UsernameOsintWindow(QDialog):
         for r in found:
             cat = r.category
             if cat not in cat_nodes:
-                cn = Node.from_type(
-                    f"{CATEGORY_ICONS.get(cat, '')} {cat.capitalize()}", "Category"
-                )
+                cn = Node.from_type(f"{CATEGORY_ICONS.get(cat, '')} {cat.capitalize()}", "Category")
                 cn.description = f"Category: {cat}"
                 graph.add_node(cn)
                 graph.add_edge(
@@ -1353,9 +1303,7 @@ class UsernameOsintWindow(QDialog):
         try:
             from laitoxx.interfaces.gui.graph_editor import GraphEditorWindow
 
-            editor = GraphEditorWindow(
-                self, theme_data=self.theme_data, lua_plugins=self.lua_plugins
-            )
+            editor = GraphEditorWindow(self, theme_data=self.theme_data, lua_plugins=self.lua_plugins)
             editor._graph = graph
             editor._graph_name_edit.setText(graph.name)
             idx = editor._dir_combo.findText(graph.direction)

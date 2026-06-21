@@ -173,6 +173,7 @@ def _rebuild_session(proxy_url: str | None) -> None:
 def _patch_requests_session_class(proxy_url: str | None) -> None:
     """Monkey-patch requests.Session.__init__ so any session created by
     third-party libraries also inherits the proxy settings and default timeout."""
+
     def _patched_init(self, *args, **kwargs):
         _orig_session_init(self, *args, **kwargs)
         if proxy_url:
@@ -188,6 +189,7 @@ def _patch_requests_module(proxy_url: str | None) -> None:
     Always active (proxy or not) so bare ``requests.get(url)`` calls never
     block indefinitely — they get _DEFAULT_TIMEOUT if the caller omits one.
     """
+
     def _make_method(method_name: str):
         def _method(url, **kwargs):
             kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
@@ -196,12 +198,12 @@ def _patch_requests_module(proxy_url: str | None) -> None:
         _method.__name__ = method_name
         return _method
 
-    requests.get     = _make_method("get")      # type: ignore[assignment]
-    requests.post    = _make_method("post")     # type: ignore[assignment]
-    requests.put     = _make_method("put")      # type: ignore[assignment]
-    requests.patch   = _make_method("patch")    # type: ignore[assignment]
-    requests.delete  = _make_method("delete")   # type: ignore[assignment]
-    requests.head    = _make_method("head")     # type: ignore[assignment]
+    requests.get = _make_method("get")  # type: ignore[assignment]
+    requests.post = _make_method("post")  # type: ignore[assignment]
+    requests.put = _make_method("put")  # type: ignore[assignment]
+    requests.patch = _make_method("patch")  # type: ignore[assignment]
+    requests.delete = _make_method("delete")  # type: ignore[assignment]
+    requests.head = _make_method("head")  # type: ignore[assignment]
     requests.options = _make_method("options")  # type: ignore[assignment]
 
     def _request(method, url, **kwargs):
@@ -262,18 +264,12 @@ def _install_dns_guard() -> None:
     def _blocked_gethostbyname(hostname):
         if _is_numeric_or_loopback(hostname):
             return _orig_gethostbyname(hostname)
-        raise OSError(
-            f"[NetworkManager] DNS resolution of '{hostname}' blocked — "
-            "proxy is active (socks5h)."
-        )
+        raise OSError(f"[NetworkManager] DNS resolution of '{hostname}' blocked — proxy is active (socks5h).")
 
     def _blocked_gethostbyname_ex(hostname):
         if _is_numeric_or_loopback(hostname):
             return _orig_gethostbyname_ex(hostname)
-        raise OSError(
-            f"[NetworkManager] DNS resolution of '{hostname}' blocked — "
-            "proxy is active (socks5h)."
-        )
+        raise OSError(f"[NetworkManager] DNS resolution of '{hostname}' blocked — proxy is active (socks5h).")
 
     socket.getaddrinfo = _blocked_getaddrinfo  # type: ignore[assignment]
     socket.gethostbyname = _blocked_gethostbyname  # type: ignore[assignment]

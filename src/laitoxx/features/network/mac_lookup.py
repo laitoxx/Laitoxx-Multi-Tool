@@ -43,9 +43,7 @@ def query_apple_wloc(bssid):
         )
 
         with httpx.Client(http2=True, verify=False) as client:
-            r = client.post(
-                "https://gs-loc.apple.com/clls/wloc", headers=headers, content=data
-            )
+            r = client.post("https://gs-loc.apple.com/clls/wloc", headers=headers, content=data)
 
         res = AppleWLoc_pb2.AppleWLoc()
         res.ParseFromString(r.content[10:])
@@ -101,18 +99,10 @@ def search_mac_address(cli_input=None):
 
         if response.status_code == 200:
             manufacturer = response.text
-            print(
-                f"\n{Color.DARK_GRAY}┌─[ {Color.WHITE}MAC Information{Color.DARK_GRAY} ]"
-            )
-            print(
-                f"{Color.DARK_GRAY}│ {Color.WHITE}MAC Address: {Color.LIGHT_BLUE}{mac_address}"
-            )
-            print(
-                f"{Color.DARK_GRAY}│ {Color.WHITE}Manufacturer: {Color.LIGHT_PURPLE}{manufacturer}"
-            )
-            print(
-                f"{Color.DARK_GRAY}└───────────────────────────────────────────────────"
-            )
+            print(f"\n{Color.DARK_GRAY}┌─[ {Color.WHITE}MAC Information{Color.DARK_GRAY} ]")
+            print(f"{Color.DARK_GRAY}│ {Color.WHITE}MAC Address: {Color.LIGHT_BLUE}{mac_address}")
+            print(f"{Color.DARK_GRAY}│ {Color.WHITE}Manufacturer: {Color.LIGHT_PURPLE}{manufacturer}")
+            print(f"{Color.DARK_GRAY}└───────────────────────────────────────────────────")
         elif response.status_code == 404:
             print(
                 f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No information found for MAC address: {mac_address}"
@@ -143,34 +133,22 @@ def search_mac_address(cli_input=None):
     locations = query_apple_wloc(mac_address)
 
     if locations is None:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Failed to query Apple WPS."
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Failed to query Apple WPS.")
     elif mac_address.lower() in [m.lower() for m in locations.keys()]:
         target_loc = None
         for k, v in locations.items():
             if k.lower() == mac_address.lower():
                 target_loc = v
                 break
-        print(
-            f"\n{Color.DARK_GRAY}┌─[ {Color.WHITE}Apple WPS Location{Color.DARK_GRAY} ]"
-        )
-        print(
-            f"{Color.DARK_GRAY}│ {Color.WHITE}Latitude: {Color.LIGHT_PURPLE}{target_loc[0]}"
-        )
-        print(
-            f"{Color.DARK_GRAY}│ {Color.WHITE}Longitude: {Color.LIGHT_PURPLE}{target_loc[1]}"
-        )
-        print(
-            f"{Color.DARK_GRAY}│ {Color.WHITE}Nearby Routers: {Color.LIGHT_PURPLE}{len(locations) - 1}"
-        )
+        print(f"\n{Color.DARK_GRAY}┌─[ {Color.WHITE}Apple WPS Location{Color.DARK_GRAY} ]")
+        print(f"{Color.DARK_GRAY}│ {Color.WHITE}Latitude: {Color.LIGHT_PURPLE}{target_loc[0]}")
+        print(f"{Color.DARK_GRAY}│ {Color.WHITE}Longitude: {Color.LIGHT_PURPLE}{target_loc[1]}")
+        print(f"{Color.DARK_GRAY}│ {Color.WHITE}Nearby Routers: {Color.LIGHT_PURPLE}{len(locations) - 1}")
         print(f"{Color.DARK_GRAY}└───────────────────────────────────────────────────")
 
         import json
 
-        dump = json.dumps(
-            [{"mac": k, "lat": v[0], "lon": v[1]} for k, v in locations.items()]
-        )
+        dump = json.dumps([{"mac": k, "lat": v[0], "lon": v[1]} for k, v in locations.items()])
         print(f"APPLE_WLOC_DATA:{dump}")
     else:
         print(

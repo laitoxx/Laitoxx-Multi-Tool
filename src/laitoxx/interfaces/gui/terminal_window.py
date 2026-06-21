@@ -31,9 +31,7 @@ class TerminalWindow(QDialog):
     closed = pyqtSignal()
 
     def __init__(self, theme_data: dict, parent=None):
-        super().__init__(
-            parent, Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint
-        )
+        super().__init__(parent, Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowTitle("Terminal")
         self.setMinimumSize(520, 340)
@@ -83,9 +81,7 @@ class TerminalWindow(QDialog):
         btn_clear.setObjectName("termBtn")
         btn_clear.setFixedSize(26, 26)
         btn_clear.setToolTip("Clear output")
-        btn_clear.clicked.connect(
-            self._output.clear if hasattr(self, "_output") else lambda: None
-        )
+        btn_clear.clicked.connect(self._output.clear if hasattr(self, "_output") else lambda: None)
 
         btn_close = QPushButton("✕")
         btn_close.setObjectName("termBtnClose")
@@ -131,15 +127,11 @@ class TerminalWindow(QDialog):
 
     def _apply_style(self):
         td = self._theme
-        bg = td.get(
-            "window_bg_color", td.get("text_area_bg_color", "rgba(10,8,24,0.88)")
-        )
+        bg = td.get("window_bg_color", td.get("text_area_bg_color", "rgba(10,8,24,0.88)"))
         panel_bg = td.get("panel_bg_color", "rgba(20,14,40,0.75)")
         text = td.get("text_area_text_color", "#e2dff5")
         accent = td.get("accent_color", "#c084fc")
-        bdr = td.get(
-            "border_color", td.get("button_border_color", "rgba(192,132,252,0.35)")
-        )
+        bdr = td.get("border_color", td.get("button_border_color", "rgba(192,132,252,0.35)"))
         btn_bg = td.get("button_bg_color", "rgba(192,132,252,0.12)")
         btn_hov = td.get("button_hover_bg_color", "rgba(192,132,252,0.25)")
         txt_sec = td.get("text_secondary_color", "rgba(200,180,255,0.8)")
@@ -255,9 +247,7 @@ class TerminalWindow(QDialog):
         if event.button() == Qt.MouseButton.LeftButton:
             # Only drag from title bar area (top 34px)
             if event.position().y() < 46:
-                self._drag_pos = (
-                    event.globalPosition().toPoint() - self.frameGeometry().topLeft()
-                )
+                self._drag_pos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):

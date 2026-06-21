@@ -33,21 +33,15 @@ def _row(label: str, value, color=None):
 
 
 def _ok(msg: str):
-    print(
-        f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {msg}{Color.RESET}"
-    )
+    print(f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {msg}{Color.RESET}")
 
 
 def _warn(msg: str):
-    print(
-        f"{Color.DARK_GRAY}  [{Color.YELLOW}!{Color.DARK_GRAY}]{Color.YELLOW} {msg}{Color.RESET}"
-    )
+    print(f"{Color.DARK_GRAY}  [{Color.YELLOW}!{Color.DARK_GRAY}]{Color.YELLOW} {msg}{Color.RESET}")
 
 
 def _err(msg: str):
-    print(
-        f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} {msg}{Color.RESET}"
-    )
+    print(f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} {msg}{Color.RESET}")
 
 
 def _end():
@@ -101,9 +95,7 @@ def _layer_geo(ip: str) -> dict:
     _row("Postal Code", info.get("postal"))
     _row(
         "Timezone",
-        info.get("timezone", {}).get("id")
-        if isinstance(info.get("timezone"), dict)
-        else info.get("timezone"),
+        info.get("timezone", {}).get("id") if isinstance(info.get("timezone"), dict) else info.get("timezone"),
     )
 
     conn = info.get("connection", {})
@@ -249,9 +241,7 @@ def _layer_asn(ip: str, geo_info: dict):
                 for p in prefixes[:10]:
                     print(f"{Color.DARK_RED}│   {Color.WHITE}{p}{Color.RESET}")
                 if total > 10:
-                    print(
-                        f"{Color.DARK_RED}│   {Color.DARK_GRAY}... and {total - 10} more{Color.RESET}"
-                    )
+                    print(f"{Color.DARK_RED}│   {Color.DARK_GRAY}... and {total - 10} more{Color.RESET}")
 
     _end()
 
@@ -292,11 +282,7 @@ def _layer_ports(ip: str):
 
     tags = data.get("tags", [])
     if tags:
-        tag_color = (
-            Color.RED
-            if any(t in tags for t in ["malware", "compromised", "c2"])
-            else Color.YELLOW
-        )
+        tag_color = Color.RED if any(t in tags for t in ["malware", "compromised", "c2"]) else Color.YELLOW
         _row("Tags", ", ".join(tags), color=tag_color)
 
     vulns = data.get("vulns", [])
@@ -306,9 +292,7 @@ def _layer_ports(ip: str):
             print(f"{Color.DARK_RED}│   {Color.RED}{v}{Color.RESET}")
 
     if SHODAN_API_KEY:
-        r2, err2 = _safe_get(
-            f"https://api.shodan.io/shodan/host/{ip}", params={"key": SHODAN_API_KEY}
-        )
+        r2, err2 = _safe_get(f"https://api.shodan.io/shodan/host/{ip}", params={"key": SHODAN_API_KEY})
         if r2:
             try:
                 sd = r2.json()
@@ -317,9 +301,7 @@ def _layer_ports(ip: str):
                 _row("Last update", sd.get("last_update"))
                 svcs = sd.get("data", [])
                 if svcs:
-                    print(
-                        f"{Color.DARK_RED}│ {Color.LIGHT_RED}{'Services':<26}:{Color.RESET}"
-                    )
+                    print(f"{Color.DARK_RED}│ {Color.LIGHT_RED}{'Services':<26}:{Color.RESET}")
                     for svc in svcs:
                         port = svc.get("port", "?")
                         proto = svc.get("transport", "tcp")
@@ -328,9 +310,7 @@ def _layer_ports(ip: str):
                         banner_line = f"{port}/{proto}"
                         if prod:
                             banner_line += f" — {prod} {ver}".rstrip()
-                        print(
-                            f"{Color.DARK_RED}│   {Color.WHITE}{banner_line}{Color.RESET}"
-                        )
+                        print(f"{Color.DARK_RED}│   {Color.WHITE}{banner_line}{Color.RESET}")
             except ValueError:
                 pass
 
@@ -370,9 +350,7 @@ def _layer_certs(ip: str, rdns_hostname: str | None):
         for d in sorted_domains[:30]:
             print(f"{Color.DARK_RED}│   {Color.WHITE}{d}{Color.RESET}")
         if len(sorted_domains) > 30:
-            print(
-                f"{Color.DARK_RED}│   {Color.DARK_GRAY}... and {len(sorted_domains) - 30} more{Color.RESET}"
-            )
+            print(f"{Color.DARK_RED}│   {Color.DARK_GRAY}... and {len(sorted_domains) - 30} more{Color.RESET}")
         _warn("→ Each domain may resolve to different IPs — expand the graph!")
     else:
         _warn("No certificate records found")
@@ -401,9 +379,7 @@ def _layer_passive_dns(ip: str):
     for d in sorted(domains)[:30]:
         print(f"{Color.DARK_RED}│   {Color.WHITE}{d}{Color.RESET}")
     if len(domains) > 30:
-        print(
-            f"{Color.DARK_RED}│   {Color.DARK_GRAY}... and {len(domains) - 30} more{Color.RESET}"
-        )
+        print(f"{Color.DARK_RED}│   {Color.DARK_GRAY}... and {len(domains) - 30} more{Color.RESET}")
 
     interesting = [
         "admin",
@@ -449,9 +425,7 @@ def _layer_reputation(ip: str):
                     color=color,
                 )
             elif "not found" in msg.lower() or "404" in str(r_gn.status_code):
-                _row(
-                    "GreyNoise", "not observed on the internet", color=Color.LIGHT_GREEN
-                )
+                _row("GreyNoise", "not observed on the internet", color=Color.LIGHT_GREEN)
             else:
                 _row("GreyNoise", msg or "no data")
         except ValueError:
@@ -471,11 +445,7 @@ def _layer_reputation(ip: str):
                 domain = ab.get("domain", "")
                 usage = ab.get("usageType", "")
                 last = ab.get("lastReportedAt", "")
-                color = (
-                    Color.RED
-                    if score > 50
-                    else (Color.YELLOW if score > 0 else Color.LIGHT_GREEN)
-                )
+                color = Color.RED if score > 50 else (Color.YELLOW if score > 0 else Color.LIGHT_GREEN)
                 _row(
                     "AbuseIPDB score",
                     f"{score}/100  (reports: {total}, last: {last})",
@@ -491,9 +461,7 @@ def _layer_reputation(ip: str):
                         cats = rep.get("categories", [])
                         dt = rep.get("reportedAt", "")[:10]
                         com = rep.get("comment", "")[:80]
-                        print(
-                            f"{Color.DARK_RED}│   {Color.YELLOW}{dt} cats={cats} {Color.DARK_GRAY}{com}{Color.RESET}"
-                        )
+                        print(f"{Color.DARK_RED}│   {Color.YELLOW}{dt} cats={cats} {Color.DARK_GRAY}{com}{Color.RESET}")
             except ValueError:
                 pass
 
@@ -509,11 +477,7 @@ def _layer_reputation(ip: str):
                 mal = stats.get("malicious", 0)
                 sus = stats.get("suspicious", 0)
                 harm = stats.get("harmless", 0)
-                color = (
-                    Color.RED
-                    if mal > 0
-                    else (Color.YELLOW if sus > 0 else Color.LIGHT_GREEN)
-                )
+                color = Color.RED if mal > 0 else (Color.YELLOW if sus > 0 else Color.LIGHT_GREEN)
                 _row(
                     "VirusTotal",
                     f"malicious={mal} suspicious={sus} harmless={harm}",
@@ -575,9 +539,7 @@ def _layer_globalping(ip: str):
                         loc = f"{probe.get('city', '')}, {probe.get('country', '')} ({probe.get('network', '')})"
                         stats = res.get("result", {}).get("stats", {})
                         if res.get("result", {}).get("status") == "failed":
-                            print(
-                                f"{Color.DARK_RED}│ {Color.WHITE}{loc[:26]:<26}: {Color.RED}FAILED{Color.RESET}"
-                            )
+                            print(f"{Color.DARK_RED}│ {Color.WHITE}{loc[:26]:<26}: {Color.RED}FAILED{Color.RESET}")
                             continue
 
                         avg = stats.get("avg", 0)
@@ -585,17 +547,9 @@ def _layer_globalping(ip: str):
                         mx = stats.get("max", 0)
                         loss = stats.get("loss", 0)
 
-                        color = (
-                            Color.LIGHT_GREEN
-                            if loss == 0
-                            else Color.YELLOW
-                            if loss < 100
-                            else Color.RED
-                        )
+                        color = Color.LIGHT_GREEN if loss == 0 else Color.YELLOW if loss < 100 else Color.RED
                         ping_str = f"{avg}ms  [ {mn} / {mx} ]  {loss}% loss"
-                        print(
-                            f"{Color.DARK_RED}│ {Color.WHITE}{loc[:26]:<26}: {color}{ping_str}{Color.RESET}"
-                        )
+                        print(f"{Color.DARK_RED}│ {Color.WHITE}{loc[:26]:<26}: {color}{ping_str}{Color.RESET}")
                 break
     except Exception as e:
         _err(f"Globalping failed: {e}")
@@ -621,9 +575,7 @@ def _layer_http_banner(ip: str, open_ports: list[int]):
                 verify=False,
             )
             headers = r.headers
-            title_match = re.search(
-                r"<title[^>]*>(.*?)</title>", r.text[:4096], re.I | re.S
-            )
+            title_match = re.search(r"<title[^>]*>(.*?)</title>", r.text[:4096], re.I | re.S)
             title = title_match.group(1).strip()[:80] if title_match else ""
 
             print(
@@ -690,9 +642,7 @@ def get_ip(data=None):
         ).strip()
 
     if not ip_input:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No input provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No input provided.")
         return
 
     try:
@@ -703,9 +653,7 @@ def get_ip(data=None):
                 f"{Color.LIGHT_BLUE} Resolved {Color.WHITE}{ip_input}{Color.LIGHT_BLUE} → {Color.WHITE}{ip}{Color.RESET}"
             )
     except socket.gaierror:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Could not resolve: {ip_input}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Could not resolve: {ip_input}")
         return
 
     if _is_private(ip):
@@ -744,9 +692,7 @@ def get_ip(data=None):
     _layer_globalping(ip)
 
     print(f"\n{Color.DARK_RED}╔{'═' * 44}╗")
-    print(
-        f"{Color.DARK_RED}║{Color.LIGHT_RED}  OSINT Graph — expand these pivot points:{' ' * 4}{Color.DARK_RED}║"
-    )
+    print(f"{Color.DARK_RED}║{Color.LIGHT_RED}  OSINT Graph — expand these pivot points:{' ' * 4}{Color.DARK_RED}║")
     print(f"{Color.DARK_RED}╠{'═' * 44}╣")
     hints = [
         "PTR hostname → naming pattern → sibling hosts",

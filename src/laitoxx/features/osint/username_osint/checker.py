@@ -65,18 +65,14 @@ class UsernameChecker:
         self.max_retries = max_retries
 
         self._control_cache: dict[str, _Baseline] = {}
-        self._control_lock: asyncio.Lock | None = (
-            None  # created lazily inside event loop
-        )
+        self._control_lock: asyncio.Lock | None = None  # created lazily inside event loop
         self._cancelled = False
 
         # Уникальный «контрольный бред» на каждую сессию
         self._junk_username = self._make_junk_username()
 
         # Компилируем паттерны «не найден» в regex для быстрого поиска
-        self._compiled_negative_regex = self._compile_negative_patterns(
-            FALSE_POSITIVE_PHRASES
-        )
+        self._compiled_negative_regex = self._compile_negative_patterns(FALSE_POSITIVE_PHRASES)
 
     # -------------------------------------------------------------------------
     # Public API
@@ -131,9 +127,7 @@ class UsernameChecker:
 
         return results
 
-    async def _check_single(
-        self, session: aiohttp.ClientSession, site: SiteEntry, username: str
-    ) -> CheckResult:
+    async def _check_single(self, session: aiohttp.ClientSession, site: SiteEntry, username: str) -> CheckResult:
         if self._cancelled:
             return CheckResult(
                 site_name=site.name,
@@ -154,9 +148,7 @@ class UsernameChecker:
             result.status, result.error_message = "not_found", "Invalid format"
             return result
 
-        probe_url = (site.url_probe or site.url_template).replace(
-            "{username}", username
-        )
+        probe_url = (site.url_probe or site.url_template).replace("{username}", username)
         proxy = aiohttp_proxy_url()
         req_timeout = aiohttp.ClientTimeout(total=site.timeout)
 
@@ -195,9 +187,7 @@ class UsernameChecker:
                 result.error_message = reason if verdict != "found" else ""
                 result.waf_detected = verdict == "waf_blocked"
                 if verdict == "found":
-                    result.confidence = self._compute_confidence(
-                        resp.status, body, username
-                    )
+                    result.confidence = self._compute_confidence(resp.status, body, username)
 
                 return result
 
@@ -212,16 +202,12 @@ class UsernameChecker:
     # Baseline
     # -------------------------------------------------------------------------
 
-    async def _get_control_baseline(
-        self, session: aiohttp.ClientSession, site: SiteEntry
-    ) -> _Baseline | None:
+    async def _get_control_baseline(self, session: aiohttp.ClientSession, site: SiteEntry) -> _Baseline | None:
         async with self._control_lock:
             if site.name in self._control_cache:
                 return self._control_cache[site.name]
 
-        url = (site.url_probe or site.url_template).replace(
-            "{username}", self._junk_username
-        )
+        url = (site.url_probe or site.url_template).replace("{username}", self._junk_username)
         proxy = aiohttp_proxy_url()
 
         try:
@@ -320,9 +306,7 @@ class UsernameChecker:
             return "not_found", f"Invalid status code: {status}"
         return None
 
-    def _check_server_redirects(
-        self, facts: _Facts, username: str
-    ) -> tuple[str, _Verdict | None]:
+    def _check_server_redirects(self, facts: _Facts, username: str) -> tuple[str, _Verdict | None]:
         """Returns (final_norm, verdict_or_None)."""
         initial_url: str = facts["initial_url"]
         final_url: str = facts["final_url"]
@@ -354,9 +338,7 @@ class UsernameChecker:
 
     def _check_title(self, body: str, username: str) -> tuple[str, _Verdict | None]:
         """Returns (title_text, verdict_or_None)."""
-        title_match = re.search(
-            r"<title>(.*?)</title>", body, re.IGNORECASE | re.DOTALL
-        )
+        title_match = re.search(r"<title>(.*?)</title>", body, re.IGNORECASE | re.DOTALL)
         if not title_match:
             return "", None
 
@@ -370,9 +352,7 @@ class UsernameChecker:
 
         return title_text, None
 
-    def _check_per_site_patterns(
-        self, site: SiteEntry, body_lower: str
-    ) -> _Verdict | None:
+    def _check_per_site_patterns(self, site: SiteEntry, body_lower: str) -> _Verdict | None:
         for s in site.absence_strs:
             if s.lower() in body_lower:
                 return "not_found", f"Absence indicator found: '{s}'"
@@ -406,9 +386,7 @@ class UsernameChecker:
         # 9b. Контент идентичен baseline
         len_diff = abs(facts["content_length"] - baseline["length"])
         if len_diff < 50:
-            ratio = difflib.SequenceMatcher(
-                None, body_lower[:2000], baseline["body_lower"][:2000]
-            ).ratio()
+            ratio = difflib.SequenceMatcher(None, body_lower[:2000], baseline["body_lower"][:2000]).ratio()
             if ratio > 0.97:
                 return "not_found", f"Content identical to baseline ({ratio:.2f})"
 
@@ -442,9 +420,7 @@ class UsernameChecker:
 
         # a) JSON username-поле
         json_re = re.compile(
-            r'"(?:username|user|login|handle|screen_name|name)"\s*:\s*"'
-            + uname_escaped
-            + r'"',
+            r'"(?:username|user|login|handle|screen_name|name)"\s*:\s*"' + uname_escaped + r'"',
             re.IGNORECASE,
         )
         if json_re.search(body):
@@ -452,9 +428,7 @@ class UsernameChecker:
 
         # b) <title>
         if title_text:
-            title_token_re = re.compile(
-                r'(?:^|[\s/\'"@:·\-|])' + uname_escaped + r'(?:$|[\s/\'"@:·\-|])'
-            )
+            title_token_re = re.compile(r'(?:^|[\s/\'"@:·\-|])' + uname_escaped + r'(?:$|[\s/\'"@:·\-|])')
             if title_token_re.search(title_text):
                 return "found", ""
 
@@ -462,9 +436,7 @@ class UsernameChecker:
         h1_match = re.search(r"<h1[^>]*>(.*?)</h1>", body, re.IGNORECASE | re.DOTALL)
         if h1_match:
             h1_text = h1_match.group(1).lower()
-            h1_token_re = re.compile(
-                r'(?:^|[\s/\'"@:·\-|])' + uname_escaped + r'(?:$|[\s/\'"@:·\-|])'
-            )
+            h1_token_re = re.compile(r'(?:^|[\s/\'"@:·\-|])' + uname_escaped + r'(?:$|[\s/\'"@:·\-|])')
             if h1_token_re.search(h1_text):
                 return "found", ""
 
@@ -487,9 +459,7 @@ class UsernameChecker:
 
         # f) Тело страницы (fallback)
         body_token_re = re.compile(
-            r'(?:^|[\s/\\"\'@:,<>()\[\]{}|])'
-            + uname_escaped
-            + r'(?:$|[\s/\\"\'@:,<>()\[\]{}|])',
+            r'(?:^|[\s/\\"\'@:,<>()\[\]{}|])' + uname_escaped + r'(?:$|[\s/\\"\'@:,<>()\[\]{}|])',
             re.MULTILINE,
         )
         if body_token_re.search(body_lower):
@@ -558,9 +528,7 @@ class UsernameChecker:
 
         # 4. Языковой префикс в пути
         if i_host == f_host:
-            lang_prefix_re = re.compile(
-                r"^/[a-z]{2}(?:-[a-z]{2})?" + re.escape(i_path) + r"$"
-            )
+            lang_prefix_re = re.compile(r"^/[a-z]{2}(?:-[a-z]{2})?" + re.escape(i_path) + r"$")
             if lang_prefix_re.match(f_path):
                 return True
 

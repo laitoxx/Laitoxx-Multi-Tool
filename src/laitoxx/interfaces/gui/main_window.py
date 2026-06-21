@@ -149,9 +149,7 @@ class MainWindow(QMainWindow):
         self.splitter.addWidget(self._main_content_widget)
         self.splitter.addWidget(self.active_tools_widget)
         self.splitter.setSizes([150, 1050, 150])
-        self.splitter.setStyleSheet(
-            "QSplitter::handle { background-color: transparent; }"
-        )
+        self.splitter.setStyleSheet("QSplitter::handle { background-color: transparent; }")
 
         ui_layout = QHBoxLayout(self.ui_container)
         ui_layout.addWidget(self.splitter)
@@ -183,11 +181,7 @@ class MainWindow(QMainWindow):
             layout.addWidget(btn)
         layout.addWidget(self.btn_hide_ui)
         layout.addWidget(self.combo_lang)
-        layout.addSpacerItem(
-            QSpacerItem(
-                20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
-            )
-        )
+        layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
         layout.addWidget(self.btn_exit)
 
         self.btn_settings.clicked.connect(self._open_settings)
@@ -251,11 +245,7 @@ class MainWindow(QMainWindow):
         self.active_tools_widget.setMaximumWidth(200)
         layout = QVBoxLayout(self.active_tools_widget)
         layout.addWidget(QLabel("Active Tools"))
-        layout.addSpacerItem(
-            QSpacerItem(
-                20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
-            )
-        )
+        layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
 
     # ------------------------------------------------------------------
     # Background
@@ -268,9 +258,7 @@ class MainWindow(QMainWindow):
         if perf:
             self.background_container.setGraphicsEffect(None)
         else:
-            self.background_container.setGraphicsEffect(
-                QGraphicsBlurEffect(blurRadius=10)
-            )
+            self.background_container.setGraphicsEffect(QGraphicsBlurEffect(blurRadius=10))
 
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
@@ -343,12 +331,8 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(btn)
         if self.unhide_button:
             self.unhide_button.setStyleSheet(btn)
-        self.sidebar_widget.setStyleSheet(
-            f"background-color: {td['sidebar_bg_color']}; border-radius: {_br}px;"
-        )
-        self.active_tools_widget.setStyleSheet(
-            f"background-color: {td['sidebar_bg_color']}; border-radius: {_br}px;"
-        )
+        self.sidebar_widget.setStyleSheet(f"background-color: {td['sidebar_bg_color']}; border-radius: {_br}px;")
+        self.active_tools_widget.setStyleSheet(f"background-color: {td['sidebar_bg_color']}; border-radius: {_br}px;")
         scrollbar = (
             "QScrollBar:vertical { border: none; background: transparent; width: 8px;"
             " margin: 0; border-radius: 4px; }"
@@ -392,9 +376,7 @@ class MainWindow(QMainWindow):
         for label in self.findChildren(QLabel):
             try:
                 if label.property("is_title"):
-                    label.setStyleSheet(
-                        f"color: {td['title_text_color']}; padding-top: 10px; background: transparent;"
-                    )
+                    label.setStyleSheet(f"color: {td['title_text_color']}; padding-top: 10px; background: transparent;")
             except RuntimeError:
                 # QLabel was deleted during UI rebuild/retranslate
                 continue
@@ -403,9 +385,7 @@ class MainWindow(QMainWindow):
             self.stacked_widget.widget(i).setStyleSheet("background: transparent;")
 
     def _load_theme_from_file(self):
-        filepath, _ = QFileDialog.getOpenFileName(
-            self, translator.get("change_theme"), "", "JSON Files (*.json)"
-        )
+        filepath, _ = QFileDialog.getOpenFileName(self, translator.get("change_theme"), "", "JSON Files (*.json)")
         if filepath:
             new_theme = load_theme(filepath)
             if new_theme:
@@ -421,6 +401,7 @@ class MainWindow(QMainWindow):
         if not settings.auto_theme_schedule:
             return
         import datetime
+
         hour = datetime.datetime.now().hour
         if hour == self._last_schedule_hour:
             return
@@ -431,6 +412,7 @@ class MainWindow(QMainWindow):
             target = settings.night_theme
         if target:
             from laitoxx.core.settings.theme import load_theme
+
             data = load_theme(target)
             if data:
                 self.theme_data.update(data)
@@ -659,11 +641,7 @@ class MainWindow(QMainWindow):
                     col_layout.addWidget(btn)
                     self.tool_widgets[cat_key]["buttons"].append(btn)
 
-            col_layout.addSpacerItem(
-                QSpacerItem(
-                    20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
-                )
-            )
+            col_layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
             layout.addWidget(col)
 
         self.stacked_widget.addWidget(menu_widget)
@@ -675,9 +653,7 @@ class MainWindow(QMainWindow):
                 btn = GlassButton(lua_p.name)
                 tooltip = f"{lua_p.description}\n[{lua_p.plugin_type}] v{lua_p.version} by {lua_p.author}"
                 btn.setToolTip(tooltip)
-                btn.clicked.connect(
-                    lambda _, p=lua_p: self._run_lua_plugin_dispatcher(p)
-                )
+                btn.clicked.connect(lambda _, p=lua_p: self._run_lua_plugin_dispatcher(p))
                 btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
                 btn.customContextMenuRequested.connect(
                     lambda pos, p=lua_p: self._show_lua_plugin_context_menu(p, pos, btn)
@@ -921,9 +897,7 @@ class MainWindow(QMainWindow):
                 from laitoxx.shared.graph.model import Graph
 
                 graph = Graph.load_json(graph_path)
-                editor = GraphEditorWindow(
-                    self, theme_data=self.theme_data, lua_plugins=self.lua_plugins
-                )
+                editor = GraphEditorWindow(self, theme_data=self.theme_data, lua_plugins=self.lua_plugins)
                 editor.run_action_requested.connect(self._on_graph_action)
                 editor._graph = graph
                 editor._current_filepath = graph_path
@@ -986,9 +960,7 @@ class MainWindow(QMainWindow):
         edit_action = menu.addAction(translator.get("lua_plugin_edit"))
         reload_action = menu.addAction(translator.get("lua_plugin_reload"))
         disable_action = menu.addAction(
-            translator.get("lua_plugin_disable")
-            if plugin_meta.enabled
-            else translator.get("lua_plugin_enable")
+            translator.get("lua_plugin_disable") if plugin_meta.enabled else translator.get("lua_plugin_enable")
         )
 
         action = menu.exec(button.mapToGlobal(pos))
@@ -1006,9 +978,7 @@ class MainWindow(QMainWindow):
 
     def _edit_lua_plugin(self, plugin_meta):
         """Open the plugin builder to edit an existing Lua plugin."""
-        builder = PluginBuilderWindow(
-            self, plugin_path=plugin_meta.filepath, translator=translator
-        )
+        builder = PluginBuilderWindow(self, plugin_path=plugin_meta.filepath, translator=translator)
         if builder.exec():
             self.reload_plugins_and_ui()
 
@@ -1017,9 +987,7 @@ class MainWindow(QMainWindow):
         if dlg.exec():
             plugin_meta.config_values = dlg.get_config()
             self._save_lua_plugin_state()
-            self._set_output(
-                translator.get("lua_plugin_settings_saved", name=plugin_meta.name)
-            )
+            self._set_output(translator.get("lua_plugin_settings_saved", name=plugin_meta.name))
 
     def _save_lua_plugin_state(self):
         """Persist Lua plugin enabled/disabled state and config values."""

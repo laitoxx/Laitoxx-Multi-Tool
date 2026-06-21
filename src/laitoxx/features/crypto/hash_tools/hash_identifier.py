@@ -22,9 +22,7 @@ def hash_identifier_tool(data=None):
         print("This tool identifies the possible types of a given hash string.")
         print("It uses the hashid library to analyze the hash format and length.")
         print("Common hash types include MD5, SHA1, SHA256, bcrypt, etc.")
-        print(
-            "Note: This tool provides possible matches, not definitive identification."
-        )
+        print("Note: This tool provides possible matches, not definitive identification.")
         print()
         hash_input = input(
             "Enter the hash string you want to identify (e.g., a long string of letters/numbers): "
@@ -37,9 +35,7 @@ def hash_identifier_tool(data=None):
     possible_hashes = identify_hash(hash_input)
 
     if not possible_hashes:
-        print(
-            "Could not identify the hash type. It may be an unknown format or have an incorrect length."
-        )
+        print("Could not identify the hash type. It may be an unknown format or have an incorrect length.")
     else:
         print(f"Possible hash types for '{hash_input}':")
         for p_hash in possible_hashes:

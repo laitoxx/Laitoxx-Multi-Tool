@@ -13,6 +13,7 @@ import urllib.parse
 
 try:
     import requests  # noqa: F401 — availability check
+
     HAS_REQUESTS = True
 except ImportError:
     HAS_REQUESTS = False
@@ -53,10 +54,7 @@ def _upload_reverseimg(b64: str) -> str:
 
     url = "https://reverseimg.net/api/upload"
     headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:149.0) "
-            "Gecko/20100101 Firefox/149.0"
-        ),
+        "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:149.0) Gecko/20100101 Firefox/149.0"),
         "Accept": "*/*",
         "Accept-Language": "en-US,en;q=0.9",
         "Referer": "https://reverseimg.net/",
@@ -116,10 +114,7 @@ def upload_image(file_path: str) -> str:
         print(f"[+] Изображение загружено (imgbb): {image_url}")
         return image_url
     except Exception as e2:
-        raise RuntimeError(
-            f"Не удалось загрузить изображение ни на один хостинг. "
-            f"Последняя ошибка: {e2}"
-        ) from e2
+        raise RuntimeError(f"Не удалось загрузить изображение ни на один хостинг. Последняя ошибка: {e2}") from e2
 
 
 # ───────────────────────────────────────────────────────────────
@@ -127,9 +122,7 @@ def upload_image(file_path: str) -> str:
 # ───────────────────────────────────────────────────────────────
 
 
-def build_search_urls(
-    image_url: str, engines: list[str] | None = None
-) -> dict[str, str]:
+def build_search_urls(image_url: str, engines: list[str] | None = None) -> dict[str, str]:
     """
     Строит поисковые URL для указанных движков.
     Если engines=None — возвращает все движки.

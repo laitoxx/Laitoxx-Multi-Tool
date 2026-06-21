@@ -11,9 +11,7 @@ import json as _json
 from laitoxx.interfaces.gui.translator import translator as _translator
 from laitoxx.shared.graph.model import SHAPE_ID_TO_D3, SHAPE_ID_TO_TOKENS, Edge, Graph, Node
 
-_SAFE_LABEL_CHARS = set(
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-."
-)
+_SAFE_LABEL_CHARS = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-.")
 
 
 def _safe_label(text: str) -> str:
@@ -38,9 +36,7 @@ def generate_mermaid(graph: Graph) -> str:
     link_styles: list[str] = []
     for edge in graph.edges:
         line_type = edge.mermaid_line or "-->"
-        conn = (
-            f"{line_type}|{edge.label.replace('|', '/')}|" if edge.label else line_type
-        )
+        conn = f"{line_type}|{edge.label.replace('|', '/')}|" if edge.label else line_type
         lines.append(f"    {edge.source_id} {conn} {edge.target_id}")
         if edge.mermaid_style:
             link_styles.append(f"    linkStyle {link_idx} {edge.mermaid_style}")
@@ -114,9 +110,7 @@ def generate_html(graph: Graph, lang: str = None, theme: dict = None) -> str:
 
     # Load vis-network.min.js content
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    resources_dir = os.path.abspath(
-        os.path.join(current_dir, "..", "..", "..", "..", "resources")
-    )
+    resources_dir = os.path.abspath(os.path.join(current_dir, "..", "..", "..", "..", "resources"))
     js_path = os.path.join(resources_dir, "js", "vis-network.min.js")
     try:
         with open(js_path, encoding="utf-8") as f:
@@ -136,9 +130,7 @@ def generate_html(graph: Graph, lang: str = None, theme: dict = None) -> str:
     _h_accent = _td.get("accent_color", "#c084fc")
     _h_accent2 = _td.get("text_secondary_color", "#a78bfa")
     _h_bg = _td.get("window_bg_color", _td.get("text_area_bg_color", "#0d0b1a"))
-    _h_bdr = _td.get(
-        "border_color", _td.get("button_border_color", "rgba(192,132,252,0.35)")
-    )
+    _h_bdr = _td.get("border_color", _td.get("button_border_color", "rgba(192,132,252,0.35)"))
     _h_txt_pri = _td.get("text_area_text_color", "#f1f0ff")
     _h_txt_sec = _td.get("text_secondary_color", "#94a3b8")
     _h_body_bg = f"background: {_h_bg};"
@@ -146,9 +138,7 @@ def generate_html(graph: Graph, lang: str = None, theme: dict = None) -> str:
     # Build JSON data
     nodes_data = []
     for n in graph.nodes:
-        fill = _parse_style_color(
-            n.mermaid_style, "fill", _TYPE_COLORS.get(n.node_type, "#94a3b8")
-        )
+        fill = _parse_style_color(n.mermaid_style, "fill", _TYPE_COLORS.get(n.node_type, "#94a3b8"))
         nodes_data.append(
             {
                 "id": n.id,
@@ -584,9 +574,7 @@ window.filterByTimeRange = function(startIso, endIso) {{
 
 
 def format_node_for_js(node: Node, theme: dict = None) -> dict:
-    fill = _parse_style_color(
-        node.mermaid_style, "fill", _TYPE_COLORS.get(node.node_type, "#94a3b8")
-    )
+    fill = _parse_style_color(node.mermaid_style, "fill", _TYPE_COLORS.get(node.node_type, "#94a3b8"))
     return {
         "id": node.id,
         "label": node.label,

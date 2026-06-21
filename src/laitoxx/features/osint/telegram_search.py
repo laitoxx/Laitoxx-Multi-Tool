@@ -8,9 +8,7 @@ def format_result(result):
     Formats and prints the result from a paketlib search.
     """
     if not result or (isinstance(result, dict) and not result.get("success", True)):
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No results found or an error occurred."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No results found or an error occurred.")
         return
 
     if isinstance(result, dict):
@@ -24,9 +22,7 @@ def format_result(result):
         for key, value in result.items():
             if value:
                 label_color = key_colors.get(key, Color.WHITE)
-                print(
-                    f"  {Color.DARK_GRAY}-{Color.WHITE} {key.capitalize():<15}: {label_color}{value}"
-                )
+                print(f"  {Color.DARK_GRAY}-{Color.WHITE} {key.capitalize():<15}: {label_color}{value}")
 
     elif isinstance(result, list):
         for idx, item in enumerate(result, 1):
@@ -65,34 +61,18 @@ def telegram_search(config=None):
         method_name = config.get("method")
         query = config.get("query")
     else:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Telegram Search Tool"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Username"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Channel"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}3{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Chat"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}4{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Parse Channel"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}5{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Telegram ID"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}0{Color.DARK_GRAY}]{Color.LIGHT_RED} Back to Main Menu"
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Telegram Search Tool")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Username")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Channel")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}3{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Chat")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}4{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Parse Channel")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}5{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Search by Telegram ID")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}0{Color.DARK_GRAY}]{Color.LIGHT_RED} Back to Main Menu")
         choice = input(
             f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Select an option: {Color.RESET}"
         ).strip()
         if choice == "0" or choice not in search_map:
-            print(
-                f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid or cancelled option."
-            )
+            print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid or cancelled option.")
             return
         prompt_text, method_name = search_map[choice]
         query = input(
@@ -106,9 +86,7 @@ def telegram_search(config=None):
         return
 
     try:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Searching..."
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Searching...")
         if method_name == "TelegramID":
             result = _search_telegram_id(query)
         else:
@@ -128,6 +106,4 @@ def telegram_search(config=None):
             f" The account may be private, deleted, or does not exist."
         )
     except Exception as e:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An unexpected error occurred: {e}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An unexpected error occurred: {e}")

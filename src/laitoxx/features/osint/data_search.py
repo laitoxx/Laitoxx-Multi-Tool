@@ -85,9 +85,7 @@ def format_results(results: Sequence[str]) -> str:
     for item in results:
         if ":" in item:
             email, password = item.split(":", 1)
-            formatted_results.append(
-                f"Email: {email.strip()}\nPassword: {password.strip()}"
-            )
+            formatted_results.append(f"Email: {email.strip()}\nPassword: {password.strip()}")
         else:
             formatted_results.append(item)
     return "\n\n".join(formatted_results)
@@ -147,9 +145,7 @@ def google_search(
             log("  No links found")
 
 
-def check_login(
-    login_data: str, log: Callable[[str], None] = print
-) -> Dict[str, str | None] | None:
+def check_login(login_data: str, log: Callable[[str], None] = print) -> Dict[str, str | None] | None:
     session = requests.Session()
     try:
         session.get(
@@ -157,9 +153,7 @@ def check_login(
             headers=DEFAULT_HEADERS,
             timeout=REQUEST_TIMEOUT,
         )
-        request = session.get(
-            OK_RECOVER_URL, headers=DEFAULT_HEADERS, timeout=REQUEST_TIMEOUT
-        )
+        request = session.get(OK_RECOVER_URL, headers=DEFAULT_HEADERS, timeout=REQUEST_TIMEOUT)
     except requests.RequestException as exc:
         log(f"[!] OK.ru request error: {exc}")
         return None
@@ -178,23 +172,13 @@ def check_login(
         profile_registered = None
 
         if masked_phone:
-            masked_phone_text = (
-                masked_phone.find(
-                    "div", {"class": "ext-registration_stub_small_header"}
-                )
-            ).get_text()
+            masked_phone_text = (masked_phone.find("div", {"class": "ext-registration_stub_small_header"})).get_text()
 
         if masked_email:
-            masked_email_text = (
-                masked_email.find(
-                    "div", {"class": "ext-registration_stub_small_header"}
-                )
-            ).get_text()
+            masked_email_text = (masked_email.find("div", {"class": "ext-registration_stub_small_header"})).get_text()
 
         if account_info:
-            masked_name_tag = account_info.find(
-                "div", {"class": "ext-registration_username_header"}
-            )
+            masked_name_tag = account_info.find("div", {"class": "ext-registration_username_header"})
             if masked_name_tag:
                 masked_name = masked_name_tag.get_text()
 
@@ -466,9 +450,7 @@ def search_username(username: str, log: Callable[[str], None] = print) -> None:
     ]
     for url in urls:
         try:
-            response = requests.get(
-                url, headers=DEFAULT_HEADERS, timeout=REQUEST_TIMEOUT
-            )
+            response = requests.get(url, headers=DEFAULT_HEADERS, timeout=REQUEST_TIMEOUT)
         except requests.RequestException:
             log(f"{url} - not responding")
             continue

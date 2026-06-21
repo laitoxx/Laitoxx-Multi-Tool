@@ -249,22 +249,16 @@ def text_transformer_tool(data=None):
         text = data.get("text", "")
         shift = int(data.get("shift", 3))
     else:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" Text Transformer\n"
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Text Transformer\n")
         for i, m in enumerate(_MODES, 1):
-            print(
-                f"  {Color.DARK_GRAY}[{Color.DARK_RED}{i}{Color.DARK_GRAY}]{Color.DARK_RED} {m}"
-            )
+            print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}{i}{Color.DARK_GRAY}]{Color.DARK_RED} {m}")
         print()
 
         try:
             sel = (
                 int(
                     input(
-                        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-                        f" Select mode: "
+                        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Select mode: "
                     ).strip()
                 )
                 - 1
@@ -278,10 +272,7 @@ def text_transformer_tool(data=None):
         shift = 3
         if mode in _HAS_ACTION:
             action = (
-                input(
-                    f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-                    f" Action [encode/decode]: "
-                )
+                input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Action [encode/decode]: ")
                 .strip()
                 .lower()
                 or "encode"
@@ -291,22 +282,16 @@ def text_transformer_tool(data=None):
             try:
                 shift = int(
                     input(
-                        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-                        f" Shift (1-25): "
+                        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Shift (1-25): "
                     ).strip()
                 )
             except ValueError:
                 shift = 3
 
-        text = input(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" Enter text: {Color.RESET}"
-        )
+        text = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter text: {Color.RESET}")
 
     if not text:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No text provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No text provided.")
         return
 
     result = _transform(mode, action, text, shift)

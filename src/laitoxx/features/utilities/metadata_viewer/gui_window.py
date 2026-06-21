@@ -94,9 +94,7 @@ class MetadataViewerWindow(QDialog):
         self.table_meta = QTableWidget()
         self.table_meta.setColumnCount(2)
         self.table_meta.setHorizontalHeaderLabels(["Property", "Value"])
-        self.table_meta.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.Stretch
-        )
+        self.table_meta.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         raw_layout.addWidget(self.table_meta)
         self.tabs.addTab(self.tab_raw, "Raw Metadata")
 
@@ -126,9 +124,7 @@ class MetadataViewerWindow(QDialog):
         prod_layout = QVBoxLayout(self.tab_prod)
         prod_layout.addWidget(QLabel("Smart Renamer (Uses Metadata Tags)"))
         self.input_rename_pattern = QLineEdit()
-        self.input_rename_pattern.setPlaceholderText(
-            "E.g. [EXIF:Make]_[EXIF:Model]_[FileExtension]"
-        )
+        self.input_rename_pattern.setPlaceholderText("E.g. [EXIF:Make]_[EXIF:Model]_[FileExtension]")
         prod_layout.addWidget(self.input_rename_pattern)
         self.btn_rename = GlassButton("Rename Current File")
         self.btn_rename.clicked.connect(self._smart_rename)
@@ -139,9 +135,7 @@ class MetadataViewerWindow(QDialog):
         # Tab 4: Graph Analysis
         self.tab_graph = QWidget()
         graph_layout = QVBoxLayout(self.tab_graph)
-        graph_layout.addWidget(
-            QLabel("Visualize relationships between files, authors, and software.")
-        )
+        graph_layout.addWidget(QLabel("Visualize relationships between files, authors, and software."))
         self.btn_export_graph = GlassButton("Export to Graph Editor")
         self.btn_export_graph.clicked.connect(self._export_to_graph)
         graph_layout.addWidget(self.btn_export_graph)
@@ -249,9 +243,7 @@ class MetadataViewerWindow(QDialog):
         score = privacy["score"]
 
         color = "#00ff00" if score >= 80 else "#ffaa00" if score >= 50 else "#ff0000"
-        self.lbl_privacy_score.setText(
-            f"Privacy Score: <span style='color:{color}'>{score}/100</span>"
-        )
+        self.lbl_privacy_score.setText(f"Privacy Score: <span style='color:{color}'>{score}/100</span>")
         self.lbl_privacy_rec.setText(privacy["message"])
 
         for leak in privacy["leaks"]:
@@ -265,9 +257,7 @@ class MetadataViewerWindow(QDialog):
     def _sanitize_current(self):
         if not self.current_filepath:
             return
-        reply = QMessageBox.question(
-            self, "Confirm", "This will permanently wipe metadata. Continue?"
-        )
+        reply = QMessageBox.question(self, "Confirm", "This will permanently wipe metadata. Continue?")
         if reply == QMessageBox.StandardButton.Yes:
             success = MetadataSanitizer.sanitize(self.current_filepath)
             if success:
@@ -326,9 +316,7 @@ class MetadataViewerWindow(QDialog):
                 break
 
         if not main_win:
-            QMessageBox.warning(
-                self, "Error", "Cannot find main window to launch Graph Editor."
-            )
+            QMessageBox.warning(self, "Error", "Cannot find main window to launch Graph Editor.")
             return
 
         main_win._open_graph_editor()
@@ -379,9 +367,7 @@ class MetadataViewerWindow(QDialog):
                 if val:
                     val_str = str(val)
                     if val_str not in author_nodes:
-                        author_node = Node(
-                            id=str(uuid.uuid4()), label=val_str, node_type="Person"
-                        )
+                        author_node = Node(id=str(uuid.uuid4()), label=val_str, node_type="Person")
                         graph_win._graph.add_node(author_node)
                         author_nodes[val_str] = author_node
                     edge = Edge(

@@ -16,11 +16,12 @@ from PyQt6.QtCore import QObject, QThread, pyqtSignal
 # naturally, preventing "QThread: Destroyed while thread is still running" crashes.
 _zombie_threads = []
 
+
 def stop_and_detach_thread(thread: QThread, worker=None):
     """Safely stops a thread without blocking the GUI."""
     global _zombie_threads
     if thread and thread.isRunning():
-        if worker and hasattr(worker, 'cancel'):
+        if worker and hasattr(worker, "cancel"):
             worker.cancel()
         thread.quit()
         thread.setParent(None)
@@ -28,6 +29,7 @@ def stop_and_detach_thread(thread: QThread, worker=None):
 
     # Clean up finished zombies
     _zombie_threads = [t for t in _zombie_threads if t.isRunning()]
+
 
 def remove_ansi_codes(text):
     return re.sub(r"(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]", "", text)
@@ -181,9 +183,7 @@ class Worker(QObject):
             else:
                 self._run_with_input(self.func, self.input_data)
         except Exception as e:
-            logging.error(
-                f"Error in worker thread for {self.func.__name__}: {e}", exc_info=True
-            )
+            logging.error(f"Error in worker thread for {self.func.__name__}: {e}", exc_info=True)
             self.error.emit(f"An error occurred: {e}")
         finally:
             self.finished.emit()
@@ -230,9 +230,7 @@ class Worker(QObject):
                 step = sorted_steps[step_index]
                 step_id = step.get("id", f"step_{step_index + 1}")
                 description = step.get("description", "Unnamed Step")
-                self.update.emit(
-                    f"--- Running Step {step_index + 1}: {description} ---"
-                )
+                self.update.emit(f"--- Running Step {step_index + 1}: {description} ---")
 
                 step_successful = False
                 step_output = ""
@@ -245,9 +243,7 @@ class Worker(QObject):
                     step_successful = True
                 else:
                     current_input = self._resolve_input(step, outputs)
-                    step_successful, step_output = self._execute_step(
-                        step, current_input, plugin_data
-                    )
+                    step_successful, step_output = self._execute_step(step, current_input, plugin_data)
                     if step_output is None:
                         return  # fatal error already emitted
 
@@ -257,19 +253,13 @@ class Worker(QObject):
                 if step_successful:
                     if "on_success" in step:
                         next_step_id = step["on_success"]
-                        self.update.emit(
-                            f"Step successful. Jumping to step '{next_step_id}'."
-                        )
+                        self.update.emit(f"Step successful. Jumping to step '{next_step_id}'.")
                 else:
                     if "on_failure" in step:
                         next_step_id = step["on_failure"]
-                        self.update.emit(
-                            f"Step failed. Jumping to step '{next_step_id}'."
-                        )
+                        self.update.emit(f"Step failed. Jumping to step '{next_step_id}'.")
                     else:
-                        self.error.emit(
-                            f"Execution halted due to failed step: {description}"
-                        )
+                        self.error.emit(f"Execution halted due to failed step: {description}")
                         return
 
                 if next_step_id:
@@ -278,22 +268,16 @@ class Worker(QObject):
                         try:
                             step_index = sorted_steps.index(target_step)
                         except ValueError:
-                            self.error.emit(
-                                f"FATAL: Could not find jump target step '{next_step_id}'."
-                            )
+                            self.error.emit(f"FATAL: Could not find jump target step '{next_step_id}'.")
                             return
                     else:
-                        self.error.emit(
-                            f"Error: Jump target step ID '{next_step_id}' not found."
-                        )
+                        self.error.emit(f"Error: Jump target step ID '{next_step_id}' not found.")
                         return
                 else:
                     step_index += 1
 
         except Exception as e:
-            logging.error(
-                f"Error executing plugin {plugin_data.get('name')}: {e}", exc_info=True
-            )
+            logging.error(f"Error executing plugin {plugin_data.get('name')}: {e}", exc_info=True)
             self.error.emit(f"A critical error occurred in the plugin executor: {e}")
         finally:
             self.finished.emit()
@@ -321,9 +305,7 @@ class Worker(QObject):
                     try:
                         matches = re.findall(regex_filter, previous_output)
                         all_matches.extend(matches)
-                        self.update.emit(
-                            f"Applied REGEX '{regex_filter}'. Found {len(matches)} match(es)."
-                        )
+                        self.update.emit(f"Applied REGEX '{regex_filter}'. Found {len(matches)} match(es).")
                     except re.error as e:
                         self.error.emit(f"Error in REGEX pattern '{regex_filter}': {e}")
                         return ""
@@ -337,28 +319,20 @@ class Worker(QObject):
         plugin_path = plugin_data.get("plugin_path", ".")
 
         if action_type in ("command", "batch_script", "shell_script"):
-            return self._run_shell_step(
-                step, action_type, action_value, current_input, plugin_path
-            )
+            return self._run_shell_step(step, action_type, action_value, current_input, plugin_path)
         if action_type == "python_script":
-            return self._run_python_script_step(
-                action_value, current_input, plugin_path
-            )
+            return self._run_python_script_step(action_value, current_input, plugin_path)
         if action_type == "function":
             return self._run_function_step(action_value, current_input)
         return False, ""
 
-    def _run_shell_step(
-        self, step, action_type, action_value, current_input, plugin_path
-    ):
+    def _run_shell_step(self, step, action_type, action_value, current_input, plugin_path):
         script_path = os.path.join(plugin_path, action_value)
         if action_type == "command":
             command = action_value.replace("{input}", current_input)
         else:
             if not os.path.isfile(script_path):
-                self.error.emit(
-                    f"Error: {action_type.replace('_', ' ').title()} '{action_value}' not found."
-                )
+                self.error.emit(f"Error: {action_type.replace('_', ' ').title()} '{action_value}' not found.")
                 return False, ""
             command = script_path.replace("{input}", current_input)
 
@@ -420,9 +394,7 @@ class Worker(QObject):
             self.error.emit(f"Error: Built-in function '{action_value}' not found.")
             return False, ""
         tool_func = self.tool_info[action_value].get("func")
-        self.update.emit(
-            f"Executing function: {action_value} with input: '{current_input[:50]}...'"
-        )
+        self.update.emit(f"Executing function: {action_value} with input: '{current_input[:50]}...'")
         output_stream = io.StringIO()
         try:
             with (
@@ -435,7 +407,5 @@ class Worker(QObject):
             return True, step_output
         except Exception as e:
             self.error.emit(f"Error executing function '{action_value}': {e}")
-            logging.error(
-                f"Error in plugin function {action_value}: {e}", exc_info=True
-            )
+            logging.error(f"Error in plugin function {action_value}: {e}", exc_info=True)
             return False, ""

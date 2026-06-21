@@ -184,13 +184,9 @@ class LuaSyntaxHighlighter(QSyntaxHighlighter):
                 self.setFormat(match.capturedStart(), match.capturedLength(), fmt)
 
         # Multi-line comments --[[ ... ]]
-        self._handle_multiline(
-            text, r"--\[\[", r"\]\]", self._multiline_comment_fmt, state=1
-        )
+        self._handle_multiline(text, r"--\[\[", r"\]\]", self._multiline_comment_fmt, state=1)
         # Multi-line strings [[ ... ]]
-        self._handle_multiline(
-            text, r"\[\[", r"\]\]", self._multiline_string_fmt, state=2
-        )
+        self._handle_multiline(text, r"\[\[", r"\]\]", self._multiline_string_fmt, state=2)
 
     def _handle_multiline(self, text, start_pat, end_pat, fmt, state):
         start_re = QRegularExpression(start_pat)
@@ -280,27 +276,21 @@ class LuaCodeEditor(QPlainTextEdit):
         if dy:
             self._line_number_area.scroll(0, dy)
         else:
-            self._line_number_area.update(
-                0, rect.y(), self._line_number_area.width(), rect.height()
-            )
+            self._line_number_area.update(0, rect.y(), self._line_number_area.width(), rect.height())
         if rect.contains(self.viewport().rect()):
             self._update_line_number_width()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
         cr = self.contentsRect()
-        self._line_number_area.setGeometry(
-            QRect(cr.left(), cr.top(), self._line_number_area_width(), cr.height())
-        )
+        self._line_number_area.setGeometry(QRect(cr.left(), cr.top(), self._line_number_area_width(), cr.height()))
 
     def _paint_line_numbers(self, event):
         painter = QPainter(self._line_number_area)
         painter.fillRect(event.rect(), QColor("#21252b"))
         block = self.firstVisibleBlock()
         block_number = block.blockNumber()
-        top = round(
-            self.blockBoundingGeometry(block).translated(self.contentOffset()).top()
-        )
+        top = round(self.blockBoundingGeometry(block).translated(self.contentOffset()).top())
         bottom = top + round(self.blockBoundingRect(block).height())
 
         while block.isValid() and top <= event.rect().bottom():
@@ -673,12 +663,8 @@ def check_lua_syntax(source: str) -> list[dict]:
                 )
 
         # Missing 'then' after 'if'
-        if re.search(r"\bif\b", code_no_strings) and not re.search(
-            r"\bthen\b", code_no_strings
-        ):
-            if not code_no_strings.rstrip().endswith(
-                ","
-            ) and not code_no_strings.rstrip().endswith("("):
+        if re.search(r"\bif\b", code_no_strings) and not re.search(r"\bthen\b", code_no_strings):
+            if not code_no_strings.rstrip().endswith(",") and not code_no_strings.rstrip().endswith("("):
                 issues.append(
                     {
                         "line": i,
@@ -688,9 +674,7 @@ def check_lua_syntax(source: str) -> list[dict]:
                 )
 
         # 'elseif' without 'then'
-        if re.search(r"\belseif\b", code_no_strings) and not re.search(
-            r"\bthen\b", code_no_strings
-        ):
+        if re.search(r"\belseif\b", code_no_strings) and not re.search(r"\bthen\b", code_no_strings):
             issues.append(
                 {
                     "line": i,
@@ -710,11 +694,7 @@ def check_lua_syntax(source: str) -> list[dict]:
             )
 
         # Using '++' or '+='
-        if (
-            "++" in code_no_strings
-            or "+=" in code_no_strings
-            or "-=" in code_no_strings
-        ):
+        if "++" in code_no_strings or "+=" in code_no_strings or "-=" in code_no_strings:
             issues.append(
                 {
                     "line": i,
@@ -934,9 +914,7 @@ class SnippetInsertDialog(QDialog):
         self.preview.setReadOnly(True)
         self.preview.setFont(QFont("Consolas", 10))
         self.preview.setMaximumHeight(200)
-        self.preview.setStyleSheet(
-            "background-color: #282c34; color: #abb2bf; border: 1px solid #3e4451;"
-        )
+        self.preview.setStyleSheet("background-color: #282c34; color: #abb2bf; border: 1px solid #3e4451;")
         layout.addWidget(QLabel("Preview:"))
         layout.addWidget(self.preview)
 
@@ -945,9 +923,7 @@ class SnippetInsertDialog(QDialog):
             w.textChanged.connect(self._update_preview)
         self._update_preview()
 
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
@@ -1145,9 +1121,7 @@ class PluginBuilderWindow(QDialog):
         # Tip bar
         self.tip_label = QLabel()
         self.tip_label.setWordWrap(True)
-        self.tip_label.setStyleSheet(
-            "color: #5c6370; font-style: italic; padding: 4px;"
-        )
+        self.tip_label.setStyleSheet("color: #5c6370; font-style: italic; padding: 4px;")
         layout.addWidget(self.tip_label)
 
         self._current_filename = "new_plugin.lua"
@@ -1181,18 +1155,14 @@ class PluginBuilderWindow(QDialog):
 
         self.issues_area.clear()
         if not issues:
-            self.issues_area.setHtml(
-                '<span style="color: #98c379;">&#10004; No issues found. Code looks good!</span>'
-            )
+            self.issues_area.setHtml('<span style="color: #98c379;">&#10004; No issues found. Code looks good!</span>')
             return
 
         html_parts = []
         for issue in issues:
             color = "#e06c75" if issue["severity"] == "error" else "#e5c07b"
             icon = "&#10006;" if issue["severity"] == "error" else "&#9888;"
-            html_parts.append(
-                f'<span style="color:{color};">{icon} Line {issue["line"]}: {issue["message"]}</span>'
-            )
+            html_parts.append(f'<span style="color:{color};">{icon} Line {issue["line"]}: {issue["message"]}</span>')
         self.issues_area.setHtml("<br>".join(html_parts))
 
     # ------------------------------------------------------------------
@@ -1248,9 +1218,7 @@ class PluginBuilderWindow(QDialog):
         else:
             save_path = os.path.join(lua_dir, self._current_filename)
 
-        filepath, _ = QFileDialog.getSaveFileName(
-            self, "Save Lua Plugin", save_path, "Lua Files (*.lua)"
-        )
+        filepath, _ = QFileDialog.getSaveFileName(self, "Save Lua Plugin", save_path, "Lua Files (*.lua)")
         if not filepath:
             return
 
@@ -1260,14 +1228,10 @@ class PluginBuilderWindow(QDialog):
             self.plugin_path = filepath
             self._current_filename = os.path.basename(filepath)
             self.setWindowTitle(f"Plugin Builder - {self._current_filename}")
-            self.issues_area.setHtml(
-                f'<span style="color: #98c379;">&#10004; Saved to {filepath}</span>'
-            )
+            self.issues_area.setHtml(f'<span style="color: #98c379;">&#10004; Saved to {filepath}</span>')
             self.accept()
         except Exception as e:
-            self.issues_area.setHtml(
-                f'<span style="color: #e06c75;">&#10006; Error saving: {e}</span>'
-            )
+            self.issues_area.setHtml(f'<span style="color: #e06c75;">&#10006; Error saving: {e}</span>')
 
     # ------------------------------------------------------------------
     # Tips

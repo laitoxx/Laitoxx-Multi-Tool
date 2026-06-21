@@ -18,9 +18,7 @@ def gmail_osint():
     email_input = email_input.strip()
 
     if not email_input:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}!{Color.DARK_GRAY}]{Color.RED} No email entered."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}!{Color.DARK_GRAY}]{Color.RED} No email entered.")
         return
 
     if "@" in email_input:
@@ -77,37 +75,27 @@ def gmail_osint():
                     if "http" in value:  # It's a link
                         data[key] = value
                     else:  # It's regular text
-                        data[key] = (
-                            line.split(":")[-1].strip() if ":" in line else value
-                        )
+                        data[key] = line.split(":")[-1].strip() if ":" in line else value
 
         # Handling for profile page and calendar is a bit different
-        profile_page = result_div.find(
-            "a", href=lambda href: href and "maps.google.com" in href
-        )
+        profile_page = result_div.find("a", href=lambda href: href and "maps.google.com" in href)
         if profile_page:
             data["Google Maps Profile"] = profile_page["href"]
 
         if "No public Google Calendar" in all_text:
             data["Google Calendar"] = "No public calendar found"
         else:
-            calendar_link = result_div.find(
-                "a", href=lambda href: href and "calendar.google.com" in href
-            )
+            calendar_link = result_div.find("a", href=lambda href: href and "calendar.google.com" in href)
             if calendar_link:
                 data["Google Calendar"] = calendar_link["href"]
 
         # Print the extracted data
         for label, value in data.items():
-            print(
-                f"  {Color.DARK_GRAY}-{Color.WHITE} {label:<22}: {Color.LIGHT_BLUE}{value}"
-            )
+            print(f"  {Color.DARK_GRAY}-{Color.WHITE} {label:<22}: {Color.LIGHT_BLUE}{value}")
 
     except requests.exceptions.Timeout:
         print(
             f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} The request timed out. The service might be down."
         )
     except requests.exceptions.RequestException as e:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An error occurred: {e}"
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An error occurred: {e}")

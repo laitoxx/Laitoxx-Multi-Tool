@@ -285,9 +285,7 @@ class OpacitySlider(QWidget):
 
         self._val_lbl = QLabel(f"{int(initial * 100)}%")
         self._val_lbl.setFixedWidth(36)
-        self._val_lbl.setStyleSheet(
-            f"color: {_ACCENT}; font-size: 11px; font-weight: 600;"
-        )
+        self._val_lbl.setStyleSheet(f"color: {_ACCENT}; font-size: 11px; font-weight: 600;")
         layout.addWidget(self._val_lbl)
 
     def _on_change(self, v: int):
@@ -313,10 +311,7 @@ def _color_button(color_str: str, on_pick) -> QPushButton:
 
 
 def _apply_color_btn_style(btn: QPushButton, color_str: str) -> None:
-    btn.setStyleSheet(
-        f"background-color: {color_str}; border: 1px solid rgba(255,255,255,0.4);"
-        f" border-radius: 5px;"
-    )
+    btn.setStyleSheet(f"background-color: {color_str}; border: 1px solid rgba(255,255,255,0.4); border-radius: 5px;")
     btn.setProperty("_color", color_str)
 
 
@@ -459,9 +454,7 @@ class MetadataTable(QWidget):
 
         self.table = QTableWidget(0, 2)
         self.table.setHorizontalHeaderLabels(["Key", "Value"])
-        self.table.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
-        )
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setMinimumHeight(80)
         self.table.setMaximumHeight(120)
@@ -701,9 +694,7 @@ class NodeDialog(QDialog):
             self.meta_table.set_metadata(node.metadata)
         layout.addWidget(self.meta_table)
 
-        btns = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         btns.accepted.connect(self.accept)
         btns.rejected.connect(self.reject)
         layout.addWidget(btns)
@@ -860,9 +851,7 @@ class EdgeDialog(QDialog):
             self.meta_table.set_metadata(edge.metadata)
         layout.addWidget(self.meta_table)
 
-        btns = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         btns.accepted.connect(self.accept)
         btns.rejected.connect(self.reject)
         layout.addWidget(btns)
@@ -919,10 +908,7 @@ class _PropPanel(GlassPanel):
 
         hdr = QHBoxLayout()
         self._title_lbl = QLabel(title)
-        self._title_lbl.setStyleSheet(
-            f"color: {_ACCENT}; font-size: 12px; font-weight: 700;"
-            f" letter-spacing: 0.5px;"
-        )
+        self._title_lbl.setStyleSheet(f"color: {_ACCENT}; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;")
         hdr.addWidget(self._title_lbl)
         self._btn_edit = GradientButton(_t("ge_prop_edit"), _BTN_EDIT)
         self._btn_edit.setMinimumWidth(90)
@@ -959,9 +945,7 @@ class _PropPanel(GlassPanel):
 
     def apply_theme(self, accent: str, border: str, txt_sec: str, txt_dim: str):
         """Restyle panel labels from theme colours."""
-        self._title_lbl.setStyleSheet(
-            f"color: {accent}; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;"
-        )
+        self._title_lbl.setStyleSheet(f"color: {accent}; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;")
         self._sep.setStyleSheet(f"color: {border};")
         for k_lbl in self._key_labels:
             k_lbl.setStyleSheet(f"color: {txt_dim}; font-size: 11px;")
@@ -1118,9 +1102,7 @@ class MermaidView(QWidget):
             self._channel.registerObject("bridge", self._bridge)
             self._web.page().setWebChannel(self._channel)
             self._bridge.node_context.connect(self.node_context_requested.emit)
-            self._bridge.background_context.connect(
-                self.background_context_requested.emit
-            )
+            self._bridge.background_context.connect(self.background_context_requested.emit)
             self._bridge.node_selected.connect(self.node_selected.emit)
             self._bridge.edge_selected.connect(self.edge_selected.emit)
             self._bridge.context_menu.connect(self.context_menu_requested.emit)
@@ -1176,9 +1158,7 @@ class MermaidView(QWidget):
 
             node_js = format_node_for_js(node, theme)
             node_json = json.dumps(node_js)
-            self._web.page().runJavaScript(
-                f"if (window.addNode) {{ window.addNode({node_json}); }}"
-            )
+            self._web.page().runJavaScript(f"if (window.addNode) {{ window.addNode({node_json}); }}")
 
     def add_edge_dynamic(self, edge: Edge, theme: dict = None) -> None:
         if self._web:
@@ -1188,9 +1168,7 @@ class MermaidView(QWidget):
 
             edge_js = format_edge_for_js(edge, theme)
             edge_json = json.dumps(edge_js)
-            self._web.page().runJavaScript(
-                f"if (window.addEdge) {{ window.addEdge({edge_json}); }}"
-            )
+            self._web.page().runJavaScript(f"if (window.addEdge) {{ window.addEdge({edge_json}); }}")
 
 
 # ===========================================================================
@@ -1233,9 +1211,7 @@ class ShortestPathDialog(QDialog):
         form.addRow(_field_label("Target"), self.target_combo)
         layout.addLayout(form)
 
-        btns = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         btns.accepted.connect(self.accept)
         btns.rejected.connect(self.reject)
         layout.addWidget(btns)
@@ -1284,9 +1260,7 @@ class CentralityDialog(QDialog):
         form.addRow(_field_label("Metric"), self.metric_combo)
         layout.addLayout(form)
 
-        btns = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         btns.accepted.connect(self.accept)
         btns.rejected.connect(self.reject)
         layout.addWidget(btns)
@@ -1455,23 +1429,18 @@ class NodeActionDialog(QDialog):
         # Node info
         info_frame = QFrame()
         info_frame.setStyleSheet(
-            f"background: rgba(192,132,252,0.06); border: 1px solid {_BORDER};"
-            f" border-radius: 8px; padding: 8px;"
+            f"background: rgba(192,132,252,0.06); border: 1px solid {_BORDER}; border-radius: 8px; padding: 8px;"
         )
         info_layout = QVBoxLayout(info_frame)
         info_layout.setSpacing(4)
 
         if node:
             type_lbl = QLabel(f"{_t('ge_field_type')}: {node.node_type}")
-            type_lbl.setStyleSheet(
-                f"color: {_TEXT_SEC}; font-size: 11px; border: none;"
-            )
+            type_lbl.setStyleSheet(f"color: {_TEXT_SEC}; font-size: 11px; border: none;")
             info_layout.addWidget(type_lbl)
 
             label_lbl = QLabel(f"{_t('ge_field_label')}: {node.label}")
-            label_lbl.setStyleSheet(
-                f"color: {_TEXT_PRI}; font-size: 13px; font-weight: 600; border: none;"
-            )
+            label_lbl.setStyleSheet(f"color: {_TEXT_PRI}; font-size: 13px; font-weight: 600; border: none;")
             info_layout.addWidget(label_lbl)
 
             # Show the "value" — use description (which often contains the actual data)
@@ -1491,9 +1460,7 @@ class NodeActionDialog(QDialog):
 
         # Actions list
         actions_lbl = QLabel(_t("ge_act_choose"))
-        actions_lbl.setStyleSheet(
-            f"color: {_TEXT_SEC}; font-size: 11px; font-weight: 600; margin-top: 6px;"
-        )
+        actions_lbl.setStyleSheet(f"color: {_TEXT_SEC}; font-size: 11px; font-weight: 600; margin-top: 6px;")
         layout.addWidget(actions_lbl)
 
         self._actions_list = QListWidget()
@@ -1544,9 +1511,7 @@ class NodeActionDialog(QDialog):
         layout.addWidget(self._actions_list)
 
         # Buttons
-        btns = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         btns.button(QDialogButtonBox.StandardButton.Ok).setText(_t("ge_act_run"))
         btns.accepted.connect(self.accept)
         btns.rejected.connect(self.reject)
@@ -1573,11 +1538,7 @@ class NodeActionDialog(QDialog):
         data = item.data(Qt.ItemDataRole.UserRole)
         if not data:
             return None
-        value = (
-            self._value_edit.text().strip()
-            if hasattr(self, "_value_edit")
-            else self._value
-        )
+        value = self._value_edit.text().strip() if hasattr(self, "_value_edit") else self._value
         return (data[0], data[1], value)
 
 
@@ -1635,9 +1596,7 @@ class GraphEditorWindow(QDialog):
         # Main area
         self._main_splitter = QSplitter(Qt.Orientation.Horizontal)
         self._main_splitter.setHandleWidth(2)
-        self._main_splitter.setStyleSheet(
-            f"QSplitter::handle {{ background: {_BORDER}; }}"
-        )
+        self._main_splitter.setStyleSheet(f"QSplitter::handle {{ background: {_BORDER}; }}")
 
         self._left_panel = self._build_left_panel()
         self._center_panel = self._build_center_panel()
@@ -1655,13 +1614,9 @@ class GraphEditorWindow(QDialog):
         self._status = QLabel(_t("ge_status_ready"))
         self._status.setStyleSheet(f"color: {_TEXT_DIM}; font-size: 11px;")
         self._node_count = QLabel(_t("ge_node_count", n=0))
-        self._node_count.setStyleSheet(
-            f"color: {_ACCENT}; font-size: 11px; font-weight: 600;"
-        )
+        self._node_count.setStyleSheet(f"color: {_ACCENT}; font-size: 11px; font-weight: 600;")
         self._edge_count = QLabel(_t("ge_edge_count", n=0))
-        self._edge_count.setStyleSheet(
-            f"color: {_ACCENT2}; font-size: 11px; font-weight: 600;"
-        )
+        self._edge_count.setStyleSheet(f"color: {_ACCENT2}; font-size: 11px; font-weight: 600;")
         status_bar.addWidget(self._status)
         status_bar.addStretch()
         status_bar.addWidget(self._node_count)
@@ -1800,22 +1755,16 @@ class GraphEditorWindow(QDialog):
 
         self._mermaid_view = MermaidView()
         self._mermaid_view.node_context_requested.connect(self._on_graph_node_context)
-        self._mermaid_view.background_context_requested.connect(
-            self._on_graph_background_context
-        )
+        self._mermaid_view.background_context_requested.connect(self._on_graph_background_context)
         self._mermaid_view.node_selected.connect(self._select_node_by_id)
         self._mermaid_view.edge_selected.connect(self._select_edge_by_id)
-        self._mermaid_view.context_menu_requested.connect(
-            self._on_graph_context_menu_event
-        )
+        self._mermaid_view.context_menu_requested.connect(self._on_graph_context_menu_event)
         layout.addWidget(self._mermaid_view, 1)
 
         # Raw code toggle
         code_hdr = QHBoxLayout()
         code_lbl = QLabel(_t("ge_mermaid_code_label"))
-        code_lbl.setStyleSheet(
-            f"color: {_TEXT_DIM}; font-size: 10px; font-weight: 600;"
-        )
+        code_lbl.setStyleSheet(f"color: {_TEXT_DIM}; font-size: 10px; font-weight: 600;")
         code_hdr.addWidget(code_lbl)
         code_hdr.addStretch()
         layout.addLayout(code_hdr)
@@ -1861,9 +1810,7 @@ class GraphEditorWindow(QDialog):
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _list_style(
-        accent: str = _ACCENT, txt_pri: str = _TEXT_PRI, bdr: str = _BORDER
-    ) -> str:
+    def _list_style(accent: str = _ACCENT, txt_pri: str = _TEXT_PRI, bdr: str = _BORDER) -> str:
         return f"""
             QListWidget {{
                 background: rgba(0,0,0,0.0);
@@ -1906,9 +1853,7 @@ class GraphEditorWindow(QDialog):
     def update_theme(self, theme_data: dict):
         """Called from MainWindow when user changes the theme."""
         self._theme = theme_data
-        border = theme_data.get(
-            "border_color", theme_data.get("button_border_color", _BORDER)
-        )
+        border = theme_data.get("border_color", theme_data.get("button_border_color", _BORDER))
         bg = theme_data.get("panel_bg_color", theme_data.get("window_bg_color", ""))
         for panel in (self._left_panel, self._center_panel, self._right_panel):
             panel.set_theme(border, bg)
@@ -1931,13 +1876,9 @@ class GraphEditorWindow(QDialog):
         if hasattr(self, "_status"):
             self._status.setStyleSheet(f"color: {txt_sec}; font-size: 11px;")
         if hasattr(self, "_node_count"):
-            self._node_count.setStyleSheet(
-                f"color: {accent}; font-size: 11px; font-weight: 600;"
-            )
+            self._node_count.setStyleSheet(f"color: {accent}; font-size: 11px; font-weight: 600;")
         if hasattr(self, "_edge_count"):
-            self._edge_count.setStyleSheet(
-                f"color: {accent2}; font-size: 11px; font-weight: 600;"
-            )
+            self._edge_count.setStyleSheet(f"color: {accent2}; font-size: 11px; font-weight: 600;")
 
         # Accent separator line
         if hasattr(self, "_accent_line"):
@@ -1949,9 +1890,7 @@ class GraphEditorWindow(QDialog):
 
         # Splitter handles
         if hasattr(self, "_main_splitter"):
-            self._main_splitter.setStyleSheet(
-                f"QSplitter::handle {{ background: {bdr}; }}"
-            )
+            self._main_splitter.setStyleSheet(f"QSplitter::handle {{ background: {bdr}; }}")
 
         # Opacity slider
         if hasattr(self, "_opacity_panels"):
@@ -2094,9 +2033,7 @@ class GraphEditorWindow(QDialog):
         from PyQt6.QtWidgets import QLabel as _QLabel
 
         _color_re = _re.compile(r"color\s*:\s*([^;\"']+)")
-        _bg_re = _re.compile(
-            r"background\s*:\s*rgba\(\s*192\s*,\s*132\s*,\s*252\s*,\s*[\d.]+\s*\)"
-        )
+        _bg_re = _re.compile(r"background\s*:\s*rgba\(\s*192\s*,\s*132\s*,\s*252\s*,\s*[\d.]+\s*\)")
         for lbl in self.findChildren(_QLabel):
             ss = lbl.styleSheet()
             if not ss:
@@ -2129,17 +2066,13 @@ class GraphEditorWindow(QDialog):
 
     def _apply_global_style(self):
         td = self._theme
-        bg_color = td.get(
-            "window_bg_color", td.get("text_area_bg_color", "rgba(13,11,26,0.95)")
-        )
+        bg_color = td.get("window_bg_color", td.get("text_area_bg_color", "rgba(13,11,26,0.95)"))
         text_color = td.get("text_area_text_color", _TEXT_PRI)
         btn_bg = td.get("button_bg_color", "rgba(124,58,237,0.5)")
         btn_hover = td.get("button_hover_bg_color", "rgba(139,92,246,0.7)")
         btn_border = td.get("border_color", td.get("button_border_color", _BORDER))
         btn_text = td.get("button_text_color", "white")
-        sb_bg = td.get(
-            "panel_bg_color", td.get("sidebar_bg_color", "rgba(13,11,26,0.95)")
-        )
+        sb_bg = td.get("panel_bg_color", td.get("sidebar_bg_color", "rgba(13,11,26,0.95)"))
         accent = td.get("accent_color", _ACCENT)
 
         # Update module-level tokens so newly created widgets pick them up
@@ -2263,9 +2196,7 @@ class GraphEditorWindow(QDialog):
         self._set_status(_t("ge_new_graph_created"))
 
     def _open_graph(self):
-        path, _ = QFileDialog.getOpenFileName(
-            self, _t("ge_open"), "", "Graph JSON (*.json);;All Files (*)"
-        )
+        path, _ = QFileDialog.getOpenFileName(self, _t("ge_open"), "", "Graph JSON (*.json);;All Files (*)")
         if path:
             try:
                 self._graph = Graph.load_json(path)
@@ -2322,9 +2253,7 @@ class GraphEditorWindow(QDialog):
                 ok = self._graph.add_edge(edge)
                 if ok:
                     self._refresh_all()
-                    self._set_status(
-                        _t("ge_edge_added", src=edge.source_id, tgt=edge.target_id)
-                    )
+                    self._set_status(_t("ge_edge_added", src=edge.source_id, tgt=edge.target_id))
                 else:
                     QMessageBox.warning(self, _t("error"), _t("ge_error_invalid_edge"))
 
@@ -2390,25 +2319,19 @@ class GraphEditorWindow(QDialog):
         if dlg.exec():
             src_id, tgt_id = dlg.get_selection()
             if src_id == tgt_id:
-                QMessageBox.information(
-                    self, "Shortest Path", "Source and target must be different."
-                )
+                QMessageBox.information(self, "Shortest Path", "Source and target must be different.")
                 return
             from laitoxx.shared.graph.algorithms import get_shortest_path
 
             path = get_shortest_path(self._graph, src_id, tgt_id)
             if not path:
-                QMessageBox.information(
-                    self, "Shortest Path", "No path found between selected nodes."
-                )
+                QMessageBox.information(self, "Shortest Path", "No path found between selected nodes.")
                 return
             import json
 
             path_json = json.dumps(path)
             if self._mermaid_view._web:
-                self._mermaid_view._web.page().runJavaScript(
-                    f"highlightPath({path_json})"
-                )
+                self._mermaid_view._web.page().runJavaScript(f"highlightPath({path_json})")
             src = self._graph.get_node(src_id)
             tgt = self._graph.get_node(tgt_id)
             s_lbl = src.label if src else src_id
@@ -2427,23 +2350,17 @@ class GraphEditorWindow(QDialog):
 
             scores = calculate_centralities(self._graph, metric)
             if not scores:
-                QMessageBox.information(
-                    self, "Centrality", "Could not compute centrality."
-                )
+                QMessageBox.information(self, "Centrality", "Could not compute centrality.")
                 return
             import json
 
             scores_json = json.dumps(scores)
             if self._mermaid_view._web:
-                self._mermaid_view._web.page().runJavaScript(
-                    f"applyCentralitySizes({scores_json})"
-                )
+                self._mermaid_view._web.page().runJavaScript(f"applyCentralitySizes({scores_json})")
             top = max(scores, key=scores.get)
             top_node = self._graph.get_node(top)
             top_label = top_node.label if top_node else top
-            self._set_status(
-                f"Centrality ({metric}): top = {top_label} ({scores[top]:.3f})"
-            )
+            self._set_status(f"Centrality ({metric}): top = {top_label} ({scores[top]:.3f})")
 
     # ------------------------------------------------------------------
     # Timeline filter (M5)
@@ -2532,9 +2449,7 @@ class GraphEditorWindow(QDialog):
         global_pos = self._mermaid_view.map_web_to_global(x, y)
         self._show_graph_context_menu(global_pos)
 
-    def _on_graph_context_menu_event(
-        self, item_type: str, item_id: str, x: int, y: int
-    ):
+    def _on_graph_context_menu_event(self, item_type: str, item_id: str, x: int, y: int):
         global_pos = self._mermaid_view.map_web_to_global(x, y)
         if item_type == "node":
             node = self._graph.get_node(item_id)
@@ -2579,9 +2494,7 @@ class GraphEditorWindow(QDialog):
         node = self._graph.get_node(node_id)
         if not node:
             return
-        dlg = NodeDialog(
-            self, node=node, title=_t("ge_dialog_edit_node", label=node.label)
-        )
+        dlg = NodeDialog(self, node=node, title=_t("ge_dialog_edit_node", label=node.label))
         if dlg.exec():
             dlg.get_node()
             self._refresh_all()
@@ -2638,9 +2551,7 @@ class GraphEditorWindow(QDialog):
                 all_builtin.append(u)
 
         # Filter lua plugins — only "search" type
-        search_plugins = [
-            p for p in self._lua_plugins if p.enabled and p.plugin_type == "search"
-        ]
+        search_plugins = [p for p in self._lua_plugins if p.enabled and p.plugin_type == "search"]
 
         dlg = NodeActionDialog(
             self,

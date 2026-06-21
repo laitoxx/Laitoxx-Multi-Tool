@@ -83,9 +83,7 @@ NODE_SHAPES: dict[str, tuple[str, str, str]] = {
 }
 
 # shape_id -> (open, close) for Mermaid generation
-SHAPE_ID_TO_TOKENS: dict[str, tuple[str, str]] = {
-    v[0]: (v[1], v[2]) for v in NODE_SHAPES.values()
-}
+SHAPE_ID_TO_TOKENS: dict[str, tuple[str, str]] = {v[0]: (v[1], v[2]) for v in NODE_SHAPES.values()}
 
 # shape_id -> D3 symbol hint (for visual differentiation in D3 viewer)
 SHAPE_ID_TO_D3: dict[str, str] = {
@@ -244,9 +242,7 @@ class Graph:
     def remove_node(self, node_id: str) -> None:
         self.nodes = [n for n in self.nodes if n.id != node_id]
         # Remove dangling edges
-        self.edges = [
-            e for e in self.edges if e.source_id != node_id and e.target_id != node_id
-        ]
+        self.edges = [e for e in self.edges if e.source_id != node_id and e.target_id != node_id]
 
     def get_node(self, node_id: str) -> Node | None:
         return next((n for n in self.nodes if n.id == node_id), None)
@@ -279,18 +275,12 @@ class Graph:
             raise ValueError(f"Primary node with ID '{primary_id}' not found.")
 
         # 1. Filter out duplicate IDs that don't exist or are the primary itself
-        valid_dup_ids = [
-            d_id
-            for d_id in duplicate_ids
-            if d_id != primary_id and self.get_node(d_id) is not None
-        ]
+        valid_dup_ids = [d_id for d_id in duplicate_ids if d_id != primary_id and self.get_node(d_id) is not None]
 
         # 2. Gather descriptions, metadata, and dates
         descriptions = [primary_node.description] if primary_node.description else []
 
-        def merge_dates(
-            d1: str | None, d2: str | None, op_type: str
-        ) -> str | None:
+        def merge_dates(d1: str | None, d2: str | None, op_type: str) -> str | None:
             if not d1:
                 return d2
             if not d2:
@@ -316,9 +306,7 @@ class Graph:
                 else:
                     curr_val = primary_node.metadata[k]
                     if curr_val != v:
-                        curr_list = [
-                            x.strip() for x in curr_val.split(",") if x.strip()
-                        ]
+                        curr_list = [x.strip() for x in curr_val.split(",") if x.strip()]
                         new_list = [x.strip() for x in v.split(",") if x.strip()]
                         for item in new_list:
                             if item not in curr_list:
@@ -326,12 +314,8 @@ class Graph:
                         primary_node.metadata[k] = ", ".join(curr_list)
 
             # Merge temporal bounds
-            primary_node.valid_from = merge_dates(
-                primary_node.valid_from, dup_node.valid_from, "min"
-            )
-            primary_node.valid_to = merge_dates(
-                primary_node.valid_to, dup_node.valid_to, "max"
-            )
+            primary_node.valid_from = merge_dates(primary_node.valid_from, dup_node.valid_from, "min")
+            primary_node.valid_to = merge_dates(primary_node.valid_to, dup_node.valid_to, "max")
 
         primary_node.description = " | ".join(descriptions)
 
@@ -355,9 +339,7 @@ class Graph:
                 edge.target_id = primary_id
 
         # Avoid self-loops for connected edges only
-        connected_edges = [
-            edge for edge in connected_edges if edge.source_id != edge.target_id
-        ]
+        connected_edges = [edge for edge in connected_edges if edge.source_id != edge.target_id]
 
         edge_groups: dict[tuple[str, str, str, str], list[Edge]] = {}
         for edge in connected_edges:
@@ -378,21 +360,15 @@ class Graph:
                     else:
                         curr_val = representative.metadata[k]
                         if curr_val != v:
-                            curr_list = [
-                                x.strip() for x in curr_val.split(",") if x.strip()
-                            ]
+                            curr_list = [x.strip() for x in curr_val.split(",") if x.strip()]
                             new_list = [x.strip() for x in v.split(",") if x.strip()]
                             for item in new_list:
                                 if item not in curr_list:
                                     curr_list.append(item)
                             representative.metadata[k] = ", ".join(curr_list)
 
-                representative.valid_from = merge_dates(
-                    representative.valid_from, other.valid_from, "min"
-                )
-                representative.valid_to = merge_dates(
-                    representative.valid_to, other.valid_to, "max"
-                )
+                representative.valid_from = merge_dates(representative.valid_from, other.valid_from, "min")
+                representative.valid_to = merge_dates(representative.valid_to, other.valid_to, "max")
 
             processed_connected_edges.append(representative)
 

@@ -99,9 +99,7 @@ def check_username():
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter a username to check: {Color.RESET}"
     ).strip()
     if not username:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Username cannot be empty."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Username cannot be empty.")
         return
 
     print(
@@ -135,6 +133,4 @@ def check_username():
             f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Found {len(found_accounts)} account(s):"
         )
         for platform, url in sorted(found_accounts.items()):
-            print(
-                f"  {Color.DARK_GRAY}-{Color.WHITE} {platform:<15}: {Color.LIGHT_BLUE}{url}"
-            )
+            print(f"  {Color.DARK_GRAY}-{Color.WHITE} {platform:<15}: {Color.LIGHT_BLUE}{url}")

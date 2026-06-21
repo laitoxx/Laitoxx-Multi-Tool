@@ -39,6 +39,7 @@ except ImportError:
 
 try:
     import mutagen  # noqa: F401 — availability check
+
     HAS_MUTAGEN = True
 except ImportError:
     HAS_MUTAGEN = False
@@ -188,9 +189,7 @@ class MetadataEngine:
             "application/vnd.ms-excel",
             "application/vnd.ms-powerpoint",
         ]
-        if HAS_OLEFILE and (
-            is_office or data["FileExtension"] in [".doc", ".xls", ".ppt"]
-        ):
+        if HAS_OLEFILE and (is_office or data["FileExtension"] in [".doc", ".xls", ".ppt"]):
             if olefile.isOleFile(filepath):
                 try:
                     with olefile.OleFileIO(filepath) as ole:
@@ -221,9 +220,7 @@ class MetadataEngine:
                 pe = pefile.PE(filepath)
                 data["ExtractedWith"].append("pefile")
                 data["PE:Machine"] = hex(pe.FILE_HEADER.Machine)
-                data["PE:TimeDateStamp"] = datetime.fromtimestamp(
-                    pe.FILE_HEADER.TimeDateStamp
-                ).isoformat()
+                data["PE:TimeDateStamp"] = datetime.fromtimestamp(pe.FILE_HEADER.TimeDateStamp).isoformat()
                 data["PE:NumberOfSections"] = pe.FILE_HEADER.NumberOfSections
                 data["PE:Imphash"] = pe.get_imphash()
 
@@ -234,19 +231,13 @@ class MetadataEngine:
 
                 # Imports
                 if hasattr(pe, "DIRECTORY_ENTRY_IMPORT"):
-                    dlls = [
-                        entry.dll.decode("utf-8", "ignore")
-                        for entry in pe.DIRECTORY_ENTRY_IMPORT
-                        if entry.dll
-                    ]
+                    dlls = [entry.dll.decode("utf-8", "ignore") for entry in pe.DIRECTORY_ENTRY_IMPORT if entry.dll]
                     data["PE:ImportedDLLs"] = ", ".join(dlls)
 
                 # Exports
                 if hasattr(pe, "DIRECTORY_ENTRY_EXPORT"):
                     exports = [
-                        exp.name.decode("utf-8", "ignore")
-                        for exp in pe.DIRECTORY_ENTRY_EXPORT.symbols
-                        if exp.name
+                        exp.name.decode("utf-8", "ignore") for exp in pe.DIRECTORY_ENTRY_EXPORT.symbols if exp.name
                     ]
                     data["PE:ExportedFunctionsCount"] = len(exports)
             except Exception:
@@ -263,13 +254,9 @@ class MetadataEngine:
                     binwalk_findings = []
                     for module in modules:
                         for result in module.results:
-                            binwalk_findings.append(
-                                f"{result.offset}: {result.description}"
-                            )
+                            binwalk_findings.append(f"{result.offset}: {result.description}")
                     if len(binwalk_findings) > 1:  # Usually index 0 is the file itself
-                        data["Binwalk:Steganography/Embedded"] = " | ".join(
-                            binwalk_findings
-                        )
+                        data["Binwalk:Steganography/Embedded"] = " | ".join(binwalk_findings)
             except Exception as e:
                 logging.debug(f"Binwalk failed for {filepath}: {e}")
 
@@ -339,9 +326,7 @@ class MetadataEngine:
                             try:
                                 data[f"xattr:{attr}"] = val.decode("utf-8")
                             except UnicodeDecodeError:
-                                data[f"xattr:{attr}"] = (
-                                    f"<Binary Data: {len(val)} bytes>"
-                                )
+                                data[f"xattr:{attr}"] = f"<Binary Data: {len(val)} bytes>"
                 except Exception:
                     pass
 

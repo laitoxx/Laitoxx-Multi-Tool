@@ -104,11 +104,7 @@ class SearchWorker(QObject):
                     return
 
             enc = urllib.parse.quote(upload_url, safe="")
-            urls = {
-                eng: tpl.format(enc=enc)
-                for eng, tpl in _SEARCH_ENGINE_MAP.items()
-                if eng in self._engines
-            }
+            urls = {eng: tpl.format(enc=enc) for eng, tpl in _SEARCH_ENGINE_MAP.items() if eng in self._engines}
             self.finished.emit(urls)
         except Exception:
             self.error.emit(traceback.format_exc())

@@ -94,9 +94,7 @@ class MetadataForensics:
         # 1. Date vs Software version
         if create_date and software:
             year_match = re.search(r"(19|20)\d{2}", str(create_date))
-            soft_year_match = re.search(
-                r"20\d{2}", str(software)
-            )  # Looking for e.g. Photoshop 2023
+            soft_year_match = re.search(r"20\d{2}", str(software))  # Looking for e.g. Photoshop 2023
             if year_match and soft_year_match:
                 c_year = int(year_match.group())
                 s_year = int(soft_year_match.group())
@@ -113,9 +111,7 @@ class MetadataForensics:
                 c_dt = datetime.strptime(c_str, "%Y-%m-%d")
                 m_dt = datetime.strptime(m_str, "%Y-%m-%d")
                 if m_dt < c_dt:
-                    anomalies.append(
-                        f"Anomaly: Modified ({m_str}) before Creation ({c_str}). Timestamps tampered."
-                    )
+                    anomalies.append(f"Anomaly: Modified ({m_str}) before Creation ({c_str}). Timestamps tampered.")
             except Exception:
                 pass
 
@@ -126,9 +122,7 @@ class MetadataForensics:
             ".png",
             ".jpeg",
         ]:
-            width = get_val(
-                ["EXIF:ExifImageWidth", "File:ImageWidth", "Exif.Photo.PixelXDimension"]
-            )
+            width = get_val(["EXIF:ExifImageWidth", "File:ImageWidth", "Exif.Photo.PixelXDimension"])
             height = get_val(
                 [
                     "EXIF:ExifImageHeight",

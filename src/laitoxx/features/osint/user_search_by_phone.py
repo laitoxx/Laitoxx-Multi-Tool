@@ -17,16 +17,12 @@ except Exception:
 
 
 def search_by_number():
-    phone = input(
-        f"{Color.DARK_GRAY}[{Color.DARK_RED}!{Color.DARK_GRAY}]{Color.DARK_RED} Phone number: {Color.RESET}"
-    )
+    phone = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}!{Color.DARK_GRAY}]{Color.DARK_RED} Phone number: {Color.RESET}")
     if phone is None:
         return
     phone = phone.strip().replace(" ", "")
     if not phone:
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}!{Color.DARK_GRAY}]{Color.DARK_RED} Empty phone number."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}!{Color.DARK_GRAY}]{Color.DARK_RED} Empty phone number.")
         return
     phone_for_validation = phone if phone.startswith("+") else f"+{phone}"
 
@@ -49,40 +45,26 @@ def search_by_number():
         country = geocoder.description_for_number(parsed_number, "en")
         region = carrier.name_for_number(parsed_number, "en")
         time_zones = timezone.time_zones_for_number(parsed_number)
-        number_type = (
-            "Mobile"
-            if phonenumbers.number_type(parsed_number) == 1
-            else "Fixed line or other"
-        )
+        number_type = "Mobile" if phonenumbers.number_type(parsed_number) == 1 else "Fixed line or other"
         possible_number = phonenumbers.is_possible_number(parsed_number)
         valid_number = phonenumbers.is_valid_number(parsed_number)
 
         print(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Mobile number: {phone_for_validation}"
         )
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Country: {country}"
-        )
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Carrier: {region}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Country: {country}")
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Carrier: {region}")
         print(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Timezone: {', '.join(time_zones)}"
         )
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Number Type: {number_type}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Number Type: {number_type}")
         print(
             f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Possible Number: {possible_number}"
         )
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Valid Number: {valid_number}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Valid Number: {valid_number}")
         if valid_number:
             region_code = phonenumbers.region_code_for_number(parsed_number)
-            print(
-                f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Region Code: {region_code}"
-            )
+            print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Region Code: {region_code}")
 
     except Exception as e:
         print(
@@ -105,9 +87,7 @@ def search_by_number():
                 f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} No user found in VK with this number."
             )
     except requests.RequestException as e:
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error checking VK: {e}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Error checking VK: {e}")
 
     # Avito Search (manual check — search page always returns 200)
     avito_url = f"https://www.avito.ru/rossiya?q={phone}"
@@ -126,13 +106,9 @@ def search_by_number():
     print(
         f"  [2] WhatsApp: https://api.whatsapp.com/send/?phone={phone.replace('+', '')}&text&type=phone_number&app_absent=0"
     )
-    print(
-        f"  [3] Viber: https://transitapp.com/redirect.html?url=viber://chat?number={phone.replace('+', '')}"
-    )
+    print(f"  [3] Viber: https://transitapp.com/redirect.html?url=viber://chat?number={phone.replace('+', '')}")
     print(f"  [4] PhoneRadar: https://www.phoneradar.ru/phone/{phone}")
     print("  [5] OK.ru Recovery: https://ok.ru/dk?st.cmd=anonymRecoveryStartPhoneLink")
     print("  [6] Twitter Recovery: https://twitter.com/account/begin_password_reset")
-    print(
-        "  [7] Facebook Recovery: https://facebook.com/login/identify/?ctx=recover&ars=royal_blue_bar"
-    )
+    print("  [7] Facebook Recovery: https://facebook.com/login/identify/?ctx=recover&ars=royal_blue_bar")
     print(f"  [8] Skype Call: skype:{phone}?call")

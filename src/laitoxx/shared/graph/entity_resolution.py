@@ -77,8 +77,6 @@ class EntityResolver:
                 n2 = graph.nodes[j]
                 similarity = EntityResolver.compute_similarity(n1, n2)
                 if similarity >= threshold:
-                    duplicates.append(
-                        {"node1": n1, "node2": n2, "similarity": similarity}
-                    )
+                    duplicates.append({"node1": n1, "node2": n2, "similarity": similarity})
         duplicates.sort(key=lambda x: x["similarity"], reverse=True)
         return duplicates

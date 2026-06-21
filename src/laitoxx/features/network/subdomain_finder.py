@@ -20,9 +20,7 @@ def find_subdomains():
     ).strip()
 
     if not domain:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No domain entered."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No domain entered.")
         return
 
     parsed_domain = urlparse(domain)
@@ -50,9 +48,7 @@ def find_subdomains():
                 continue
 
         if not subdomains:
-            print(
-                f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No subdomains found for {domain}."
-            )
+            print(f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No subdomains found for {domain}.")
             return
 
         print(
@@ -81,10 +77,6 @@ def find_subdomains():
             )
 
     except requests.exceptions.Timeout:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} The request to crt.sh timed out."
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} The request to crt.sh timed out.")
     except requests.exceptions.RequestException as e:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An error occurred: {e}"
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An error occurred: {e}")

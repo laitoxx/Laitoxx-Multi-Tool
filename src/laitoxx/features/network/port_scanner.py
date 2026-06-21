@@ -35,6 +35,4 @@ def port_scanner_tool():
             f"{Color.DARK_GRAY}[{Color.CYAN}ℹ{Color.DARK_GRAY}]{Color.CYAN} Note: Zenmap is not a pip package. You can download it from: https://nmap.org/download"
         )
     except Exception as e:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An unexpected error occurred: {e}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} An unexpected error occurred: {e}")

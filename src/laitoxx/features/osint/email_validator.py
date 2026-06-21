@@ -21,9 +21,7 @@ def check_email_address():
     email = email.strip()
 
     if not email:
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED}No email address entered.{Color.RESET}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED}No email address entered.{Color.RESET}")
         return
 
     if is_valid_email(email):

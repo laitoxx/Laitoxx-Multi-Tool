@@ -207,9 +207,7 @@ class NicknameGenerator:
             for sep in self.SEPARATORS:
                 results.add(sep.join(parts))
         # Insert separators at camelCase boundaries
-        parts_camel = (
-            re.sub(r"([a-z])([A-Z])", r"\1_\2", self.username).lower().split("_")
-        )
+        parts_camel = re.sub(r"([a-z])([A-Z])", r"\1_\2", self.username).lower().split("_")
         if len(parts_camel) > 1:
             for sep in self.SEPARATORS:
                 results.add(sep.join(parts_camel))
@@ -624,14 +622,10 @@ class NicknameGenerator:
             prev = curr
         return prev[-1]
 
-    def levenshtein_neighbors(
-        self, wordlist: list[str], max_distance: int = 2
-    ) -> list[str]:
+    def levenshtein_neighbors(self, wordlist: list[str], max_distance: int = 2) -> list[str]:
         """Find words from *wordlist* within *max_distance* edits of this username."""
         target = self.username.lower()
-        return [
-            w for w in wordlist if self.levenshtein(target, w.lower()) <= max_distance
-        ]
+        return [w for w in wordlist if self.levenshtein(target, w.lower()) <= max_distance]
 
     # ==================================================================
     # Alt-account correlation helpers (Research #2)
@@ -677,13 +671,7 @@ class NicknameGenerator:
         base_match = 1.0 if base_a == base_b and base_a else 0.0
 
         # Weighted combination
-        score = (
-            lev_sim * 0.30
-            + soundex_match * 0.15
-            + metaphone_match * 0.15
-            + substr_ratio * 0.20
-            + base_match * 0.20
-        )
+        score = lev_sim * 0.30 + soundex_match * 0.15 + metaphone_match * 0.15 + substr_ratio * 0.20 + base_match * 0.20
         return round(min(score, 1.0), 3)
 
     def find_alt_accounts(
@@ -738,9 +726,7 @@ class NicknameGenerator:
 
         # Name permutations (includes Anarchy formats)
         if first_name or last_name:
-            all_variants.update(
-                self.name_permutations(first_name, last_name, middle_name)
-            )
+            all_variants.update(self.name_permutations(first_name, last_name, middle_name))
 
         # String decomposition → auto-detect name parts → generate more
         if not first_name and not last_name:

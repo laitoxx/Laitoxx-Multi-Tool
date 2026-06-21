@@ -24,8 +24,7 @@ def _get_input_url(data) -> str:
     if data:
         return data.get("url", "").strip()
     return input(
-        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-        f" Enter URL to inspect: {Color.RESET}"
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter URL to inspect: {Color.RESET}"
     ).strip()
 
 
@@ -65,18 +64,10 @@ def _status_color(code: int) -> str:
 
 
 def _print_status(response, status_color: str, elapsed_ms: float):
-    print(
-        f"{Color.DARK_RED}[ {Color.LIGHT_RED}HTTP Status {Color.DARK_RED}]" + "-" * 27
-    )
-    print(
-        f"{Color.DARK_GRAY}  - {Color.WHITE}Status:        {status_color}{response.status_code} {response.reason}"
-    )
-    print(
-        f"{Color.DARK_GRAY}  - {Color.WHITE}Response time: {Color.LIGHT_BLUE}{elapsed_ms:.0f} ms"
-    )
-    print(
-        f"{Color.DARK_GRAY}  - {Color.WHITE}Final URL:     {Color.LIGHT_BLUE}{response.url}"
-    )
+    print(f"{Color.DARK_RED}[ {Color.LIGHT_RED}HTTP Status {Color.DARK_RED}]" + "-" * 27)
+    print(f"{Color.DARK_GRAY}  - {Color.WHITE}Status:        {status_color}{response.status_code} {response.reason}")
+    print(f"{Color.DARK_GRAY}  - {Color.WHITE}Response time: {Color.LIGHT_BLUE}{elapsed_ms:.0f} ms")
+    print(f"{Color.DARK_GRAY}  - {Color.WHITE}Final URL:     {Color.LIGHT_BLUE}{response.url}")
 
 
 def _print_redirect_chain(response, status_color: str):
@@ -87,20 +78,15 @@ def _print_redirect_chain(response, status_color: str):
         f" ({len(response.history)} hop(s)) {Color.DARK_RED}]" + "-" * 10
     )
     for i, r in enumerate(response.history):
-        print(
-            f"{Color.DARK_GRAY}  [{i + 1}] {Color.YELLOW}{r.status_code}"
-            f" {Color.DARK_GRAY}-> {Color.WHITE}{r.url}"
-        )
+        print(f"{Color.DARK_GRAY}  [{i + 1}] {Color.YELLOW}{r.status_code} {Color.DARK_GRAY}-> {Color.WHITE}{r.url}")
     print(
-        f"{Color.DARK_GRAY}  [->] {status_color}{response.status_code}"
-        f" {Color.DARK_GRAY}-> {Color.WHITE}{response.url}"
+        f"{Color.DARK_GRAY}  [->] {status_color}{response.status_code} {Color.DARK_GRAY}-> {Color.WHITE}{response.url}"
     )
 
 
 def _print_headers(response):
     print(
-        f"\n{Color.DARK_RED}[ {Color.LIGHT_RED}Response Headers"
-        f" ({len(response.headers)}) {Color.DARK_RED}]" + "-" * 10
+        f"\n{Color.DARK_RED}[ {Color.LIGHT_RED}Response Headers ({len(response.headers)}) {Color.DARK_RED}]" + "-" * 10
     )
     for name, value in response.headers.items():
         print(f"{Color.DARK_GRAY}  {Color.LIGHT_RED}{name:<35}{Color.WHITE}{value}")
@@ -122,10 +108,7 @@ def _print_cookies(response):
         return
     for cookie in response.cookies:
         value = cookie.value[:MAX_COOKIE_VALUE_LEN]
-        print(
-            f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}{cookie.name:<25}"
-            f"{Color.WHITE}{value}{_cookie_flags(cookie)}"
-        )
+        print(f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}{cookie.name:<25}{Color.WHITE}{value}{_cookie_flags(cookie)}")
 
 
 def _get_tls_host(parsed, response) -> str | None:
@@ -145,16 +128,12 @@ def http_inspector(data=None):
     """
     url = _get_input_url(data)
     if not url:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}x{Color.DARK_GRAY}]{Color.RED} No URL provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}x{Color.DARK_GRAY}]{Color.RED} No URL provided.")
         return
 
     url, parsed = _normalize_url(url)
     if not parsed:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}x{Color.DARK_GRAY}]{Color.RED} Invalid URL."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}x{Color.DARK_GRAY}]{Color.RED} Invalid URL.")
         return
 
     print()
@@ -163,9 +142,7 @@ def http_inspector(data=None):
 
     response, elapsed_ms, error = _fetch_response(url)
     if error:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}x{Color.DARK_GRAY}]{Color.RED} Connection error: {error}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}x{Color.DARK_GRAY}]{Color.RED} Connection error: {error}")
         return
 
     status_color = _status_color(response.status_code)
@@ -180,44 +157,29 @@ def http_inspector(data=None):
 
     print()
     print(f"{Color.DARK_RED}└" + "─" * 45)
-    print(
-        f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Inspection complete."
-    )
+    print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Inspection complete.")
 
 
 def _print_tls_info(host: str):
-    print(
-        f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}TLS Certificate {Color.DARK_RED}]"
-        + "─" * 24
-    )
+    print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}TLS Certificate {Color.DARK_RED}]" + "─" * 24)
     try:
         ctx = ssl.create_default_context()
         with socket.create_connection((host, 443), timeout=TLS_TIMEOUT) as sock:
             with ctx.wrap_socket(sock, server_hostname=host) as ssock:
                 cert = ssock.getpeercert()
     except Exception as e:
-        print(
-            f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} TLS error: {e}"
-        )
+        print(f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} TLS error: {e}")
         return
 
     subject = dict(x[0] for x in cert.get("subject", []))
     issuer = dict(x[0] for x in cert.get("issuer", []))
     sans = [v for t, v in cert.get("subjectAltName", []) if t == "DNS"]
 
-    print(
-        f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}Subject CN:  {Color.WHITE}{subject.get('commonName', 'N/A')}"
-    )
-    print(
-        f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}Issuer:      {Color.WHITE}{issuer.get('organizationName', 'N/A')}"
-    )
-    print(
-        f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}Valid until: {Color.WHITE}{cert.get('notAfter', 'N/A')}"
-    )
+    print(f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}Subject CN:  {Color.WHITE}{subject.get('commonName', 'N/A')}")
+    print(f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}Issuer:      {Color.WHITE}{issuer.get('organizationName', 'N/A')}")
+    print(f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}Valid until: {Color.WHITE}{cert.get('notAfter', 'N/A')}")
     if sans:
         sans_display = ", ".join(sans[:MAX_SAN_DISPLAY])
         if len(sans) > MAX_SAN_DISPLAY:
             sans_display += f"  {Color.DARK_GRAY}(+{len(sans) - MAX_SAN_DISPLAY} more)"
-        print(
-            f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}SANs ({len(sans)}):   {Color.WHITE}{sans_display}"
-        )
+        print(f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}SANs ({len(sans)}):   {Color.WHITE}{sans_display}")

@@ -18,9 +18,7 @@ def get_website_info():
     domain = domain.strip()
 
     if not domain:
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} No domain entered."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} No domain entered.")
         return
 
     print(
@@ -53,44 +51,30 @@ def get_website_info():
             "Country": domain_info.country,
         }
 
-        print(
-            f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}WHOIS Information for {domain} {Color.DARK_RED}]─"
-            + "─" * 10
-        )
+        print(f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}WHOIS Information for {domain} {Color.DARK_RED}]─" + "─" * 10)
         for label, value in info_map.items():
             if value:
                 if isinstance(value, list):
                     value_str = ", ".join(map(str, value))
                 else:
                     value_str = str(value).replace("\n", ", ")
-                print(
-                    f"{Color.DARK_RED}│ {Color.LIGHT_RED}{label:<20}: {Color.WHITE}{value_str}"
-                )
+                print(f"{Color.DARK_RED}│ {Color.LIGHT_RED}{label:<20}: {Color.WHITE}{value_str}")
         print(f"{Color.DARK_RED}└" + "─" * (45 + len(domain)))
 
         # Globalping Check
-        print(
-            f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Globalping Connectivity {Color.DARK_RED}]─"
-            + "─" * 20
-        )
+        print(f"\n{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Globalping Connectivity {Color.DARK_RED}]─" + "─" * 20)
         try:
             post_data = {"target": domain, "type": "ping", "limit": 4}
-            r = requests.post(
-                "https://api.globalping.io/v1/measurements", json=post_data, timeout=10
-            )
+            r = requests.post("https://api.globalping.io/v1/measurements", json=post_data, timeout=10)
             r.raise_for_status()
             m_id = r.json().get("id")
             if not m_id:
                 print(f"{Color.DARK_RED}│ {Color.RED}Failed to get measurement ID")
             else:
-                print(
-                    f"{Color.DARK_RED}│ {Color.WHITE}Probing from 4 global locations... (eta 5-10s)"
-                )
+                print(f"{Color.DARK_RED}│ {Color.WHITE}Probing from 4 global locations... (eta 5-10s)")
                 for _ in range(10):
                     time.sleep(1.5)
-                    res = requests.get(
-                        f"https://api.globalping.io/v1/measurements/{m_id}", timeout=10
-                    )
+                    res = requests.get(f"https://api.globalping.io/v1/measurements/{m_id}", timeout=10)
                     data = res.json()
                     if data.get("status") in ["finished", "failed"]:
                         results = data.get("results", [])
@@ -102,7 +86,9 @@ def get_website_info():
                             )
                             for res in results:
                                 probe = res.get("probe", {})
-                                loc = f"{probe.get('city', '')}, {probe.get('country', '')} ({probe.get('network', '')})"
+                                loc = (
+                                    f"{probe.get('city', '')}, {probe.get('country', '')} ({probe.get('network', '')})"
+                                )
                                 stats = res.get("result", {}).get("stats", {})
                                 if res.get("result", {}).get("status") == "failed":
                                     print(
@@ -115,17 +101,9 @@ def get_website_info():
                                 mx = stats.get("max", 0)
                                 loss = stats.get("loss", 0)
 
-                                color = (
-                                    Color.LIGHT_GREEN
-                                    if loss == 0
-                                    else Color.YELLOW
-                                    if loss < 100
-                                    else Color.RED
-                                )
+                                color = Color.LIGHT_GREEN if loss == 0 else Color.YELLOW if loss < 100 else Color.RED
                                 ping_str = f"{avg}ms  [ {mn} / {mx} ]  {loss}% loss"
-                                print(
-                                    f"{Color.DARK_RED}│ {Color.WHITE}{loc[:30]:<30}: {color}{ping_str}{Color.RESET}"
-                                )
+                                print(f"{Color.DARK_RED}│ {Color.WHITE}{loc[:30]:<30}: {color}{ping_str}{Color.RESET}")
                         break
         except Exception as e:
             print(f"{Color.DARK_RED}│ {Color.RED}Globalping failed: {e}")
@@ -133,10 +111,6 @@ def get_website_info():
             print(f"{Color.DARK_RED}└" + "─" * 46)
 
     except whois.parser.PywhoisError as e:
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Error: {e}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Error: {e}")
     except Exception as e:
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} An unexpected error occurred: {e}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} An unexpected error occurred: {e}")

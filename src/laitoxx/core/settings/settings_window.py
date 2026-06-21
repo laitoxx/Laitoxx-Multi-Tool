@@ -61,9 +61,7 @@ class SettingsWindow(QDialog):
             return self._tr.get(key, **kw)
         return key
 
-    def _make_page(
-        self, title_key: str, *, spacing: int = 12
-    ) -> tuple[QWidget, QVBoxLayout]:
+    def _make_page(self, title_key: str, *, spacing: int = 12) -> tuple[QWidget, QVBoxLayout]:
         page = QWidget()
         layout = QVBoxLayout(page)
         layout.setContentsMargins(*self._PAGE_MARGINS)
@@ -86,9 +84,7 @@ class SettingsWindow(QDialog):
         row.addStretch()
         layout.addLayout(row)
 
-    def _populate_combo(
-        self, combo: QComboBox, items: list[tuple[str, str]], current: str | None
-    ):
+    def _populate_combo(self, combo: QComboBox, items: list[tuple[str, str]], current: str | None):
         combo.clear()
         for name, path in items:
             combo.addItem(name, path)
@@ -264,9 +260,7 @@ class SettingsWindow(QDialog):
     def _ask_theme_name(self) -> tuple[str, bool]:
         from PyQt6.QtWidgets import QInputDialog
 
-        return QInputDialog.getText(
-            self, self._t("sw_theme_name_title"), self._t("sw_theme_name_prompt")
-        )
+        return QInputDialog.getText(self, self._t("sw_theme_name_title"), self._t("sw_theme_name_prompt"))
 
     # ── Page: Background ──────────────────────────────────────────────────────
 
@@ -293,9 +287,7 @@ class SettingsWindow(QDialog):
         return page
 
     def _refresh_bg_list(self):
-        self._populate_combo(
-            self._combo_bg, list_backgrounds(), settings.background_path
-        )
+        self._populate_combo(self._combo_bg, list_backgrounds(), settings.background_path)
 
     def _on_apply_bg(self):
         path = self._combo_bg.currentData()
@@ -388,9 +380,7 @@ class SettingsWindow(QDialog):
         apply_proxy_settings(proxy_cfg)  # legacy env/session compat
         NetworkManager.apply(proxy_cfg)  # installs/removes OS-level guards
         self.proxy_changed.emit()
-        QMessageBox.information(
-            self, self._t("sw_proxy_saved_title"), self._t("sw_proxy_saved_msg")
-        )
+        QMessageBox.information(self, self._t("sw_proxy_saved_title"), self._t("sw_proxy_saved_msg"))
 
     # ── Page: Schedule ───────────────────────────────────────────────────────
 
@@ -411,7 +401,9 @@ class SettingsWindow(QDialog):
         self._spin_day_start.setRange(0, 23)
         self._spin_day_start.setValue(settings.day_start)
         self._spin_day_start.setSuffix(":00")
-        self._spin_day_start.setStyleSheet("QSpinBox { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius:6px; color:white; padding:4px 8px; }")
+        self._spin_day_start.setStyleSheet(
+            "QSpinBox { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius:6px; color:white; padding:4px 8px; }"
+        )
         self._add_labeled_row(lay, self._t("sw_schedule_day_start") + ":", self._spin_day_start)
 
         self._combo_night_theme = QComboBox()
@@ -423,7 +415,9 @@ class SettingsWindow(QDialog):
         self._spin_night_start.setRange(0, 23)
         self._spin_night_start.setValue(settings.night_start)
         self._spin_night_start.setSuffix(":00")
-        self._spin_night_start.setStyleSheet("QSpinBox { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius:6px; color:white; padding:4px 8px; }")
+        self._spin_night_start.setStyleSheet(
+            "QSpinBox { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius:6px; color:white; padding:4px 8px; }"
+        )
         self._add_labeled_row(lay, self._t("sw_schedule_night_start") + ":", self._spin_night_start)
 
         btn_save = QPushButton(self._t("save"))
@@ -479,9 +473,5 @@ class SettingsWindow(QDialog):
         )
         check_style = "QCheckBox { color:white; font-size:13px; }"
         self.setStyleSheet(
-            "QDialog { background: rgba(20,20,20,0.95); }"
-            + btn_style
-            + combo_style
-            + edit_style
-            + check_style
+            "QDialog { background: rgba(20,20,20,0.95); }" + btn_style + combo_style + edit_style + check_style
         )

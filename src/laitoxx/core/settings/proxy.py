@@ -12,9 +12,7 @@ import os
 import requests
 
 
-def build_proxies(
-    proxy_type: str, host: str, port: int | str, username: str = "", password: str = ""
-) -> dict:
+def build_proxies(proxy_type: str, host: str, port: int | str, username: str = "", password: str = "") -> dict:
     """Return a ``requests``-compatible proxies dict, or {} if disabled."""
     if not host or not port:
         return {}

@@ -15,9 +15,7 @@ from laitoxx.interfaces.gui.main_window import MainWindow
 
 LOG_DIR = "logs"
 os.makedirs(LOG_DIR, exist_ok=True)
-log_filename = os.path.join(
-    LOG_DIR, f"gui_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
-)
+log_filename = os.path.join(LOG_DIR, f"gui_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log")
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -39,13 +37,14 @@ def _open_project_site():
         return
     try:
         import urllib3
+
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         import requests
 
         from laitoxx.core.netcheck import build_proxies
+
         proxies = build_proxies(settings.proxy)
-        requests.head(PROJECT_SITE, proxies=proxies, timeout=5,
-                      allow_redirects=True, verify=False)
+        requests.head(PROJECT_SITE, proxies=proxies, timeout=5, allow_redirects=True, verify=False)
         webbrowser.open(PROJECT_SITE)
     except Exception:
         logging.info("Project site unreachable, skipping auto-open.")

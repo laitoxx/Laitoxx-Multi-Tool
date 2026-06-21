@@ -72,9 +72,7 @@ def _section(title: str, width: int = 38):
 
 
 def _ok(msg: str):
-    print(
-        f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {msg}"
-    )
+    print(f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {msg}")
 
 
 def _warn(msg: str):
@@ -145,11 +143,7 @@ def check_ssl_tls(url: str):
     _row(
         "Protocol",
         version,
-        Color.LIGHT_GREEN
-        if "TLSv1.3" in version
-        else Color.YELLOW
-        if "TLSv1.2" in version
-        else Color.RED,
+        Color.LIGHT_GREEN if "TLSv1.3" in version else Color.YELLOW if "TLSv1.2" in version else Color.RED,
     )
     _row("Cipher suite", cipher[0])
     _row("Key bits", str(cipher[2]))
@@ -164,9 +158,7 @@ def check_ssl_tls(url: str):
 
     if not_after:
         try:
-            exp = datetime.strptime(not_after, "%b %d %H:%M:%S %Y %Z").replace(
-                tzinfo=UTC
-            )
+            exp = datetime.strptime(not_after, "%b %d %H:%M:%S %Y %Z").replace(tzinfo=UTC)
             days_left = (exp - datetime.now(UTC)).days
             if days_left < 0:
                 _fail(f"Certificate EXPIRED {abs(days_left)} day(s) ago!")
@@ -179,9 +171,7 @@ def check_ssl_tls(url: str):
 
     sans = [v for t, v in cert.get("subjectAltName", []) if t == "DNS"]
     if sans:
-        display = ", ".join(sans[:6]) + (
-            f"  (+{len(sans) - 6} more)" if len(sans) > 6 else ""
-        )
+        display = ", ".join(sans[:6]) + (f"  (+{len(sans) - 6} more)" if len(sans) > 6 else "")
         _row("SANs", display)
 
     if "TLSv1.0" in version or "TLSv1.1" in version or "SSLv" in version:
@@ -223,9 +213,7 @@ async def _check_cors_async(url: str):
                     vary = r.headers.get("Vary", "")
 
                     if acao == "*":
-                        _warn(
-                            "Wildcard ACAO (*) — public resources allowed from any origin."
-                        )
+                        _warn("Wildcard ACAO (*) — public resources allowed from any origin.")
                         issues.append("wildcard")
                     elif acao == origin:
                         if acac == "true":
@@ -234,22 +222,16 @@ async def _check_cors_async(url: str):
                             )
                             issues.append("reflect+creds")
                         else:
-                            _warn(
-                                f"ACAO reflects '{origin}' (no credentials) — may be intentional but verify."
-                            )
+                            _warn(f"ACAO reflects '{origin}' (no credentials) — may be intentional but verify.")
                             issues.append("reflect")
                     elif acao == "null" and origin == "null":
                         _fail("ACAO: null accepted — exploitable via sandboxed iframe!")
                         issues.append("null")
                     else:
-                        _ok(
-                            f"Origin '{origin}' → not reflected (ACAO: '{acao or 'absent'}')"
-                        )
+                        _ok(f"Origin '{origin}' → not reflected (ACAO: '{acao or 'absent'}')")
 
                     if "Origin" not in vary and acao:
-                        _warn(
-                            "'Vary: Origin' missing — caching may leak CORS responses."
-                        )
+                        _warn("'Vary: Origin' missing — caching may leak CORS responses.")
 
             except aiohttp.ClientError as e:
                 _fail(f"Request failed ({origin}): {e}")
@@ -322,8 +304,7 @@ async def _check_redirect_async(url: str):
         for param, code, loc in found:
             _fail(f"VULNERABLE: ?{param}= → {code} → {loc}")
         print(
-            f"\n{Color.DARK_GRAY}  [{Color.RED}!{Color.DARK_GRAY}]{Color.RED}"
-            f" {len(found)} open redirect(s) detected."
+            f"\n{Color.DARK_GRAY}  [{Color.RED}!{Color.DARK_GRAY}]{Color.RED} {len(found)} open redirect(s) detected."
         )
     else:
         _ok(f"No open redirect found across {len(_REDIRECT_PARAMS)} parameters.")
@@ -373,14 +354,9 @@ async def _check_headers_async(url: str):
                             _warn(f"{label:<30} {Color.YELLOW}missing  (medium)")
                             missing_med += 1
                         else:
-                            print(
-                                f"{Color.DARK_GRAY}  -  {Color.DARK_GRAY}{label:<30} not set  (low)"
-                            )
+                            print(f"{Color.DARK_GRAY}  -  {Color.DARK_GRAY}{label:<30} not set  (low)")
 
-                print(
-                    f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Grade {Color.DARK_RED}]"
-                    + "─" * 32
-                )
+                print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Grade {Color.DARK_RED}]" + "─" * 32)
                 total_high = sum(1 for _, _, s in _SECURITY_HEADERS if s == "high")
                 if missing_high == 0 and missing_med == 0:
                     grade, col = "A+", Color.LIGHT_GREEN
@@ -391,9 +367,7 @@ async def _check_headers_async(url: str):
                 else:
                     grade, col = "F", Color.RED
                 print(f"{Color.DARK_GRAY}  Security grade: {col}{grade}")
-                print(
-                    f"{Color.DARK_GRAY}  Missing critical: {Color.RED}{missing_high}/{total_high}"
-                )
+                print(f"{Color.DARK_GRAY}  Missing critical: {Color.RED}{missing_high}/{total_high}")
 
     except aiohttp.ClientError as e:
         _fail(f"Request failed: {e}")
@@ -418,49 +392,26 @@ def web_security_tools(data=None):
         url = data.get("url", "").strip()
         check = data.get("check", "all").lower()
     else:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" Web Security Tools\n"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.DARK_RED} SSL/TLS Checker"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.DARK_RED} CORS Checker"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}3{Color.DARK_GRAY}]{Color.DARK_RED} Open Redirect Scanner"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}4{Color.DARK_GRAY}]{Color.DARK_RED} Security Headers"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}5{Color.DARK_GRAY}]{Color.DARK_RED} Run all checks\n"
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Web Security Tools\n")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.DARK_RED} SSL/TLS Checker")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.DARK_RED} CORS Checker")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}3{Color.DARK_GRAY}]{Color.DARK_RED} Open Redirect Scanner")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}4{Color.DARK_GRAY}]{Color.DARK_RED} Security Headers")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}5{Color.DARK_GRAY}]{Color.DARK_RED} Run all checks\n")
 
-        sel = input(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Select check: "
-        ).strip()
-        check = {"1": "ssl", "2": "cors", "3": "redirect", "4": "headers"}.get(
-            sel, "all"
-        )
+        sel = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Select check: ").strip()
+        check = {"1": "ssl", "2": "cors", "3": "redirect", "4": "headers"}.get(sel, "all")
 
         url = input(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" Enter target URL: {Color.RESET}"
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter target URL: {Color.RESET}"
         ).strip()
 
     if not url:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No URL provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No URL provided.")
         return
 
     url = _ensure_scheme(url)
-    print(
-        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE}"
-        f" Target: {Color.WHITE}{url}\n"
-    )
+    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Target: {Color.WHITE}{url}\n")
 
     if check == "all":
         for fn in _CHECK_MAP.values():
@@ -470,7 +421,4 @@ def web_security_tools(data=None):
     else:
         _fail(f"Unknown check '{check}'. Use: ssl, cors, redirect, headers, all.")
 
-    print(
-        f"\n{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN}"
-        f" Web security check complete."
-    )
+    print(f"\n{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Web security check complete.")

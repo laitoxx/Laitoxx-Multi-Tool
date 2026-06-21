@@ -127,16 +127,12 @@ class NetworkInfoWindow(QDialog):
                     QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls,
                     True,
                 )
-                settings.setAttribute(
-                    QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True
-                )
+                settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
                 self._load_empty_map()
                 map_layout.addWidget(self.map_view)
             else:
                 self.map_view = None
-                lbl = QLabel(
-                    "Map view requires PyQt6-WebEngine.\nPlease install it via 'pip install PyQt6-WebEngine'"
-                )
+                lbl = QLabel("Map view requires PyQt6-WebEngine.\nPlease install it via 'pip install PyQt6-WebEngine'")
                 lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 lbl.setStyleSheet("color: #ff5555; font-size: 14px;")
                 map_layout.addWidget(lbl)
@@ -203,9 +199,7 @@ class NetworkInfoWindow(QDialog):
             }}
         """)
 
-    def _load_empty_map(
-        self, lat=20.0, lon=0.0, zoom=2, marker_text=None, target_ip=""
-    ):
+    def _load_empty_map(self, lat=20.0, lon=0.0, zoom=2, marker_text=None, target_ip=""):
         if marker_text is None:
             marker_text = translator.get("ni_waiting")
         if not self.map_view:
@@ -274,8 +268,9 @@ class NetworkInfoWindow(QDialog):
 
         if "osmnx_error" in data:
             self.console_output.append(f"\n[WARNING] OSMNX Map Overlay failed to load:\n{data['osmnx_error']}\n")
-            self.console_output.append("This usually happens on Windows if 'geopandas'/'fiona' or C++ Build Tools are missing, or if OpenStreetMap blocked the IP.\n")
-
+            self.console_output.append(
+                "This usually happens on Windows if 'geopandas'/'fiona' or C++ Build Tools are missing, or if OpenStreetMap blocked the IP.\n"
+            )
 
         js_code = f"""
         (function() {{
@@ -380,24 +375,18 @@ class NetworkInfoWindow(QDialog):
                     timeout=5,
                 ).json()
                 cw = r.get("current_weather", {})
-                data["weather"] = (
-                    f"{cw.get('temperature', '?')}°C, Wind: {cw.get('windspeed', '?')}km/h"
-                )
+                data["weather"] = f"{cw.get('temperature', '?')}°C, Wind: {cw.get('windspeed', '?')}km/h"
                 daily = r.get("daily", {})
                 if daily and daily.get("sunrise") and daily.get("sunset"):
                     cTime = cw.get("time")
-                    data["is_day"] = (
-                        cTime >= daily["sunrise"][0] and cTime <= daily["sunset"][0]
-                    )
+                    data["is_day"] = cTime >= daily["sunrise"][0] and cTime <= daily["sunset"][0]
             except Exception:
                 pass
 
             target_ip = getattr(self, "resolved_ip", "")
             if target_ip:
                 try:
-                    r = requests.get(
-                        f"https://api.ipapi.is/?q={target_ip}", timeout=5
-                    ).json()
+                    r = requests.get(f"https://api.ipapi.is/?q={target_ip}", timeout=5).json()
                     loc = r.get("location", {})
 
                     if loc.get("currency_code"):
@@ -425,9 +414,7 @@ class NetworkInfoWindow(QDialog):
                     for col in gdf.columns:
                         if col == "geometry":
                             continue
-                        gdf[col] = gdf[col].apply(
-                            lambda x: str(x) if isinstance(x, (list, dict)) else x
-                        )
+                        gdf[col] = gdf[col].apply(lambda x: str(x) if isinstance(x, (list, dict)) else x)
                     data["geojson"] = json.loads(gdf.to_json())
             except Exception as e:
                 import logging
@@ -436,11 +423,7 @@ class NetworkInfoWindow(QDialog):
                 data["osmnx_error"] = str(e)
 
             # Freifunk OpenWiFiMap bridge to Apple WPS (for IP mode)
-            if (
-                self.mode == "ip"
-                and getattr(self, "lat", 0) != 0
-                and getattr(self, "lon", 0) != 0
-            ):
+            if self.mode == "ip" and getattr(self, "lat", 0) != 0 and getattr(self, "lon", 0) != 0:
                 try:
                     min_lon, min_lat = self.lon - 0.005, self.lat - 0.005
                     max_lon, max_lat = self.lon + 0.005, self.lat + 0.005
@@ -461,9 +444,7 @@ class NetworkInfoWindow(QDialog):
                                     for offset in [-1, 0, 1, 2, 3, 4]:
                                         mutated_int = base_int + offset
                                         hex_str = f"{mutated_int:012x}"
-                                        mac = ":".join(
-                                            hex_str[i : i + 2] for i in range(0, 12, 2)
-                                        )
+                                        mac = ":".join(hex_str[i : i + 2] for i in range(0, 12, 2))
                                         bssid_pool.append(mac)
                                 except ValueError:
                                     pass
@@ -478,9 +459,7 @@ class NetworkInfoWindow(QDialog):
                             )
 
                             urllib3.disable_warnings()
-                            os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = (
-                                "python"
-                            )
+                            os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
                             wloc_accumulated = []
                             # query first 10 candidates to avoid spamming
@@ -489,9 +468,7 @@ class NetworkInfoWindow(QDialog):
                                 if locs and len(locs) > 1:
                                     # Found a hit!
                                     for k, v in locs.items():
-                                        wloc_accumulated.append(
-                                            {"mac": k, "lat": v[0], "lon": v[1]}
-                                        )
+                                        wloc_accumulated.append({"mac": k, "lat": v[0], "lon": v[1]})
                                     break  # We got the massive response, stop polling
 
                             if wloc_accumulated:
@@ -551,9 +528,7 @@ class NetworkInfoWindow(QDialog):
         self._worker_thread.finished.connect(self._worker_thread.deleteLater)
         self._worker.finished.connect(self._on_search_finished)
         self._worker.update.connect(self._handle_output)
-        self._worker.error.connect(
-            lambda e: self.console_output.append(f"\n[ERROR] {e}")
-        )
+        self._worker.error.connect(lambda e: self.console_output.append(f"\n[ERROR] {e}"))
 
         self._worker_thread.start()
 
@@ -610,9 +585,7 @@ class NetworkInfoWindow(QDialog):
                         if val and val != "None":
                             self.lon = float(val)
                             if self.lat != 0.0 and self.lon != 0.0:
-                                target_txt = getattr(
-                                    self, "resolved_ip", self.input_field.text().strip()
-                                )
+                                target_txt = getattr(self, "resolved_ip", self.input_field.text().strip())
                                 self._load_empty_map(
                                     self.lat,
                                     self.lon,
@@ -687,18 +660,11 @@ class NetworkInfoWindow(QDialog):
                         f"<span style='color: #8ab4f8;'><b>{key}</b></span> &nbsp; <span style='color: {val_color};'>{val}</span>"
                     )
                 else:
-                    self.console_output.append(
-                        f"<span style='color: #cccccc;'>{line.replace('│', '').strip()}</span>"
-                    )
+                    self.console_output.append(f"<span style='color: #cccccc;'>{line.replace('│', '').strip()}</span>")
                 continue
 
             # Ignore closing borders
-            if (
-                line.startswith("└─")
-                or line.startswith("╔═")
-                or line.startswith("║")
-                or line.startswith("╚═")
-            ):
+            if line.startswith("└─") or line.startswith("╔═") or line.startswith("║") or line.startswith("╚═"):
                 continue
 
             # Default text
@@ -710,9 +676,7 @@ class NetworkInfoWindow(QDialog):
 
     def _on_search_finished(self):
         self.search_btn.setEnabled(True)
-        self.console_output.append(
-            "<br><span style='color: #55ff55;'>[✓] Analysis complete.</span>"
-        )
+        self.console_output.append("<br><span style='color: #55ff55;'>[✓] Analysis complete.</span>")
 
         # If in website mode, or if lat/lon failed to parse, stop the progress animation
         if self.mode == "website" or getattr(self, "lat", 0.0) == 0.0:

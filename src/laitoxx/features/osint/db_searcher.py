@@ -20,9 +20,7 @@ def search_database():
         )
         return
 
-    files_in_db = [
-        f for f in os.listdir(db_dir) if os.path.isfile(os.path.join(db_dir, f))
-    ]
+    files_in_db = [f for f in os.listdir(db_dir) if os.path.isfile(os.path.join(db_dir, f))]
 
     if not files_in_db:
         print(
@@ -34,21 +32,15 @@ def search_database():
         f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_RED} {len(files_in_db)} databases found.\n"
     )
 
-    data_to_search = input(
-        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Enter data to search: "
-    )
+    data_to_search = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Enter data to search: ")
     if data_to_search is None:
         return
 
     if not data_to_search:
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} No search data provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} No search data provided.")
         return
 
-    print(
-        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Searching...\n"
-    )
+    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} Searching...\n")
 
     found_results = False
 
@@ -73,16 +65,11 @@ def search_database():
 
             try:
                 conn = duckdb.connect()
-                cols_info = conn.execute(
-                    f"DESCRIBE SELECT * FROM '{filepath}'"
-                ).fetchall()
+                cols_info = conn.execute(f"DESCRIBE SELECT * FROM '{filepath}'").fetchall()
                 col_names = [c[0] for c in cols_info]
 
                 safe_search = data_to_search.replace("'", "''")
-                where_clauses = [
-                    f"CAST(\"{c}\" AS VARCHAR) ILIKE '%{safe_search}%'"
-                    for c in col_names
-                ]
+                where_clauses = [f"CAST(\"{c}\" AS VARCHAR) ILIKE '%{safe_search}%'" for c in col_names]
                 where_stmt = " OR ".join(where_clauses)
 
                 query = f"SELECT * FROM '{filepath}' WHERE {where_stmt} LIMIT 100"
@@ -103,10 +90,10 @@ def search_database():
                             + "\n"
                         )
                         for i, val in enumerate(row):
-                            formatted_result += f"{Color.DARK_RED}│ {Color.LIGHT_RED}{col_names[i]}: {Color.WHITE}{val}\n"
-                        formatted_result += (
-                            f"{Color.DARK_RED}└" + "─" * (30 + len(filename)) + "\n"
-                        )
+                            formatted_result += (
+                                f"{Color.DARK_RED}│ {Color.LIGHT_RED}{col_names[i]}: {Color.WHITE}{val}\n"
+                            )
+                        formatted_result += f"{Color.DARK_RED}└" + "─" * (30 + len(filename)) + "\n"
                         print(formatted_result)
             except Exception as e:
                 print(
@@ -133,9 +120,7 @@ def search_database():
                         continue
 
                     safe_search = data_to_search.replace("'", "''")
-                    where_clauses = [
-                        f"CAST(\"{c}\" AS TEXT) LIKE '%{safe_search}%'" for c in columns
-                    ]
+                    where_clauses = [f"CAST(\"{c}\" AS TEXT) LIKE '%{safe_search}%'" for c in columns]
                     where_stmt = " OR ".join(where_clauses)
 
                     query = f'SELECT * FROM "{table}" WHERE {where_stmt} LIMIT 100'
@@ -158,12 +143,10 @@ def search_database():
                                     + "\n"
                                 )
                                 for i, val in enumerate(row):
-                                    formatted_result += f"{Color.DARK_RED}│ {Color.LIGHT_RED}{columns[i]}: {Color.WHITE}{val}\n"
-                                formatted_result += (
-                                    f"{Color.DARK_RED}└"
-                                    + "─" * (30 + len(filename))
-                                    + "\n"
-                                )
+                                    formatted_result += (
+                                        f"{Color.DARK_RED}│ {Color.LIGHT_RED}{columns[i]}: {Color.WHITE}{val}\n"
+                                    )
+                                formatted_result += f"{Color.DARK_RED}└" + "─" * (30 + len(filename)) + "\n"
                                 print(formatted_result)
                     except sqlite3.OperationalError:
                         pass  # Ignore tables that might have query issues
@@ -198,9 +181,7 @@ def search_database():
                             )
                             for k, v in doc.items():
                                 formatted_result += f"{Color.DARK_RED}│ {Color.LIGHT_RED}{k}: {Color.WHITE}{v}\n"
-                            formatted_result += (
-                                f"{Color.DARK_RED}└" + "─" * (30 + len(filename)) + "\n"
-                            )
+                            formatted_result += f"{Color.DARK_RED}└" + "─" * (30 + len(filename)) + "\n"
                             print(formatted_result)
             except ImportError:
                 print(
@@ -230,26 +211,16 @@ def search_database():
                             found_results = True
 
                         formatted_result = (
-                            f"{Color.DARK_RED}┌─[ {Color.LIGHT_RED}{filename} {Color.DARK_RED}]─"
-                            + "─" * 30
-                            + "\n"
+                            f"{Color.DARK_RED}┌─[ {Color.LIGHT_RED}{filename} {Color.DARK_RED}]─" + "─" * 30 + "\n"
                         )
 
-                        line_parts = (
-                            line.strip().split(delimiter)
-                            if delimiter
-                            else [line.strip()]
-                        )
+                        line_parts = line.strip().split(delimiter) if delimiter else [line.strip()]
 
                         for i, part in enumerate(line_parts):
-                            header_name = (
-                                header[i] if i < len(header) else f"Field {i + 1}"
-                            )
+                            header_name = header[i] if i < len(header) else f"Field {i + 1}"
                             formatted_result += f"{Color.DARK_RED}│ {Color.LIGHT_RED}{header_name.strip()}: {Color.WHITE}{part.strip()}\n"
 
-                        formatted_result += (
-                            f"{Color.DARK_RED}└" + "─" * (40 + len(filename)) + "\n"
-                        )
+                        formatted_result += f"{Color.DARK_RED}└" + "─" * (40 + len(filename)) + "\n"
                         print(formatted_result)
                         break
 
@@ -263,6 +234,4 @@ def search_database():
             )
 
     if not found_results:
-        print(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} No matches found."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.RED} No matches found.")

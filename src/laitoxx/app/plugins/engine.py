@@ -48,12 +48,8 @@ class LuaPluginMeta:
         self.description = meta.get("description", "")
         self.author = meta.get("author", "Unknown")
         self.version = meta.get("version", "1.0")
-        self.plugin_type = meta.get(
-            "type", "search"
-        )  # search / processor / formatter / passive_scanner
-        self.config_schema = meta.get(
-            "config_schema"
-        )  # list of {key, label, type, default, ...}
+        self.plugin_type = meta.get("type", "search")  # search / processor / formatter / passive_scanner
+        self.config_schema = meta.get("config_schema")  # list of {key, label, type, default, ...}
         self.enabled = True
         self.config_values: dict = {}  # filled from saved settings
 
@@ -139,9 +135,7 @@ class HostAPI:
                 body = json.dumps(_lua_table_to_dict(data), ensure_ascii=False)
             if isinstance(body, str):
                 body = body.encode("utf-8")
-            resp = self._session.post(
-                str(url), data=body, timeout=int(timeout), headers=headers
-            )
+            resp = self._session.post(str(url), data=body, timeout=int(timeout), headers=headers)
             resp.raise_for_status()
             return resp.text
         except Exception as e:
@@ -445,9 +439,7 @@ class HostAPI:
             cat_list = [_lua_str(v) for v in categories.values()]
             sites = db.filter_by_category(cat_list)
 
-        self._output(
-            f"[Username OSINT] Checking '{_lua_str(username)}' on {len(sites)} sites..."
-        )
+        self._output(f"[Username OSINT] Checking '{_lua_str(username)}' on {len(sites)} sites...")
 
         def _progress(checked, total, result):
             if result.status == "found":
@@ -476,9 +468,7 @@ class HostAPI:
         self._output(f"[Username OSINT] Found {len(out)} accounts.")
         return _python_to_lua(self._lua, out)
 
-    def username_generate_nicks(
-        self, username, max_variants=100, first_name=None, last_name=None
-    ):
+    def username_generate_nicks(self, username, max_variants=100, first_name=None, last_name=None):
         """Generate forensic nickname variants. Returns Lua table of strings.
 
         Usage in Lua::
@@ -496,9 +486,7 @@ class HostAPI:
             last_name=_lua_str(last_name) if last_name else "",
         )
 
-        self._output(
-            f"[Nickname Gen] Generated {len(variants)} variants for '{_lua_str(username)}'"
-        )
+        self._output(f"[Nickname Gen] Generated {len(variants)} variants for '{_lua_str(username)}'")
         return _python_to_lua(self._lua, variants)
 
     def username_search_to_graph(self, graph_id, username, categories=None):
@@ -546,9 +534,7 @@ class HostAPI:
                 icon = CATEGORY_ICONS.get(cat, "")
                 cn = Node.from_type(f"{icon} {cat.capitalize()}", "Category")
                 g.add_node(cn)
-                g.add_edge(
-                    Edge(central.id, cn.id, label=cat, edge_type="BelongsToCategory")
-                )
+                g.add_edge(Edge(central.id, cn.id, label=cat, edge_type="BelongsToCategory"))
                 cat_nodes[cat] = cn
 
             sn = Node.from_type(r.site_name, "SocialAccount")
@@ -564,9 +550,7 @@ class HostAPI:
                 )
             )
 
-        self._output(
-            f"[Username→Graph] Added {len(found)} sites + {len(cat_nodes)} categories to graph."
-        )
+        self._output(f"[Username→Graph] Added {len(found)} sites + {len(cat_nodes)} categories to graph.")
         return len(found)
 
 
@@ -858,9 +842,7 @@ def run_lua_plugin(
         func = plugin_table[function_name]
         if func is None:
             if output_callback:
-                output_callback(
-                    f"Error: Plugin does not define function '{function_name}'."
-                )
+                output_callback(f"Error: Plugin does not define function '{function_name}'.")
             return None
 
         # Build options table

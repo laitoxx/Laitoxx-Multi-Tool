@@ -42,9 +42,7 @@ CMS_PATTERNS = {
 }
 
 COOKIE_CMS = {
-    "WordPress": lambda c: any(
-        n.startswith("wordpress_") or n == "wp-settings-time" for n in c
-    ),
+    "WordPress": lambda c: any(n.startswith("wordpress_") or n == "wp-settings-time" for n in c),
     "Joomla": lambda c: any("joomla" in n for n in c),
     "Drupal": lambda c: any("drupal" in n for n in c),
     "Magento": lambda c: "frontend" in c,
@@ -77,8 +75,7 @@ def _get_input_url(data) -> str:
     if data:
         return data.get("url", "").strip()
     return input(
-        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-        f" Enter URL to fingerprint: {Color.RESET}"
+        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter URL to fingerprint: {Color.RESET}"
     ).strip()
 
 
@@ -112,24 +109,18 @@ def tech_detector(data=None):
     """
     url = _get_input_url(data)
     if not url:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No URL provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No URL provided.")
         return
 
     url = _normalize_url(url)
 
     print()
-    print(
-        f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Fingerprinting: {Color.WHITE}{url}"
-    )
+    print(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} Fingerprinting: {Color.WHITE}{url}")
     print()
 
     response, error = _fetch_response(url)
     if error:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Connection error: {error}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Connection error: {error}")
         return
 
     headers = response.headers
@@ -142,10 +133,7 @@ def tech_detector(data=None):
     except Exception:
         soup = None
 
-    print(
-        f"{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Server & Framework {Color.DARK_RED}]"
-        + "─" * 20
-    )
+    print(f"{Color.DARK_RED}┌─[ {Color.LIGHT_RED}Server & Framework {Color.DARK_RED}]" + "─" * 20)
     _hdr("Server", headers.get("Server"))
     _hdr("X-Powered-By", headers.get("X-Powered-By"))
     _hdr("X-Generator", headers.get("X-Generator"))
@@ -157,9 +145,7 @@ def tech_detector(data=None):
     for name, sigs in CDN_SIGNATURES.items():
         if any(s.lower() in headers_lower for s in sigs):
             detected_cdns.append(name)
-            print(
-                f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {name}"
-            )
+            print(f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {name}")
     if not detected_cdns:
         print(f"{Color.DARK_GRAY}  - {Color.WHITE}No known CDN detected")
 
@@ -170,9 +156,7 @@ def tech_detector(data=None):
         try:
             if checker(headers_lower, html_lower):
                 detected_wafs.append(name)
-                print(
-                    f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {name}"
-                )
+                print(f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {name}")
         except Exception:
             pass
     if not detected_wafs:
@@ -186,9 +170,7 @@ def tech_detector(data=None):
         meta_gen = soup.find("meta", attrs={"name": re.compile("generator", re.I)})
         if meta_gen and meta_gen.get("content"):
             val = meta_gen["content"]
-            print(
-                f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}Meta generator: {Color.WHITE}{val}"
-            )
+            print(f"{Color.DARK_GRAY}  - {Color.LIGHT_RED}Meta generator: {Color.WHITE}{val}")
             cms_found.append(val)
 
     for cms_name, pattern in CMS_PATTERNS.items():
@@ -210,25 +192,17 @@ def tech_detector(data=None):
         print(f"{Color.DARK_GRAY}  - {Color.WHITE}No CMS fingerprint detected")
 
     print()
-    print(
-        f"{Color.DARK_RED}├─[ {Color.LIGHT_RED}Frontend Frameworks {Color.DARK_RED}]"
-        + "─" * 19
-    )
+    print(f"{Color.DARK_RED}├─[ {Color.LIGHT_RED}Frontend Frameworks {Color.DARK_RED}]" + "─" * 19)
     found_fws = []
     for fw_name, pattern in FW_PATTERNS.items():
         if re.search(pattern, html, re.IGNORECASE):
             found_fws.append(fw_name)
-            print(
-                f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {fw_name}"
-            )
+            print(f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {fw_name}")
     if not found_fws:
         print(f"{Color.DARK_GRAY}  - {Color.WHITE}No common JS frameworks detected")
 
     print()
-    print(
-        f"{Color.DARK_RED}├─[ {Color.LIGHT_RED}Security Headers {Color.DARK_RED}]"
-        + "─" * 22
-    )
+    print(f"{Color.DARK_RED}├─[ {Color.LIGHT_RED}Security Headers {Color.DARK_RED}]" + "─" * 22)
     for header_name, label in SEC_HEADERS:
         val = headers.get(header_name)
         if val:
@@ -237,15 +211,11 @@ def tech_detector(data=None):
                 f"{Color.DARK_GRAY}  [{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} {label:<28}{Color.WHITE}{display}"
             )
         else:
-            print(
-                f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} {label:<28}{Color.DARK_GRAY}missing"
-            )
+            print(f"{Color.DARK_GRAY}  [{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} {label:<28}{Color.DARK_GRAY}missing")
 
     print()
     print(f"{Color.DARK_RED}└" + "─" * 45)
-    print(
-        f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Fingerprinting complete."
-    )
+    print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Fingerprinting complete.")
 
 
 def _hdr(label: str, value):

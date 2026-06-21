@@ -48,12 +48,8 @@ class SiteEntry:
     follow_redirects: bool = True
     redirect_detection: bool = False
     # --- Maigret-style fields ---
-    presense_strs: list[str] = field(
-        default_factory=list
-    )  # strings proving account exists
-    absence_strs: list[str] = field(
-        default_factory=list
-    )  # strings proving account absent
+    presense_strs: list[str] = field(default_factory=list)  # strings proving account exists
+    absence_strs: list[str] = field(default_factory=list)  # strings proving account absent
     url_probe: str | None = None  # alternative API endpoint for checking
     regex_check: str | None = None  # regex to validate username before HTTP request
     engine: str | None = None  # CMS engine: "XenForo", "vBulletin", "uCoz"
@@ -88,9 +84,7 @@ class SiteEntry:
             engine=d.get("engine"),
             url_main=d.get("url_main", d.get("urlMain")),
             disabled=d.get("disabled", False),
-            activation=TokenActivation.from_dict(activation_data)
-            if activation_data
-            else None,
+            activation=TokenActivation.from_dict(activation_data) if activation_data else None,
             errors=d.get("errors", {}),
             confidence_threshold=d.get("confidence_threshold", 0.0),
         )
@@ -102,9 +96,7 @@ class CheckResult:
 
     site_name: str
     url: str
-    status: str = (
-        "not_found"  # found | not_found | error | timeout | rate_limited | waf_blocked
-    )
+    status: str = "not_found"  # found | not_found | error | timeout | rate_limited | waf_blocked
     http_code: int | None = None
     response_time_ms: float = 0.0
     avatar_url: str | None = None

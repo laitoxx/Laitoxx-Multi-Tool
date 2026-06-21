@@ -91,9 +91,7 @@ class DigitalPortrait:
             "presence_score": round(presence_score, 3),
             "category_breakdown": dict(cat_counter.most_common()),
             "active_platforms": active,
-            "probable_interests": [
-                cat for cat, _ in cat_counter.most_common(5) if cat != "other"
-            ],
+            "probable_interests": [cat for cat, _ in cat_counter.most_common(5) if cat != "other"],
             "avatar_urls": avatars,
             "alt_accounts": alt_accounts,
             "avg_response_ms": round(avg_response, 1),
@@ -118,10 +116,7 @@ class DigitalPortrait:
         # Stats
         lines.append(f"  Online Presence Score: {p['presence_score']:.1%}")
         lines.append(f"  Found: {p['total_found']} / {p['total_checked']} sites")
-        lines.append(
-            f"  Avg Confidence: {p['avg_confidence']:.0%}  "
-            f"(High: {p['high_confidence_count']})"
-        )
+        lines.append(f"  Avg Confidence: {p['avg_confidence']:.0%}  (High: {p['high_confidence_count']})")
         lines.append(f"  Avg Response: {p['avg_response_ms']:.0f}ms")
         status_parts = []
         if p["errors"]:
@@ -145,10 +140,7 @@ class DigitalPortrait:
 
         # Interests
         if p["probable_interests"]:
-            interests_str = ", ".join(
-                CATEGORY_ICONS.get(i, "") + " " + i.capitalize()
-                for i in p["probable_interests"]
-            )
+            interests_str = ", ".join(CATEGORY_ICONS.get(i, "") + " " + i.capitalize() for i in p["probable_interests"])
             lines.append(f"  Probable Interests: {interests_str}")
             lines.append("")
 

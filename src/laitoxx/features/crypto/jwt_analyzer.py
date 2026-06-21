@@ -74,18 +74,14 @@ def _print_header(header: dict):
 
 
 def _print_payload(payload: dict):
-    print(
-        f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Payload {Color.DARK_RED}]" + "─" * 30
-    )
+    print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Payload {Color.DARK_RED}]" + "─" * 30)
     now = datetime.now(UTC).timestamp()
 
     for k, v in payload.items():
         display = v
         if k in ("exp", "iat", "nbf") and isinstance(v, (int, float)):
             try:
-                dt = datetime.fromtimestamp(v, tz=UTC).strftime(
-                    "%Y-%m-%d %H:%M:%S UTC"
-                )
+                dt = datetime.fromtimestamp(v, tz=UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
                 display = f"{v}  ({dt})"
             except Exception:
                 pass
@@ -127,35 +123,22 @@ def _analyze(token: str):
 
     header, payload, _, raw_header, raw_payload = result
 
-    print(
-        f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE}"
-        f" JWT Analysis\n"
-    )
+    print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.LIGHT_BLUE} JWT Analysis\n")
     _print_header(header)
     _print_payload(payload)
 
-    print(
-        f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Raw Segments {Color.DARK_RED}]"
-        + "─" * 26
-    )
+    print(f"\n{Color.DARK_RED}├─[ {Color.LIGHT_RED}Raw Segments {Color.DARK_RED}]" + "─" * 26)
     print(f"{Color.DARK_GRAY}  {Color.LIGHT_RED}Header:  {Color.DARK_GRAY}{raw_header}")
-    print(
-        f"{Color.DARK_GRAY}  {Color.LIGHT_RED}Payload: {Color.DARK_GRAY}{raw_payload}"
-    )
+    print(f"{Color.DARK_GRAY}  {Color.LIGHT_RED}Payload: {Color.DARK_GRAY}{raw_payload}")
 
     print(f"\n{Color.DARK_RED}└" + "─" * 45)
-    print(
-        f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Analysis complete."
-    )
+    print(f"{Color.DARK_GRAY}[{Color.LIGHT_GREEN}✔{Color.DARK_GRAY}]{Color.LIGHT_GREEN} Analysis complete.")
 
 
 def _crack(token: str, wordlist_path: str):
     result = _parse_jwt(token)
     if not result:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}"
-            f" Invalid JWT format."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Invalid JWT format.")
         return
 
     header, _, _, raw_header, raw_payload = result
@@ -203,10 +186,7 @@ def _crack(token: str, wordlist_path: str):
     try:
         fh = open(wordlist_path, encoding="utf-8", errors="ignore")
     except FileNotFoundError:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}x{Color.DARK_GRAY}]{Color.RED}"
-            f" Wordlist file not found: {wordlist_path}"
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}x{Color.DARK_GRAY}]{Color.RED} Wordlist file not found: {wordlist_path}")
         return
 
     with fh:
@@ -247,10 +227,7 @@ def _crack(token: str, wordlist_path: str):
             f" SECRET FOUND: {Color.WHITE}{found}"
         )
     else:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED}"
-            f" Secret not found in wordlist."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} Secret not found in wordlist.")
 
 
 def jwt_analyzer_tool(data=None):
@@ -259,25 +236,15 @@ def jwt_analyzer_tool(data=None):
         mode = data.get("mode", "analyze")
         wordlist = data.get("wordlist", "")
     else:
-        print(
-            f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" JWT Analyzer\n"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.DARK_RED} Analyze token"
-        )
-        print(
-            f"  {Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.DARK_RED} Crack secret (wordlist)\n"
-        )
+        print(f"\n{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} JWT Analyzer\n")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}1{Color.DARK_GRAY}]{Color.DARK_RED} Analyze token")
+        print(f"  {Color.DARK_GRAY}[{Color.DARK_RED}2{Color.DARK_GRAY}]{Color.DARK_RED} Crack secret (wordlist)\n")
 
-        mode_sel = input(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Select mode: "
-        ).strip()
+        mode_sel = input(f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Select mode: ").strip()
         mode = "crack" if mode_sel == "2" else "analyze"
 
         token = input(
-            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED}"
-            f" Enter JWT token: {Color.RESET}"
+            f"{Color.DARK_GRAY}[{Color.DARK_RED}⛧{Color.DARK_GRAY}]{Color.DARK_RED} Enter JWT token: {Color.RESET}"
         ).strip()
 
         wordlist = ""
@@ -288,16 +255,12 @@ def jwt_analyzer_tool(data=None):
             ).strip()
 
     if not token:
-        print(
-            f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No token provided."
-        )
+        print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No token provided.")
         return
 
     if mode == "crack":
         if not wordlist:
-            print(
-                f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No wordlist path provided."
-            )
+            print(f"{Color.DARK_GRAY}[{Color.RED}✖{Color.DARK_GRAY}]{Color.RED} No wordlist path provided.")
             return
         _crack(token, wordlist)
     else:
