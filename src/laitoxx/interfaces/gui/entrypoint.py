@@ -35,8 +35,19 @@ PROJECT_SITE = "https://laitoxx.wtf"
 
 
 def _open_project_site():
-    if settings.open_website_on_startup:
+    if not settings.open_website_on_startup:
+        return
+    try:
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        import requests
+        from laitoxx.core.netcheck import build_proxies
+        proxies = build_proxies(settings.proxy)
+        requests.head(PROJECT_SITE, proxies=proxies, timeout=5,
+                      allow_redirects=True, verify=False)
         webbrowser.open(PROJECT_SITE)
+    except Exception:
+        logging.info("Project site unreachable, skipping auto-open.")
 
 
 def main():

@@ -66,6 +66,9 @@ _state: dict = {
     "proxy_type": "http",
 }
 
+# Maximum timeout (seconds) applied to every request that doesn't set its own.
+_DEFAULT_TIMEOUT = 30
+
 # The single shared session used by all tools
 _shared_session: requests.Session = requests.Session()
 
@@ -143,6 +146,17 @@ def get_session() -> requests.Session:
 # ── Session helpers ────────────────────────────────────────────────────────────
 
 
+def _apply_default_timeout_to_session(sess: requests.Session) -> None:
+    """Wrap sess.request so calls that omit timeout get _DEFAULT_TIMEOUT."""
+    _orig_req = sess.request
+
+    def _bounded(method, url, **kwargs):
+        kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
+        return _orig_req(method, url, **kwargs)
+
+    sess.request = _bounded  # type: ignore[method-assign]
+
+
 def _rebuild_session(proxy_url: Optional[str]) -> None:
     global _shared_session
     # Always use the stdlib requests.Session.__init__ — not our patched version —
@@ -151,6 +165,7 @@ def _rebuild_session(proxy_url: Optional[str]) -> None:
     _orig_session_init(sess)
     if proxy_url:
         sess.proxies.update({"http": proxy_url, "https": proxy_url})
+    _apply_default_timeout_to_session(sess)
     _shared_session = sess
     _patch_requests_session_class(proxy_url)
     _patch_requests_module(proxy_url)
@@ -158,52 +173,43 @@ def _rebuild_session(proxy_url: Optional[str]) -> None:
 
 def _patch_requests_session_class(proxy_url: Optional[str]) -> None:
     """Monkey-patch requests.Session.__init__ so any session created by
-    third-party libraries also inherits the proxy settings."""
-    original_init = requests.Session.__init__
-
+    third-party libraries also inherits the proxy settings and default timeout."""
     def _patched_init(self, *args, **kwargs):
-        original_init(self, *args, **kwargs)
+        _orig_session_init(self, *args, **kwargs)
         if proxy_url:
             self.proxies.update({"http": proxy_url, "https": proxy_url})
+        _apply_default_timeout_to_session(self)
 
     requests.Session.__init__ = _patched_init  # type: ignore[method-assign]
 
 
 def _patch_requests_module(proxy_url: Optional[str]) -> None:
-    """Replace requests.get / .post / ... with wrappers that route through
-    the shared session so bare ``requests.get(url)`` calls also use the proxy."""
-    if proxy_url:
+    """Route requests.* through the shared session and enforce a default timeout.
 
-        def _make_method(method_name: str):
-            def _method(url, **kwargs):
-                return getattr(_shared_session, method_name)(url, **kwargs)
+    Always active (proxy or not) so bare ``requests.get(url)`` calls never
+    block indefinitely — they get _DEFAULT_TIMEOUT if the caller omits one.
+    """
+    def _make_method(method_name: str):
+        def _method(url, **kwargs):
+            kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
+            return getattr(_shared_session, method_name)(url, **kwargs)
 
-            _method.__name__ = method_name
-            return _method
+        _method.__name__ = method_name
+        return _method
 
-        requests.get = _make_method("get")  # type: ignore[assignment]
-        requests.post = _make_method("post")  # type: ignore[assignment]
-        requests.put = _make_method("put")  # type: ignore[assignment]
-        requests.patch = _make_method("patch")  # type: ignore[assignment]
-        requests.delete = _make_method("delete")  # type: ignore[assignment]
-        requests.head = _make_method("head")  # type: ignore[assignment]
-        requests.options = _make_method("options")  # type: ignore[assignment]
+    requests.get     = _make_method("get")      # type: ignore[assignment]
+    requests.post    = _make_method("post")     # type: ignore[assignment]
+    requests.put     = _make_method("put")      # type: ignore[assignment]
+    requests.patch   = _make_method("patch")    # type: ignore[assignment]
+    requests.delete  = _make_method("delete")   # type: ignore[assignment]
+    requests.head    = _make_method("head")     # type: ignore[assignment]
+    requests.options = _make_method("options")  # type: ignore[assignment]
 
-        def _request(method, url, **kwargs):
-            return _shared_session.request(method, url, **kwargs)
+    def _request(method, url, **kwargs):
+        kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
+        return _shared_session.request(method, url, **kwargs)
 
-        requests.request = _request  # type: ignore[assignment]
-    else:
-        # Restore originals when proxy is disabled
-        requests.Session.__init__ = _orig_session_init  # type: ignore[method-assign]
-        requests.get = _orig_requests_get  # type: ignore[assignment]
-        requests.post = _orig_requests_post  # type: ignore[assignment]
-        requests.put = _orig_requests_put  # type: ignore[assignment]
-        requests.patch = _orig_requests_patch  # type: ignore[assignment]
-        requests.delete = _orig_requests_delete  # type: ignore[assignment]
-        requests.head = _orig_requests_head  # type: ignore[assignment]
-        requests.options = _orig_requests_options  # type: ignore[assignment]
-        requests.request = _orig_requests_request  # type: ignore[assignment]
+    requests.request = _request  # type: ignore[assignment]
 
 
 # ── Environment variables ──────────────────────────────────────────────────────
@@ -399,3 +405,11 @@ def aiohttp_proxy_url() -> Optional[str]:
     if _state["proxy_type"] == "socks5":
         return None  # handled by connector
     return _state["proxy_url"] or None
+
+
+# ── Bootstrap: install timeout wrappers at import time ─────────────────────────
+# This ensures _DEFAULT_TIMEOUT is enforced even if NetworkManager.apply() is
+# never called (e.g. proxy disabled, app started without settings).
+_patch_requests_session_class(None)
+_patch_requests_module(None)
+_apply_default_timeout_to_session(_shared_session)

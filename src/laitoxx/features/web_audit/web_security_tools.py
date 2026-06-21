@@ -31,7 +31,7 @@ import aiohttp
 
 from laitoxx.features.utilities.shared_utils import Color
 
-_TIMEOUT = aiohttp.ClientTimeout(total=12)
+_TIMEOUT = aiohttp.ClientTimeout(total=30)
 _UA = "Mozilla/5.0 (Web-Security-Checker)"
 
 try:
