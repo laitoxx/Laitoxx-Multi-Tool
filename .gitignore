@@ -28,13 +28,13 @@ update_*.py
 .DS_Store
 
 # Application data
-logs/
-cache/
-reports/
-graphs/
-settings/
-runtime/
-tools/
-lua_plugins/debug/
-lua_plugin_settings.json
-user_agreement_accepted.txt
+/logs/
+/cache/
+/reports/
+/graphs/
+/settings/
+/runtime/
+/tools/
+/lua_plugins/debug/
+/lua_plugin_settings.json
+/user_agreement_accepted.txt

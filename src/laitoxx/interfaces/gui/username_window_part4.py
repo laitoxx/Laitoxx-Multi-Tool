@@ -13,10 +13,9 @@ class UsernameOsintMixin4:
         worker.moveToThread(thread)
         thread.started.connect(worker.run)
         worker.finished.connect(
-            lambda results,
-            name=result.site_name,
-            active_thread=thread,
-            active_worker=worker: self._on_provider_rechecked(name, results, active_thread, active_worker)
+            lambda results, name=result.site_name, active_thread=thread, active_worker=worker: (
+                self._on_provider_rechecked(name, results, active_thread, active_worker)
+            )
         )
         worker.error.connect(
             lambda message, active_thread=thread, active_worker=worker: self._on_provider_recheck_error(

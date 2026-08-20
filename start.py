@@ -3,7 +3,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 PROJECT_ROOT = Path(__file__).resolve().parent
 SRC_DIR = PROJECT_ROOT / "src"
 
@@ -14,18 +13,20 @@ def _child_environment() -> dict[str, str]:
     current = environment.get("PYTHONPATH", "")
     src = os.path.normcase(os.path.abspath(SRC_DIR))
     inherited = [item for item in current.split(os.pathsep) if item]
-    entries = [str(SRC_DIR), *(
-        item for item in inherited
-        if os.path.normcase(os.path.abspath(item)) != src
-    )]
+    entries = [str(SRC_DIR), *(item for item in inherited if os.path.normcase(os.path.abspath(item)) != src)]
     environment["PYTHONPATH"] = os.pathsep.join(entries)
     return environment
 
 
 def _git(*args: str, check: bool = False) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        ["git", *args], cwd=PROJECT_ROOT, capture_output=True, text=True,
-        encoding="utf-8", errors="replace", check=check,
+        ["git", *args],
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=check,
     )
 
 
@@ -33,8 +34,10 @@ def check_for_updates() -> None:
     print("Checking for updates...")
     try:
         subprocess.run(
-            ["git", "--version"], stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL, check=True,
+            ["git", "--version"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
         )
     except (OSError, subprocess.CalledProcessError):
         print("Update check skipped: Git is not installed.")
@@ -92,14 +95,18 @@ def main() -> None:
     print("\nChecking connectivity...")
     subprocess.run(
         [str(python_executable), "-m", "laitoxx.core.netcheck"],
-        cwd=PROJECT_ROOT, env=environment, check=False,
+        cwd=PROJECT_ROOT,
+        env=environment,
+        check=False,
     )
 
     print(f"\nLaunching using virtual environment: {python_executable}\n")
     try:
         result = subprocess.run(
             [str(python_executable), str(PROJECT_ROOT / "gui.py"), *sys.argv[1:]],
-            cwd=PROJECT_ROOT, env=environment, check=False,
+            cwd=PROJECT_ROOT,
+            env=environment,
+            check=False,
         )
         raise SystemExit(result.returncode)
     except KeyboardInterrupt:

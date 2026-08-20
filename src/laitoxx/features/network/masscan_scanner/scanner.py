@@ -280,12 +280,14 @@ class MasscanRunner:
                     observations,
                     cancelled=cancelled,
                     progress=(
-                        lambda checked, total: progress(
-                            80.0 + (20.0 * checked / max(1, total)),
-                            f"Fingerprinting services: {checked}/{total}",
+                        lambda checked, total: (
+                            progress(
+                                80.0 + (20.0 * checked / max(1, total)),
+                                f"Fingerprinting services: {checked}/{total}",
+                            )
+                            if progress
+                            else None
                         )
-                        if progress
-                        else None
                     ),
                 )
                 if len(observations) > 256:
