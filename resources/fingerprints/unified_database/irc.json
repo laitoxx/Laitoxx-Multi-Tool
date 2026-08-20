@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"irc","probe_payload":"","match_type":"regex","pattern":"(?i)running version\\s+(\\S+)","extracted_fields":{"file":"irc.go"}},{"source_project":"nerva","protocol":"tcp","service":"irc","probe_payload":"","match_type":"regex","pattern":"(?i)There are (\\d+) users","extracted_fields":{"file":"irc.go"}}]

@@ -1,0 +1,21 @@
+{
+    "button_bg_color": "rgba(0,180,0,0.1)",
+    "button_hover_bg_color": "rgba(0,255,0,0.2)",
+    "button_pressed_bg_color": "rgba(0,255,0,0.35)",
+    "button_border_color": "rgba(0,200,0,0.4)",
+    "button_text_color": "#00ff41",
+    "text_area_bg_color": "rgba(0,10,0,0.8)",
+    "text_area_border_color": "rgba(0,180,0,0.3)",
+    "text_area_text_color": "#00ff41",
+    "sidebar_bg_color": "rgba(0,15,0,0.6)",
+    "title_text_color": "#00ff41",
+    "scrollbar_handle_color": "rgba(0,200,0,0.4)",
+    "scrollbar_handle_hover_color": "rgba(0,255,0,0.7)",
+    "plugin_canvas_bg_color": "#000a00",
+    "accent_color": "#00ff41",
+    "accent_dim_color": "#00b82e",
+    "window_bg_color": "rgba(0, 5, 0, 0.93)",
+    "panel_bg_color": "rgba(0, 10, 0, 0.82)",
+    "border_color": "rgba(0, 200, 0, 0.28)",
+    "text_secondary_color": "#00b830"
+}

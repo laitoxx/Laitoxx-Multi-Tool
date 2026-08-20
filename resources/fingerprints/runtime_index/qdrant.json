@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"qdrant","probe_payload":"","match_type":"regex","pattern":"^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?$","extracted_fields":{"file":"qdrant.go"}}]

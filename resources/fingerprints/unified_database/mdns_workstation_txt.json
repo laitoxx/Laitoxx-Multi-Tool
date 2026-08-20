@@ -1,0 +1,1 @@
+[{"source_project":"recog","protocol":"mdns","service":"mdns.workstation.txt","probe_payload":"","match_type":"regex","pattern":"^org\\.freedesktop\\.Avahi\\.cookie=\\S+$","extracted_fields":{"service.product":"Avahi"}}]

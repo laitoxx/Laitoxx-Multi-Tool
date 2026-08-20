@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"pcworx","probe_payload":"","match_type":"regex","pattern":"[^a-z0-9_.-]","extracted_fields":{"file":"pcworx.go"}}]

@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"openvpn","probe_payload":"","match_type":"regex","pattern":">INFO:OpenVPN Management Interface Version (\\d+)","extracted_fields":{"file":"management.go"}}]

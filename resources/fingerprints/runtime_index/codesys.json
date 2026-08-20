@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"codesys","probe_payload":"","match_type":"regex","pattern":"V?(\\d+\\.\\d+(?:\\.\\d+)*(?:\\.\\d+)?)","extracted_fields":{"file":"codesys.go"}}]

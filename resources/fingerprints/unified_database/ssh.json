@@ -1,0 +1,1 @@
+[{"source_project":"hassh","protocol":"tcp","service":"ssh","probe_payload":"","match_type":"md5_hash_algorithm","pattern":"MD5(kex_algorithms;encryption_algorithms;mac_algorithms;compression_algorithms)","extracted_fields":{"note":"hassh calculates md5 of ssh kex init parameters"}}]

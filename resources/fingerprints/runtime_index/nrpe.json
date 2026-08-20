@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"nrpe","probe_payload":"","match_type":"regex","pattern":"NRPE v(\\d+\\.\\d+(?:\\.\\d+)?)","extracted_fields":{"file":"nrpe.go"}}]

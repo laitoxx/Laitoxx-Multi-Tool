@@ -1,0 +1,23 @@
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+exclude = [
+    ".git",
+    "venv",
+    "__pycache__",
+    "*.egg-info",
+]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B"]
+ignore = [
+    "E501",   # line too long - handled by formatter, not enforced
+    "E402",   # module-level import not at top (GUI entrypoints need sys.path first)
+    "B008",   # default arg function call
+    "B006",   # mutable default arg (many Qt widgets)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"

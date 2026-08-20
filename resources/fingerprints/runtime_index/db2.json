@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"db2","probe_payload":"","match_type":"regex","pattern":"(\\d+\\.\\d+\\.\\d+(?:\\.\\d+)?)","extracted_fields":{"file":"db2.go"}},{"source_project":"nerva","protocol":"tcp","service":"db2","probe_payload":"","match_type":"regex","pattern":"^SQL(\\d{2})(\\d{2})(\\d+)","extracted_fields":{"file":"db2.go"}}]

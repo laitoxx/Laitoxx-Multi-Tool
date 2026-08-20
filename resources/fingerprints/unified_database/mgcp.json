@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"mgcp","probe_payload":"","match_type":"regex","pattern":"^\\d{3}\\s+9(\\s+.*)?$","extracted_fields":{"file":"mgcp.go"}}]

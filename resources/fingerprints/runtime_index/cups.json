@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"cups","probe_payload":"","match_type":"regex","pattern":"(?i)CUPS/(\\d+\\.\\d+(?:\\.\\d+)?)","extracted_fields":{"file":"cups.go"}}]

@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"fox","probe_payload":"","match_type":"regex","pattern":"([a-zA-Z.]+)=([si]):(.*)","extracted_fields":{"file":"fox.go"}}]

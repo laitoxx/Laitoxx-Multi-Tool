@@ -1,0 +1,18 @@
+{
+    "button_bg_color": "rgba(255, 170, 0, 0.1)",
+    "button_hover_bg_color": "rgba(255, 120, 0, 0.2)",
+    "button_pressed_bg_color": "rgba(255, 80, 0, 0.3)",
+    "button_border_color": "rgba(229, 150, 18, 0.2)",
+    "button_text_color": "#ffaa55",
+    "text_area_bg_color": "rgba(10, 5, 0, 0.5)",
+    "text_area_border_color": "rgba(255, 220, 170, 0.2)",
+    "text_area_text_color": "#ffaa55",
+    "glass_widget_bg_color": "rgba(20, 10, 0, 0.3)",
+    "sidebar_bg_color": "rgba(38, 20, 0, 0.2)",
+    "accent_color": "#e59612",
+    "accent_dim_color": "#b86800",
+    "window_bg_color": "rgba(12, 6, 0, 0.93)",
+    "panel_bg_color": "rgba(22, 10, 0, 0.82)",
+    "border_color": "rgba(229, 150, 18, 0.28)",
+    "text_secondary_color": "#cc8844"
+}

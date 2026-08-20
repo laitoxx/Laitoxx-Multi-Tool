@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"oracledb","probe_payload":"","match_type":"regex","pattern":"[0-9]+","extracted_fields":{"file":"oracle.go"}}]

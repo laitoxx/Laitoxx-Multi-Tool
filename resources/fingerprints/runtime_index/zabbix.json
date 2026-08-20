@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"zabbix","probe_payload":"","match_type":"regex","pattern":"^(\\d+\\.\\d+\\.\\d+)","extracted_fields":{"file":"zabbix.go"}}]

@@ -1,0 +1,40 @@
+# Python virtual environment
+venv/
+env/
+.env
+
+# Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.pytest-tmp*/
+.pytest_tmp*/
+
+# Test artifacts
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Misc scripts (not part of the package)
+update_readmes.py
+translate_plugin_docs.py
+update_*.py
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Application data
+logs/
+cache/
+reports/
+graphs/
+settings/
+runtime/
+tools/
+lua_plugins/debug/
+lua_plugin_settings.json
+user_agreement_accepted.txt

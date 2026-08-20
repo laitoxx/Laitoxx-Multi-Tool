@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ruff
+        run: pip install ruff
+      - name: Run ruff check
+        run: ruff check src scripts
+      - name: Compile Python sources
+        run: python -m compileall -q src scripts
+      - name: Verify architecture
+        run: |
+          python scripts/check_structure.py
+          python scripts/verify_architecture.py
+          python scripts/verify_dependencies.py
+
+  runtime-audit:
+    name: Controlled runtime audits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libegl1 libgl1 libglib2.0-0 libxcb-cursor0 \
+            libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
+            libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 \
+            libxkbcommon-x11-0 xvfb
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+      - name: Run controlled audits
+        env:
+          QT_QPA_PLATFORM: offscreen
+          DISPLAY: ":99"
+          PYTHONPATH: src
+          LAITOXX_DATA_DIR: /tmp/laitoxx-ci
+        run: |
+          Xvfb :99 -screen 0 1024x768x24 &
+          python scripts/runtime_activity_audit.py
+          python scripts/runtime_core_audit.py
+          python scripts/runtime_provider_audit.py
+          python scripts/runtime_steganography_audit.py
+          python scripts/runtime_text_cipher_audit.py
+          python scripts/runtime_tongue_telegram_audit.py
+          python scripts/runtime_web_osint_audit.py
+          python scripts/runtime_worker_audit.py
+          python scripts/runtime_gui_audit.py

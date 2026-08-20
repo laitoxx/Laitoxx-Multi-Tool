@@ -1,0 +1,1 @@
+[{"source_project":"nerva","protocol":"tcp","service":"zookeeper","probe_payload":"","match_type":"regex","pattern":"Zookeeper version:\\s*(\\d+\\.\\d+\\.\\d+)","extracted_fields":{"file":"zookeeper.go"}}]
