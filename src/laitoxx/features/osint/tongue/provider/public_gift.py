@@ -84,7 +84,8 @@ class PublicGiftResolver:
         for href in parser.links:
             absolute = urljoin(final_url, href)
             parsed = urlparse(absolute)
-            if parsed.netloc.lower().endswith("fragment.com"):
+            netloc = parsed.netloc.lower()
+            if netloc == "fragment.com" or netloc.endswith(".fragment.com"):
                 fragment_links.append(absolute)
         addresses = extract_ton_address_candidates(combined, parser.links)
         evidence = ["public t.me collectible page fetched"]
