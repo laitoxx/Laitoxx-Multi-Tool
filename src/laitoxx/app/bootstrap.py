@@ -12,8 +12,16 @@ import sys
 import webbrowser
 from pathlib import Path
 
+from PyQt6.QtCore import QCoreApplication, Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
+
+try:
+    if hasattr(Qt.ApplicationAttribute, "AA_ShareOpenGLContexts"):
+        QCoreApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts, True)
+    from PyQt6 import QtWebEngineWidgets  # noqa: F401
+except Exception:
+    pass
 
 from laitoxx.core.settings.app_settings import settings
 from laitoxx.core.settings.network_manager import NetworkManager

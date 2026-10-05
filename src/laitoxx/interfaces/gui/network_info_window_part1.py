@@ -289,8 +289,15 @@ class NetworkInfoWindowMixin1:
                 }});
                 L.control.zoom({{ position: 'bottomright' }}).addTo(map);
 
-                // Always add default Dark map first, to prevent white screen
-                var defaultTile = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/rastertiles/dark_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{ maxZoom: 19, attribution: '© OpenStreetMap © CARTO' }}).addTo(map);
+                // Esri Dark Gray Canvas (free, no API key required) - default night tile
+                var esriDarkUrl = 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{{z}}/{{y}}/{{x}}';
+                var esriDayUrl  = 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}';
+
+                var defaultTile = L.tileLayer(esriDarkUrl, {{
+                    maxZoom: 16,
+                    attribution: 'Tiles &copy; <a href="https://www.esri.com/">Esri</a>',
+                    errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+                }}).addTo(map);
 
                 var marker = L.marker([{lat}, {lon}]).addTo(map);
                 marker.bindPopup("<b style='color: black;'>{marker_text}</b>").openPopup();
@@ -344,7 +351,8 @@ class NetworkInfoWindowMixin1:
 
             if ({"true" if data.get("is_day") else "false"}) {{
                 if (typeof defaultTile !== 'undefined') {{
-                    defaultTile.setUrl('https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}{{r}}.png');
+                    // Switch to Esri World Imagery for daytime (free, no API key)
+                    defaultTile.setUrl('https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}');
                 }}
             }}
 

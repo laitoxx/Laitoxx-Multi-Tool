@@ -27,10 +27,10 @@ from PyQt6.QtWidgets import (
 try:
     from PyQt6.QtWebEngineCore import QWebEngineSettings
     from PyQt6.QtWebEngineWidgets import QWebEngineView
-except ImportError:
+except Exception as _wv_exc:  # ImportError on Linux/macOS, OSError/DLL errors on Windows
     QWebEngineView = None
     QWebEngineSettings = None
-    logging.warning("PyQt6-WebEngine not installed. Maps will not be rendered.")
+    logging.warning("PyQt6-WebEngine could not be loaded (%s). Maps will not be rendered.", _wv_exc)
 
 from laitoxx.core.localization.i18n import translator
 from laitoxx.interfaces.gui.design_system import build_workspace_qss, resolved_theme

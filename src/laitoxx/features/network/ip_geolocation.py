@@ -73,8 +73,8 @@ def _layer_ipapi(ip: str):
         return
 
     # Extract company info
-    comp = data.get("company", {})
-    if comp:
+    comp = data.get("company")
+    if isinstance(comp, dict):
         ctype = comp.get("type", "unknown").upper()
         _row("Company Name", comp.get("name"))
         _row(
@@ -82,9 +82,13 @@ def _layer_ipapi(ip: str):
             ctype,
             color=Color.YELLOW if ctype != "ISP" else Color.LIGHT_GREEN,
         )
+    elif isinstance(comp, str) and comp:
+        _row("Company Name", comp)
 
     # Security flags
     def row_bool(label, val, danger=True):
+        if val is None:
+            return
         # Val can be boolean True/False
         if val:
             color = Color.RED if danger else Color.YELLOW
@@ -102,9 +106,11 @@ def _layer_ipapi(ip: str):
     row_bool("Is Crawler?", data.get("is_crawler"), danger=False)
     row_bool("Known Abuser?", data.get("is_abuser"))
 
-    vpn = data.get("vpn", {})
-    if vpn:
+    vpn = data.get("vpn")
+    if isinstance(vpn, dict):
         _row("VPN Service", vpn.get("service"), color=Color.RED)
+    elif isinstance(vpn, str) and vpn:
+        _row("VPN Service", vpn, color=Color.RED)
 
     _end()
 

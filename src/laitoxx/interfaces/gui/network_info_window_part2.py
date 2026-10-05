@@ -37,8 +37,13 @@ class NetworkInfoWindowMixin2:
             target_ip = getattr(self, "resolved_ip", "")
             if target_ip:
                 try:
-                    r = requests.get(f"https://api.ipapi.is/?q={target_ip}", timeout=5).json()
+                    resp = requests.get(f"https://api.ipapi.is/?q={target_ip}", timeout=5)
+                    r = resp.json() if resp.ok else {}
+                    if not isinstance(r, dict):
+                        r = {}
                     loc = r.get("location", {})
+                    if not isinstance(loc, dict):
+                        loc = {}
 
                     if loc.get("currency_code"):
                         data["curr"] = loc.get("currency_code")
